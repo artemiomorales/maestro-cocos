@@ -13,16 +13,15 @@ enum SwipeDirection {
 @ccclass('TouchMonitor')
 export class TouchMonitor extends Component {
 
-    private _pressedX = 0;
-    private _pressedY = 0;
-
     private _gestureStartTime = 0;
 
     public isTouching = false;
 
+    @property
     public ySensitivity = .0027;
     public invertYInput = false;
 
+    @property
     public xSensitivity = .0054;
     public invertXInput = false;
 
@@ -31,6 +30,7 @@ export class TouchMonitor extends Component {
 
     public gestureActionTime = 0;
     public touchStartPosition = v2(0, 0);
+    public touchPreviousPosition = v2(0, 0);
     public touchCurrentPosition = v2(0, 0);
 
     public swipeMinMax = 80;
@@ -45,7 +45,9 @@ export class TouchMonitor extends Component {
     public momentumDecay = .95;
     public momentumSensitivity = 1;
 
+    @property
     public gestureTimeMultiplier = 50;
+
     public cancelMomentumTimeThreshold = .2;
     public cancelMomentumMagnitudeThreshold = 815;
     public pauseMomentumThreshold = .03;
@@ -56,17 +58,18 @@ export class TouchMonitor extends Component {
     public swipeHistory: Vec2[] = [];
     public swipeHistoryIndex = 0;
 
-    public anim: any = null;
-    public animState: any = null;
-    public currentTime: number = 0;
+    @property({type:Node})
+    public listeners: Node[] = [];
+
+
 
     update() {
       if(this.hasMomentum == true) {
         // All momentum is executed through momentumForce. However, we calculate the momentumForce
         // via a momentumCache, which is modified dynamically based on swipe input, decay value, etc.
         this.touchMonitorMomentum = v2(this.touchMonitorMomentumCache.x, this.touchMonitorMomentumCache.y);
-				
-				// momentumUpdate.RaiseEvent(this.gameObject);
+
+        this.node.emit('onMomentum');
 				
 				if (this.touchMonitorMomentum.dot(this.touchMonitorMomentum) < .00001) {
           // momentumDepleted.RaiseEvent(this.gameObject);
@@ -75,7 +78,7 @@ export class TouchMonitor extends Component {
 				} else {
 					this.touchMonitorMomentumCache = v2(this.touchMonitorMomentumCache.x * this.momentumDecay, this.touchMonitorMomentumCache.y * this.momentumDecay);            
 				}
-        log(this.touchMonitorMomentumCache);
+        
       }
     }
 
@@ -89,19 +92,23 @@ export class TouchMonitor extends Component {
       log("touch started");
       let location = event.getLocation();// 获取节点坐标
       this.touchStartPosition = v2(location.x, location.y);
+      this.touchPreviousPosition = v2(location.x, location.y);
       this.isTouching = true;
       this._gestureStartTime = Date.now();
+      this.haltMomentum();
 
       // onTouchStart.RaiseEvent(this.gameObject);
     }
 
     onTouchMove(event: Touch) {
-        let touchPoint = event.getLocation();
-        this.touchCurrentPosition = touchPoint;
-        const deltaX = this._pressedX - touchPoint.x;
-        const deltaY = this._pressedY - touchPoint.y;
-        const swipeVector = v2(deltaX, deltaY);
-    
+        this.touchCurrentPosition = event.getLocation();
+        const swipeVector = v2(
+          (this.touchPreviousPosition.x - this.touchCurrentPosition.x) * -1,
+          (this.touchPreviousPosition.y - this.touchCurrentPosition.y) * -1
+        );
+
+        log(swipeVector.y);
+
         // log(deltaX);
         // log(deltaY);
         // log(this);
@@ -118,19 +125,19 @@ export class TouchMonitor extends Component {
         const newSwipeForce: Vec2 = this.normalizeVectorInfo(swipeVector, this.swipeMinMax);
         this.swipeForce = newSwipeForce;
 
+        this.node.emit('onSwipe');
+
+        this.touchPreviousPosition = this.touchCurrentPosition;
         // onSwipe.RaiseEvent(this.gameObject);
     }
 
     onTouchEnd(event: Touch) {
-      let touchPoint = event.getLocation();
       this.isTouching = false;
       // Raise flick event - TO DO
 
-      this.gestureActionTime = Date.now() - this._gestureStartTime;
+      this.gestureActionTime = (Date.now() - this._gestureStartTime) / 1000;
 
-      const delta = v2(this.touchCurrentPosition.x - touchPoint.x, this.touchCurrentPosition.y - touchPoint.y);
-
-      log(delta);
+      const delta = v2(this.touchStartPosition.x - this.touchCurrentPosition.x, this.touchStartPosition.y - this.touchCurrentPosition.y);
 
       // Cancel momentum on certain long swipe gestures with low delta at the end of the movement.
       if(delta.dot(delta) < this.cancelMomentumMagnitudeThreshold && this.gestureActionTime > this.cancelMomentumTimeThreshold) {
@@ -141,7 +148,12 @@ export class TouchMonitor extends Component {
           return;
       }
 
-      const swipeVector = v2(touchPoint.x - this.touchStartPosition.x, touchPoint.y - this.touchStartPosition.y);
+      const swipeVector = v2(this.touchCurrentPosition.x - this.touchStartPosition.x, this.touchCurrentPosition.y - this.touchStartPosition.y);
+
+      log("current position");
+      log(this.touchCurrentPosition.y);
+      log("start position");
+      log(this.touchStartPosition.y);
 
       // We use momentumMinMax to clamp the value, but as of this writing that
       // value is set to 1000, which means that most swipes won't get clamped at all.
@@ -152,9 +164,15 @@ export class TouchMonitor extends Component {
       // allows us to adjust momentum sensitivity, if desired
       const swipeMomentum = ExponentiateV2(swipeEndForce, this.momentumSensitivity);
 
+      log("swipe momentum");
+      log(swipeMomentum);
+
       // Our swipe time generally comes back less than 1 - so let's multiply
       // by 100, because dividing by a decimal makes our swipe too intense
       const normalizedGestureTime = this.gestureActionTime * this.gestureTimeMultiplier;
+
+      log("normalized gesture time");
+      log(normalizedGestureTime);
 
       this.addMomentum(v2(swipeMomentum.x / normalizedGestureTime, swipeMomentum.y / normalizedGestureTime));
 

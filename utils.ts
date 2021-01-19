@@ -11,8 +11,8 @@ import { v2, Vec2 } from 'cc';
 export function ClampVectorValue(rawVector: Vec2, maxMin: number = 1)
 {
     let clampedVector = v2(0, 0);
-    clampedVector.x = ClampValue(rawVector.x, maxMin * -1, maxMin);
-    clampedVector.y = ClampValue(rawVector.y, maxMin * -1, maxMin);
+    clampedVector.x = ClampValue(rawVector.x, maxMin, maxMin * -1);
+    clampedVector.y = ClampValue(rawVector.y, maxMin, maxMin * -1);
 
     return clampedVector;
 }

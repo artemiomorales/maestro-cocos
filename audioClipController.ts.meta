@@ -2,7 +2,7 @@
   "ver": "4.0.9",
   "importer": "typescript",
   "imported": true,
-  "uuid": "6cd8deee-4d67-4963-bd1d-181590573d03",
+  "uuid": "21d928ed-ded6-4e1b-9acf-79da6deb02e4",
   "files": [
     ".js",
     "editor.js",
@@ -11,7 +11,7 @@
   "subMetas": {},
   "userData": {
     "importAsPlugin": false,
-    "moduleId": "project:///assets/scripts/touchController.js",
+    "moduleId": "project:///assets/scripts/audioClipController.js",
     "importerSettings": 4
   }
 }
