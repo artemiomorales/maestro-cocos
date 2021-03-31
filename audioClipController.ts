@@ -6,11 +6,11 @@ const { ccclass, property } = _decorator;
 export class AudioClipController extends Component {
     
     @property({type:Node})
-    public touchMonitorObject: Node = null;
+    public touchMonitorObject: Node = null!;
 
-    private touchMonitor: TouchMonitor = null;
+    private touchMonitor: TouchMonitor = null!;
 
-    private audioSource: AudioSourceComponent = null;
+    private audioSource: AudioSourceComponent = null!;
 
     onEnable () {
       this.touchMonitorObject.on('onSwipe', this.playAudio, this);

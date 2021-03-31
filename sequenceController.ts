@@ -1,6 +1,5 @@
-import { AppSettings } from './appSettings';
 import { TouchMonitor } from './touchMonitor';
-import { _decorator, Component, systemEvent, SystemEvent, AnimationComponent, Touch, log, Node, AnimationState, AnimationClip } from 'cc';
+import { _decorator, Component, AnimationComponent, Node, AnimationState, AnimationClip } from 'cc';
 
 const { ccclass, property } = _decorator;
 
@@ -8,9 +7,9 @@ const { ccclass, property } = _decorator;
 export class SequenceController extends Component {
 
     @property({type:Node})
-    public touchMonitorObject: Node = null;
+    public touchMonitorObject: Node = null!;
 
-    private touchMonitor: TouchMonitor = null;
+    private touchMonitor: TouchMonitor = null!;
 
     @property({type:AnimationComponent})
     public targetAnimation: AnimationComponent = new AnimationComponent();
@@ -19,13 +18,13 @@ export class SequenceController extends Component {
     private animState: AnimationState = new AnimationState(new AnimationClip(), "none");
 
     onEnable () {
-        this.touchMonitorObject.on('onSwipe', this._updateSequenceWithSwipe, this);
-        this.touchMonitorObject.on('onMomentum', this._updateSequenceWithMomentum, this);
+      this.touchMonitorObject.on('onSwipe', this._updateSequenceWithSwipe, this);
+      this.touchMonitorObject.on('onMomentum', this._updateSequenceWithMomentum, this);
     }
 
     onDisable () {
-        this.touchMonitorObject.off('onSwipe', this._updateSequenceWithSwipe, this);
-        this.touchMonitorObject.off('onMomentum', this._updateSequenceWithMomentum, this);
+      this.touchMonitorObject.off('onSwipe', this._updateSequenceWithSwipe, this);
+      this.touchMonitorObject.off('onMomentum', this._updateSequenceWithMomentum, this);
     }
 
     start() {
