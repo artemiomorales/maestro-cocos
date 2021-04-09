@@ -5,8 +5,8 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import { _decorator, Component, Node, Vec2, v2, TypeScript, Asset, Script } from 'cc';
-import { SIMPLE_EVENT, COMPLEX_EVENT } from '../constants';
+import { _decorator, Component, Node, Vec2 } from 'cc';
+import ComplexPayload from '../complexPayload';
 import InputSettings from './inputSettings';
 const { ccclass, property } = _decorator;
 
@@ -36,20 +36,20 @@ export default class AppSettings extends Component {
   triggerSimpleEvent(callingObject: Node, targetEvent: string) {
     if(this.debug === true) {
       console.log("Simple Event triggered: " + targetEvent);
-      console.log("Calling object: " + Object.name);
+      console.log("Calling object: " + callingObject.name);
       console.log("-----------------------")
     }
     this.node.emit(targetEvent);
   }
 
-  triggerComplexEvent(callingObject: Node, targetEvent: string, args: any) {
+  triggerComplexEvent(callingObject: Node, targetEvent: string, complexPayload: ComplexPayload) {
     if(this.debug === true) {
       console.log("Complex Event triggered: " + targetEvent);
-      console.log("Calling object: " + Object.name);
-      console.log("Arguments: " + args);
+      console.log("Calling object: " + callingObject.name);
+      console.log("Arguments: " + complexPayload);
       console.log("-----------------------")
     }
-    this.node.emit(targetEvent, args);
+    this.node.emit(targetEvent, complexPayload);
   }
   
   // @property

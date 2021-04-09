@@ -1,16 +1,11 @@
-import AppSettings from '../../persistentData/appSettings';
-import { _decorator, Component, Node, find, CCInteger, CCBoolean } from 'cc';
-import { CONSTANTS, SIMPLE_EVENT } from '../../constants';
+
+import { _decorator, Component } from 'cc';
 import ActionTrigger from './actionTrigger';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('ActionTriggerBehaviour')
 export class ActionTriggerBehaviour extends Component {
-
-  @property({type: Node, visible: false})
-  public appSettingsNode: Node = null!;
-  private appSettings: AppSettings = null!;
 
   @property({visible: true})
   private _logCallersOnRaise: Boolean = false;

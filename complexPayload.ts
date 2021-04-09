@@ -1,31 +1,31 @@
 
-import { _decorator, CCString } from 'cc';
+import { _decorator } from 'cc';
 const { ccclass, property } = _decorator;
+
+interface ComplexPayloadInterface {
+  [key: string] : any;
+}
 
 @ccclass('ComplexPayload')
 export default class ComplexPayload {
-    @property({type: [CCString], visible: true})
-    private _keys: string[] = [];
 
-    public get keys() {
-      return this._keys;
-    }
-    public set keys(value) {
-      this._keys = value;
-    }
+  private _payload: ComplexPayloadInterface = {};
 
-    @property({type: [CCString], visible: true})
-    private _values: string[] = [];
+  public get payload() {
+    return this._payload;
+  }
+  public set payload(value: ComplexPayloadInterface) {
+    this._payload = value;
+  }
 
-    public get values() {
-      return this._values;
-    }
-    public set values(value) {
-      this._values = value;
-    }
-}
+  set(key: string, value: any) {
+    this.payload[key] = value;
+  }
 
-@ccclass('StringDictionary')
-class StringDictionary {
-  
+  get(key: string) {
+    if(this.payload[key]) {
+      return this.payload[key];
+    }
+    return null;
+  }
 }

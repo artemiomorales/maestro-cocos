@@ -1,6 +1,6 @@
-import AppSettings from '../../persistentData/appSettings';
-import { _decorator, Node, find } from 'cc';
-import { CONSTANTS, COMPLEX_EVENT, EVENT_TYPE, SIMPLE_EVENT } from '../../constants';
+
+import { _decorator, Node } from 'cc';
+import { SIMPLE_EVENT } from '../../constants';
 import ActionData from './actionData';
 const { ccclass, property } = _decorator;
 

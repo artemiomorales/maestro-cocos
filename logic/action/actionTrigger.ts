@@ -1,8 +1,5 @@
-import AppSettings from '../../persistentData/appSettings';
-import { _decorator, Node, find, CCInteger } from 'cc';
-import { CONSTANTS, COMPLEX_EVENT, EVENT_TYPE, SIMPLE_EVENT } from '../../constants';
-import ComplexPayload from '../../complexPayload';
-import ActionData from './actionData';
+
+import { _decorator, Node, CCInteger } from 'cc';
 import SimpleEventActionData from './simpleEventActionData';
 import ComplexEventActionData from './complexEventActionData';
 

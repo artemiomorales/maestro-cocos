@@ -1,35 +1,33 @@
-import AppSettings from '../../persistentData/appSettings';
-import { _decorator, Node, find, CCString, CCBoolean, CCInteger } from 'cc';
-import { CONSTANTS, COMPLEX_EVENT, EVENT_TYPE, SIMPLE_EVENT } from '../../constants';
+
+import { _decorator, Node } from 'cc';
+import { COMPLEX_EVENT } from '../../constants';
 import ActionData from './actionData';
-import ComplexPayload from '../../complexPayload';
+import { ComplexEventConfigurableTrigger } from '../../persistentData/complexEventConfigurableTrigger';
 const { ccclass, property } = _decorator;
 
 @ccclass('ComplexEventActionData')
 export default class ComplexEventActionData extends ActionData {
 
-    @property({type: [COMPLEX_EVENT], visible: true})
-    private _complexEvent: number = null!;
+    @property({type: [ComplexEventConfigurableTrigger], visible: true})
+    private _complexEventConfigurableTriggers: ComplexEventConfigurableTrigger[] = [new ComplexEventConfigurableTrigger()];
 
-    public get complexEvent() {
-      return this._complexEvent;
+    public get complexEventConfigurableTriggers() {
+      return this._complexEventConfigurableTriggers;
     }
-    public set complexEvent(value: number) {
-      this._complexEvent = value;
+    public set complexEventConfigurableTriggers(value: ComplexEventConfigurableTrigger[]) {
+      this._complexEventConfigurableTriggers = value;
     }
 
-    @property({type: [ComplexPayload], visible: true})
-    private _complexPayload: ComplexPayload[] = [null!];
-
-    public get complexPayload() {
-      return this._complexPayload;
-    }
-    public set complexPayload(value: ComplexPayload[]) {
-      this._complexPayload = value;
+    initialize () {
+      for(let i=0; i<this.complexEventConfigurableTriggers.length; i++) {
+        this.complexEventConfigurableTriggers[i].initialize();
+      }
     }
 
     performAction (callingObject: Node) {
-        this.appSettings.triggerSimpleEvent(callingObject, Object.keys(COMPLEX_EVENT)[this.complexEvent]);
+      for (let i=0; i<this.complexEventConfigurableTriggers.length; i++) {
+        this.complexEventConfigurableTriggers[i].raiseEvent(callingObject);
+      }
     }
 
 }
