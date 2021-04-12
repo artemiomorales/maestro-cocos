@@ -13,6 +13,7 @@ export var SIMPLE_EVENT = Enum({
   ON_SWIPE_START: -1,
   ON_SWIPE: -1,
   ON_SWIPE_END: -1,
+  ON_MOMENTUM: -1,
   FADE_TO_BLACK_COMPLETED: -1,
   SCENE_LOAD_COMPLETED: -1,
   FADE_IN_COMPLETED: -1,
@@ -36,3 +37,10 @@ export var DATA_TYPE = Enum({
   boolType: -1,
   audioClipType: -1
 })
+
+export enum SWIPE_DIRECTION {
+  yPositive = "yPositive",
+  yNegative = "yNegative",
+  xPositive = "xPositive",
+  xNegative = "xNegative",
+}
