@@ -1,12 +1,33 @@
 
-import { _decorator } from 'cc';
+import { Component, _decorator } from 'cc';
 import { InputController } from '../inputController';
-import MomentumApplier from './momentumApplier';
-import SwipeApplier from './swipeApplier';
-const { ccclass, property } = _decorator;
+import { RootConfig } from '../rootConfig';
+const { ccclass, property, executionOrder } = _decorator;
 
 @ccclass('TouchController')
-export default class TouchController extends InputController {
+@executionOrder(10)
+export default class TouchController extends Component implements InputController {
+
+  @property({type: RootConfig, visible: true})
+  private _rootConfig: RootConfig = null!;
+  public get rootConfig() {
+    return this._rootConfig;
+  }
+  public set rootConfig(value: RootConfig) {
+    this._rootConfig = value;
+  }
+  
+  public get appSettingsNode() {
+    return this._rootConfig.appSettingsNode;
+  }
+
+  public get appSettings() {
+    return this._rootConfig.appSettings;
+  }
+
+  public get masterSequences() {
+    return this._rootConfig.masterSequences;
+  }
 
   public get swipeForce() {
     return this.appSettings.getSwipeForce(this.node);
@@ -14,24 +35,6 @@ export default class TouchController extends InputController {
 
   public get swipeDirection() {
     return this.appSettings.getSwipeDirection(this.node);
-  }
-
-  @property({type: SwipeApplier, visible: true})
-  private _swipeApplier: SwipeApplier = null!;
-  public get swipeApplier() {
-    return this._swipeApplier;
-  }
-  public set swipeApplier(value: SwipeApplier) {
-    this._swipeApplier = value;
-  }
-
-  @property({type: MomentumApplier, visible: true})
-  private _momentumApplier: MomentumApplier = null!;
-  public get momentumApplier() {
-    return this._momentumApplier;
-  }
-  public set momentumApplier(value: MomentumApplier) {
-    this._momentumApplier = value;
   }
 
   public get swipeModifierOutput() {
@@ -55,6 +58,6 @@ export default class TouchController extends InputController {
     this.appSettings.setIsReversing(this.node, value);
   }
 
-  
+  configureData() { } 
 
 }

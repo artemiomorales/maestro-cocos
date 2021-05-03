@@ -9,9 +9,10 @@ import { _decorator, Component, Node, Vec2 } from 'cc';
 import ComplexPayload from '../complexPayload';
 import InputGroup from './inputGroup';
 import UserPreferences from './userPreferences';
-const { ccclass, property } = _decorator;
+const { ccclass, property, executionOrder } = _decorator;
 
 @ccclass('AppSettings')
+@executionOrder(-1)
 export default class AppSettings extends Component {
 
   @property({type: InputGroup, visible: true})
@@ -174,7 +175,6 @@ export default class AppSettings extends Component {
   setIsReversing(callingObject: Node, targetValue: boolean) {
     this.inputGroup.isReversing = targetValue;
   }
-
 
 
   triggerSimpleEvent(callingObject: Node, targetEvent: string) {

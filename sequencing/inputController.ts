@@ -1,17 +1,9 @@
 
-import { _decorator } from 'cc';
+import { Node } from 'cc';
+import AppSettings from '../persistentData/appSettings';
 import { RootDataCollector } from './rootDataCollector';
-const { ccclass } = _decorator;
 
-@ccclass('InputController')
-export class InputController extends RootDataCollector {
-
-  public get appSettingsNode() {
-    return this.rootConfig.appSettingsNode;
-  }
-
-  public get appSettings() {
-    return this.rootConfig.appSettings;
-  }
-
+export interface InputController extends RootDataCollector {
+  appSettingsNode: Node;
+  appSettings: AppSettings
 }

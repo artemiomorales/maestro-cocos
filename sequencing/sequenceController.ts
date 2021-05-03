@@ -1,25 +1,16 @@
-import { TouchMonitor } from '../sensors/touchMonitor';
-import { _decorator, Component, AnimationComponent, Node, AnimationState, AnimationClip, CCFloat } from 'cc';
+import { _decorator, Component, AnimationComponent, Node, AnimationState, AnimationClip, CCFloat, find } from 'cc';
 import AppSettings from '../persistentData/appSettings';
-import MasterSequence from './masterSequence';
+
+import { CONSTANTS } from '../constants';
 
 const { ccclass, property } = _decorator;
 
 @ccclass('SequenceController')
-export class SequenceController extends Component {
+export default class SequenceController extends Component {
     
   @property({type: Node, visible: false})
   public appSettingsNode: Node = null!;
   private appSettings: AppSettings = null!;
-
-  @property({type: MasterSequence, visible: true})
-  private _masterSequence: MasterSequence = null!;
-  public get masterSequence() {
-    return this._masterSequence;
-  }
-  public set masterSequence(value: MasterSequence) {
-    this._masterSequence = value;
-  }
 
   @property({visible: true})
   private _active = true;
@@ -57,7 +48,7 @@ export class SequenceController extends Component {
     this._animationClip = value;
   }
 
-  @property({type:AnimationComponent})
+  @property({type:AnimationComponent, visible: true})
   public _animationComponent: AnimationComponent = null!;
   public get animationComponent() {
     return this._animationComponent;
@@ -75,20 +66,28 @@ export class SequenceController extends Component {
   }
 
   start() {
+    this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
+    this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+
     if(this.animationComponent.defaultClip !== null) {
       this.animationClip = this.animationComponent.defaultClip;
       this.animationComponent.play(this.animationClip.name);
       this.animState = this.animationComponent.getState(this.animationClip.name);
       this.animState.speed = 0;
     }
+
   }
 
-  init(masterSequence: MasterSequence) {
-    this.masterSequence = masterSequence;
+  init() {
+    
   }
 
   modifySequenceTime(modifier: number) {
     const newTime = this.animState.time + modifier;
+
+    console.log("inside sequence controller");
+    console.log(newTime);
+
 
     if(newTime < 0) {
       this.animState.time = 0;

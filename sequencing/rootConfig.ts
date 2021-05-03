@@ -14,7 +14,7 @@ export class RootConfig extends Component {
   public appSettings: AppSettings = null!;
 
   @property({type: [MasterSequence], visible: true})
-  private _masterSequences: MasterSequence[] = [];
+  private _masterSequences: MasterSequence[] = [null!];
   public get masterSequences() {
     return this._masterSequences;
   }
@@ -34,7 +34,6 @@ export class RootConfig extends Component {
     }
 
     for (let i = 0; i < this.masterSequences.length; i++) {
-        this.masterSequences[i].rootConfig = this;
         this.masterSequences[i].init();
     }
   }

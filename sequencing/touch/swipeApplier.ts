@@ -1,12 +1,31 @@
 
-import { _decorator, Vec2 } from 'cc';
+import { _decorator, Vec2, Component, CCInteger } from 'cc';
 import { SIMPLE_EVENT } from '../../constants';
-import InputModule from '../inputModule';
+import TouchController from './touchController';
 import TouchModule from './touchModule';
-const { ccclass, property } = _decorator;
+const { ccclass, property, executionOrder} = _decorator;
 
 @ccclass('SwipeApplier')
-export default class SwipeApplier extends TouchModule {
+@executionOrder(5)
+export default class SwipeApplier extends Component implements TouchModule {
+
+  @property({type: TouchController, visible: true})
+  private _touchController: TouchController = null!;
+  public get touchController() {
+    return this._touchController;
+  }
+  public set touchController(value: TouchController) {
+    this._touchController = value;
+  }
+
+  @property({type: CCInteger, visible: true})
+  private _priority: number = 0;
+  public get priority() {
+    return this._priority;
+  }
+  public set priority(value: number) {
+    this._priority = value;
+  }
 
   start() {
     this.touchController.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], () => {
@@ -34,7 +53,7 @@ export default class SwipeApplier extends TouchModule {
   }
 
 
-  applySwipeModifier(source: InputModule, timeModifier: number) {
+  applySwipeModifier(source: SwipeApplier, timeModifier: number) {
     for(let i=0; i<this.touchController.rootConfig.masterSequences.length; i++) {
       let masterSequence = this.touchController.rootConfig.masterSequences[i];
       for(let q=0; q<masterSequence.sequenceControllers.length; q++) {

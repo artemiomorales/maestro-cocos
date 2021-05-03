@@ -1,23 +1,10 @@
 
-import { _decorator, Component, Node } from 'cc';
+import { _decorator } from 'cc';
+import MasterSequence from './masterSequence';
 import { RootConfig } from './rootConfig';
-const { ccclass, property } = _decorator;
 
-@ccclass('RootDataCollector')
-export class RootDataCollector extends Component {
- 
-  @property({type: RootConfig, visible: true})
-  private _rootConfig: RootConfig = null!;
-  public get rootConfig() {
-    return this._rootConfig;
-  }
-  public set rootConfig(value: RootConfig) {
-    this._rootConfig = value;
-  }
-
-  public get masterSequences() {
-    return this._rootConfig.masterSequences;
-  }
-
-  configureData() { }
+export interface RootDataCollector {
+  rootConfig: RootConfig;
+  masterSequences: MasterSequence[];
+  configureData: Function;
 }

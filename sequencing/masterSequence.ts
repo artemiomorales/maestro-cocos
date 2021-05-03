@@ -1,7 +1,9 @@
 
-import { _decorator, Component, Node, CCInteger } from 'cc';
-import { RootConfig } from './rootConfig';
-import { SequenceController } from './sequenceController';
+import { _decorator, Component, Node, CCInteger, find } from 'cc';
+import { CONSTANTS } from '../constants';
+import AppSettings from '../persistentData/appSettings';
+import SequenceController from './sequenceController';
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ActiveInputModuleData')
@@ -30,14 +32,9 @@ class ActiveInputModuleData {
 @ccclass('MasterSequence')
 export default class MasterSequence extends Component {
 
-  @property({type: RootConfig, visible: true})
-  public _rootConfig: RootConfig = null!;
-  public get rootConfig() {
-    return this._rootConfig;
-  }
-  public set rootConfig(value: RootConfig) {
-    this._rootConfig = value;
-  }
+  @property({type: Node, visible: false})
+  public appSettingsNode: Node = null!;
+  private appSettings: AppSettings = null!;
 
   @property({type: [SequenceController], visible: true})
   private _sequenceControllers: SequenceController[] = [];
@@ -57,9 +54,14 @@ export default class MasterSequence extends Component {
     this._activeInputModule = value;
   }
 
+  start() {
+    this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
+    this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+  }
+
   init () {
     for (let i = 0; i < this.sequenceControllers.length; i++) {
-      this.sequenceControllers[i].init(this);
+      this.sequenceControllers[i].init();
     }   
   }
 
@@ -118,4 +120,3 @@ export default class MasterSequence extends Component {
   }
 
 }
-
