@@ -76,6 +76,23 @@ export default class InputGroup {
   public set momentumModifierOutput(value: number) {
     this._momentumModifierOutput = value;
   }
-  
-  
+
+  @property({type: CCFloat, visible: true})
+  private _frameStepValue: number = 0.02;
+  public get frameStepValue() {
+    return this._frameStepValue;
+  }
+  public set frameStepValue(value: number) {
+    this._frameStepValue = value;
+  }
+
+  @property({type: CCFloat, visible: true})
+  private _autorunThreshold: number = 0.03;
+  public get autorunThreshold() {
+    return this._autorunThreshold;
+  }
+  public set autorunThreshold(value: number) {
+    this._autorunThreshold = value;
+  }
+    
 }

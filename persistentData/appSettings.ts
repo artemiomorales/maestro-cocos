@@ -165,6 +165,19 @@ export default class AppSettings extends Component {
     this.inputGroup.momentumModifierOutput = targetValue;
   }
 
+  // Frame Step Value
+        
+  getFrameStepValue(callingObject: Node)
+  {
+    return this.inputGroup.frameStepValue;
+  }
+
+  // Autorun Threshold
+        
+  getAutorunThreshold(callingObject: Node)
+  {
+    return this.inputGroup.autorunThreshold;
+  }
 
   // Is Reversing
 

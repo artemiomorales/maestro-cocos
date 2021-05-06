@@ -141,7 +141,7 @@ export class TouchMonitor extends Component {
     this._gestureStartTime = Date.now();
     this.haltMomentum();
 
-    // onTouchStart.RaiseEvent(this.gameObject);
+    this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START])
   }
 
   onTouchMove(event: Touch) {
@@ -151,7 +151,7 @@ export class TouchMonitor extends Component {
         (this.touchPreviousPosition.y - this.touchCurrentPosition.y) * -1
       );
 
-      log(swipeVector.y);
+      // log(swipeVector.y);
 
       // log(deltaX);
       // log(deltaY);
@@ -194,10 +194,10 @@ export class TouchMonitor extends Component {
 
     const swipeVector = v2(this.touchCurrentPosition.x - this.touchStartPosition.x, this.touchCurrentPosition.y - this.touchStartPosition.y);
 
-    log("current position");
-    log(this.touchCurrentPosition.y);
-    log("start position");
-    log(this.touchStartPosition.y);
+    // log("current position");
+    // log(this.touchCurrentPosition.y);
+    // log("start position");
+    // log(this.touchStartPosition.y);
 
     // We use momentumMinMax to clamp the value, but as of this writing that
     // value is set to 1000, which means that most swipes won't get clamped at all.
@@ -208,21 +208,23 @@ export class TouchMonitor extends Component {
     // allows us to adjust momentum sensitivity, if desired
     const swipeMomentum = ExponentiateV2(swipeEndForce, this.momentumSensitivity);
 
-    log("swipe momentum");
-    log(swipeMomentum);
+    //log("swipe momentum");
+    //log(swipeMomentum);
 
     // Our swipe time generally comes back less than 1 - so let's multiply
     // by 100, because dividing by a decimal makes our swipe too intense
     const normalizedGestureTime = this.gestureActionTime * this.gestureTimeMultiplier;
 
-    log("normalized gesture time");
-    log(normalizedGestureTime);
+    //log("normalized gesture time");
+    //log(normalizedGestureTime);
 
     this.addMomentum(v2(swipeMomentum.x / normalizedGestureTime, swipeMomentum.y / normalizedGestureTime));
 
     this.isSwiping = false;
 
-    log(swipeEndForce);
+    this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END])
+
+    //log(swipeEndForce);
   
     // onSwipeEnd.RaiseEvent(this.gameObject);
   }

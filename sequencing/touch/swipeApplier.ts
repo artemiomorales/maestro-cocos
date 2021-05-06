@@ -9,6 +9,19 @@ const { ccclass, property, executionOrder} = _decorator;
 @executionOrder(5)
 export default class SwipeApplier extends Component implements TouchModule {
 
+  @property({visible: true})
+  private _moduleActive: boolean = false;
+  public get moduleActive() {
+    return this._moduleActive;
+  }
+  public set moduleActive(value: boolean) {
+    this._moduleActive = value;
+  }
+
+  public get nodeElement() {
+    return this.node;
+  }
+
   @property({type: TouchController, visible: true})
   private _touchController: TouchController = null!;
   public get touchController() {
@@ -27,14 +40,36 @@ export default class SwipeApplier extends Component implements TouchModule {
     this._priority = value;
   }
 
+  public get inputController() {
+    return this.touchController;
+  }
+
+  Activate() {
+    this.moduleActive = true;
+  }
+
+  Deactivate() {
+    this.moduleActive = false;
+  }
+
+  TriggerInputActionComplete() {
+    for (let i = 0; i < this.inputController.masterSequences.length; i++) {
+      this.inputController.masterSequences[i].unlockInputModule(this.node);
+    }
+  }
+
   start() {
     this.touchController.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], () => {
       this.updateSequenceWithSwipe();
-    })
+    });
+    this.touchController.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], () => {
+      this.TriggerInputActionComplete();
+    });
   }
 
   onDisable () {
     this.touchController.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], this.updateSequenceWithSwipe, this);
+    this.touchController.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.TriggerInputActionComplete);
   }
 
   updateSequenceWithSwipe () {
