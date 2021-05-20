@@ -2,7 +2,7 @@
 import { _decorator, Component, Node, CCInteger, find, CCFloat } from 'cc';
 import { CONSTANTS } from '../constants';
 import AppSettings from '../persistentData/appSettings';
-import SequenceController from './sequenceController';
+import { SequenceController } from './sequenceController';
 
 const { ccclass, property } = _decorator;
 

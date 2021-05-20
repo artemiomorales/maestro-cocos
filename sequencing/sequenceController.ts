@@ -1,8 +1,10 @@
 import { _decorator, Component, AnimationComponent, Node, AnimationState, AnimationClip, CCFloat, find, Enum } from 'cc';
+
 import AppSettings from '../persistentData/appSettings';
 
 import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT } from '../constants';
 import ComplexPayload from '../complexPayload';
+import { JoinerDestination } from './joinerDestination';
 
 const { ccclass, property } = _decorator;
 
@@ -12,7 +14,7 @@ var SEQUENCE_UPDATE_STATE = Enum({
 })
 
 @ccclass('SequenceController')
-export default class SequenceController extends Component {
+export class SequenceController extends Component {
     
   @property({type: Node, visible: false})
   public appSettingsNode: Node = null!;
@@ -25,6 +27,15 @@ export default class SequenceController extends Component {
   }
   public set active(value: boolean) {
     this._active = value;
+  }
+
+  @property({visible: true})
+  private _loop = false;
+  public get loop() {
+    return this._loop;
+  }
+  public set loop(value: boolean) {
+    this._loop = value;
   }
 
   @property({type: Node, visible: true})
@@ -81,6 +92,24 @@ export default class SequenceController extends Component {
     this._animationComponent = value;
   }
 
+  @property({type:[JoinerDestination], visible: true})
+  public _previousDestination: JoinerDestination[] = [];
+  public get previousDestination() {
+    return this._previousDestination;
+  }
+  public set previousDestination(value: JoinerDestination[]) {
+    this._previousDestination = value;
+  }
+
+  @property({type:[JoinerDestination], visible: true})
+  public _nextDestination: JoinerDestination[] = [];
+  public get nextDestination() {
+    return this._nextDestination;
+  }
+  public set nextDestination(value: JoinerDestination[]) {
+    this._nextDestination = value;
+  }
+
   @property({type: SEQUENCE_UPDATE_STATE, visible: true})
   private _sequenceUpdateState: string = null!;
 
@@ -108,6 +137,7 @@ export default class SequenceController extends Component {
       this.animationComponent.play(this.animationClip.name);
       this.animState = this.animationComponent.getState(this.animationClip.name);
       this.animState.speed = 0;
+      
       this.duration = this.animState.duration;
     }
 
@@ -117,16 +147,35 @@ export default class SequenceController extends Component {
     
   }
 
-  counter = 0;
+  /// Activate() and Deactivate() exist so that we can change
+  /// the sequence controller's status via Cocos editor event handlers
+  activate() {
+    this.active = true;
+  }
+  deactivate() {
+    this.active = false;
+  }
+
+  activateLoop() {
+    this.animState.wrapMode = 1;
+    this.animState.time = this.currentTime;
+  }
+  deactivateLoop() {
+    this.animState.wrapMode = 0;
+    this.animState.time = this.currentTime;
+  }
 
   lateUpdate() {
     if(this.sequenceUpdateState == Object.keys(SEQUENCE_UPDATE_STATE)[SEQUENCE_UPDATE_STATE.FORWARD_AUTOPLAY]) {
       this.currentTime = this.animState.time;
-      const complexPayload = new ComplexPayload();
-      complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this);
-      this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], complexPayload)
+      if(this.currentTime >= this.duration) {
+        this.setEndBoundaryReached(this.node);
+      } else {
+        const complexPayload = new ComplexPayload();
+        complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this);
+        this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], complexPayload)
+      }
     }
-    this.counter++;
   }
 
   modifySequenceTime(timeModifier: number) {
@@ -137,7 +186,7 @@ export default class SequenceController extends Component {
       this.setStartBoundaryReached(this.node);
     }
 
-    else if(newTime > this.animationClip.duration) {
+    else if(newTime > this.duration) {
       this.setEndBoundaryReached(this.node);
     }
 
@@ -149,18 +198,40 @@ export default class SequenceController extends Component {
 
   setStartBoundaryReached(caller: Node)
   {
-      this.setSequenceTimeWithoutCallbacks(this.node, 0);
-      // this.masterSequence.TriggerSequenceBoundaryReached(sequence);
-      // this.masterSequence.rootConfig.joiner.ActivatePreviousSequence(sequence);
-      return this;
+    this.setSequenceTimeWithoutCallbacks(this.node, 0);
+
+    const boundaryReachedPayload = new ComplexPayload();
+    boundaryReachedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this);
+
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], boundaryReachedPayload);
+
+    const activatePreviousSequencePayload = new ComplexPayload();
+    activatePreviousSequencePayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], this);
+
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], activatePreviousSequencePayload);
+
+    // this.masterSequence.TriggerSequenceBoundaryReached(sequence);
+    // this.masterSequence.rootConfig.joiner.ActivatePreviousSequence(sequence);
+    return this;
   }
 
   setEndBoundaryReached(caller: Node)
   {
-      this.setSequenceTimeWithoutCallbacks(this.node, this.animationClip.duration);
-      // this.masterSequence.TriggerSequenceBoundaryReached(sequence);
-      // this.masterSequence.rootConfig.joiner.ActivateNextSequence(sequence);
-      return this;
+    this.setSequenceTimeWithoutCallbacks(this.node, this.duration);
+
+    const boundaryReachedPayload = new ComplexPayload();
+    boundaryReachedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this);
+
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], boundaryReachedPayload);
+
+    const activateNextSequencePayload = new ComplexPayload();
+    activateNextSequencePayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], this);
+
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], activateNextSequencePayload);
+
+    // this.masterSequence.TriggerSequenceBoundaryReached(sequence);
+    // this.masterSequence.rootConfig.joiner.ActivateNextSequence(sequence);
+    return this;
   }
 
   setSequenceTime(caller: Node, targetTime: number)
@@ -189,6 +260,7 @@ export default class SequenceController extends Component {
       this.activateManualUpdateState();
       
       this.currentTime = targetTime;
+      this.animState.play();
       this.animState.time = this.currentTime;
       // sequence.sequenceController.masterSequence.RefreshElapsedTime(sequence);
 
@@ -250,4 +322,5 @@ export default class SequenceController extends Component {
     this.animState.time = this.currentTime;
     console.log("end");
   }
+
 }

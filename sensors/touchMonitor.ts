@@ -136,6 +136,7 @@ export class TouchMonitor extends Component {
   onTouchStart(event: Touch) {
     let location = event.getLocation();// 获取节点坐标
     this.touchStartPosition = v2(location.x, location.y);
+    this.touchCurrentPosition = v2(location.x, location.y);
     this.touchPreviousPosition = v2(location.x, location.y);
     this.isTouching = true;
     this._gestureStartTime = Date.now();
@@ -181,10 +182,13 @@ export class TouchMonitor extends Component {
 
     this.gestureActionTime = (Date.now() - this._gestureStartTime) / 1000;
 
-    const delta = v2(this.touchStartPosition.x - this.touchCurrentPosition.x, this.touchStartPosition.y - this.touchCurrentPosition.y);
+    const delta = v2(Math.abs(this.touchStartPosition.x - this.touchCurrentPosition.x), Math.abs(this.touchStartPosition.y - this.touchCurrentPosition.y));
+
+    console.log(delta);
+    console.log(delta.dot(delta));
 
     // Cancel momentum on certain long swipe gestures with low delta at the end of the movement.
-    if(delta.dot(delta) < this.cancelMomentumMagnitudeThreshold && this.gestureActionTime > this.cancelMomentumTimeThreshold) {
+    if((delta.dot(delta) < this.cancelMomentumMagnitudeThreshold && this.gestureActionTime > this.cancelMomentumTimeThreshold) || delta.dot(delta) === 0) {
       this.haltMomentum();
         // Raise events
         // momentumDepleted.RaiseEvent(this.gameObject);
@@ -221,7 +225,7 @@ export class TouchMonitor extends Component {
     this.addMomentum(v2(swipeMomentum.x / normalizedGestureTime, swipeMomentum.y / normalizedGestureTime));
 
     this.isSwiping = false;
-
+    
     this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END])
 
     //log(swipeEndForce);

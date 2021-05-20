@@ -4,7 +4,7 @@ import { SIMPLE_EVENT } from '../../constants';
 import { InputController } from '../inputController';
 import { RootConfig } from '../rootConfig';
 import { RootDataCollector } from '../rootDataCollector';
-import SequenceController from '../sequenceController';
+import { SequenceController } from '../sequenceController';
 import { AutorunData } from './autorunData';
 import AutorunExtents from './autorunExtents';
 const { ccclass, property, executionOrder} = _decorator;

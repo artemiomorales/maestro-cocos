@@ -4,7 +4,7 @@ import ComplexPayload from '../../complexPayload';
 import { CONSTANTS, INTERNAL_COMPLEX_EVENT, SIMPLE_EVENT } from '../../constants';
 import AppSettings from '../../persistentData/appSettings';
 import MasterSequence from '../masterSequence';
-import SequenceController from '../sequenceController';
+import { SequenceController } from '../sequenceController';
 import { AutorunController } from './autorunController';
 import { AutorunData } from './autorunData';
 import AutorunExtents from './autorunExtents';
@@ -95,6 +95,9 @@ export default class Autoplayer extends Component implements AutorunModule {
       this.OnSequenceUpdated(targetSequence);
     });
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], () => {
+      this.AutoplayAllSequences();
+    });
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE], () => {
       this.AutoplayAllSequences();
     });
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], () => {
@@ -203,13 +206,10 @@ export default class Autoplayer extends Component implements AutorunModule {
 
   HasValidAutoplayInterval(autorunData: AutorunData) : boolean
   {
-      // if (autorunData.loop == false && autorunData.activeInterval != null) {
-      //     return true;
-      // }
-      if (autorunData.activeInterval !== null) {
+      if (autorunData.sequenceController.loop == false && autorunData.activeInterval != null) {
           return true;
       }
-
+      
       return false;
   }
 
@@ -314,7 +314,7 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// <summary>
   /// This is handling for our reverse autoplay.
   /// </summary>
-  update()
+  lateUpdate()
   {
     // if (this.moduleActive == false || appUtilsRequested == true || autorunController.isReversing == false) {
     //     return;

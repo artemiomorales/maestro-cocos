@@ -1,7 +1,7 @@
 
 import { _decorator, Component, Node } from 'cc';
 import InputData from '../inputData';
-import SequenceController from '../sequenceController';
+import { SequenceController } from '../sequenceController';
 import AutorunExtents from './autorunExtents';
 import AutorunModule from './autorunModule';
 const { ccclass, property } = _decorator;
