@@ -28,12 +28,32 @@ export class SimpleSignalListener extends Component {
       this._action = value;
     }
 
+    @property({visible: true})
+    private _active = true;
+    public get active() {
+      return this._active;
+    }
+    public set active(value: boolean) {
+      this._active = value;
+    }
+
     onLoad () {
       this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
       this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
       this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[this.simpleSignal], () => {
-        EventHandler.emitEvents(this.action);
+        if(this.active) {
+          EventHandler.emitEvents(this.action);
+        }
       });
+    }
+
+    /// Activate() and Deactivate() exist so that we can change
+    /// the sequence controller's status via Cocos editor event handlers
+    activate() {
+      this.active = true;
+    }
+    deactivate() {
+      this.active = false;
     }
 }

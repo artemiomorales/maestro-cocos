@@ -139,6 +139,10 @@ export class SequenceController extends Component {
       this.animState.speed = 0;
       
       this.duration = this.animState.duration;
+
+      if(this.loop) {
+        this.activateLoop();
+      }
     }
 
   }
@@ -267,6 +271,13 @@ export class SequenceController extends Component {
       return this;
   }
 
+  setToBeginning() {
+    this.setSequenceTimeWithoutCallbacks(this.node, 0);
+  }
+
+  setToEnd() {
+    this.setSequenceTimeWithoutCallbacks(this.node, this.duration);
+  }
 
   ActivateForwardAutoplayState(targetSpeed: number)
   {
@@ -304,19 +315,19 @@ export class SequenceController extends Component {
       this.sequenceUpdateState = Object.keys(SEQUENCE_UPDATE_STATE)[SEQUENCE_UPDATE_STATE.MANUAL_UPDATE];
   }
 
-  play() {
+  mplay() {
     this.animState.speed = this.currentSpeed;
     this.animState.play();
     this.animState.time = this.currentTime;
     console.log("play");
   }
-  pause() {
+  mpause() {
     this.animState.speed = this.currentSpeed;
     this.animState.play();
     this.animState.time = this.currentTime;
     console.log("paused");
   }
-  end() {
+  mend() {
     this.animState.speed = this.currentSpeed;
     this.animState.play();
     this.animState.time = this.currentTime;

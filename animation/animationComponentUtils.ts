@@ -12,15 +12,15 @@ export class AnimationComponentUtils extends Component {
   }
   public set animationComponent(value: AnimationComponent) {
     this._animationComponent = value;
-  }
+  }z
 
   @property({type: [EventHandler], visible: true})
-  private _events: EventHandler[] = [];
-  public get events() {
-    return this._events;
+  private _onFinishedEvents: EventHandler[] = [];
+  public get onFinishedEvents() {
+    return this._onFinishedEvents;
   }
-  public set events(value: EventHandler[]) {
-    this._events = value;
+  public set onFinishedEvents(value: EventHandler[]) {
+    this._onFinishedEvents = value;
   }
 
   start () {
@@ -31,8 +31,19 @@ export class AnimationComponentUtils extends Component {
     this.animationComponent.on("finished", this.onFinished, this);
   }
 
-  onFinished (type: any, state: any) {
-    EventHandler.emitEvents(this.events);
+  setToBeginning() {
+    const state = this.animationComponent.getState(this.animationComponent.defaultClip?.name as string);
+    state.setTime(0);
   }
+
+  setToEnd() {
+    const state = this.animationComponent.getState(this.animationComponent.defaultClip?.name as string);
+    state.setTime(this.animationComponent.defaultClip?.duration as number);
+  }
+
+  onFinished (type: any, state: any) {
+    EventHandler.emitEvents(this.onFinishedEvents);
+  }
+
 
 }

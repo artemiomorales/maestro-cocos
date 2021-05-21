@@ -160,10 +160,16 @@ export default class MasterSequence extends Component {
   /// <param name="inputModuleObject"></param>
   unlockInputModule(inputModuleObject: Node)
   {
-      if (this.activeInputModule.name == inputModuleObject.name) {
-          this.activeInputModule.name = "";
-          this.activeInputModule.priority = 0;
-      }
+    if (this.activeInputModule.name == inputModuleObject.name) {
+      this.activeInputModule.name = "";
+      this.activeInputModule.priority = 0;
+    }
+  }
+
+  unlockActiveInputModule(inputModuleObject: Node)
+  {
+    this.activeInputModule.name = "";
+    this.activeInputModule.priority = 0;
   }
 
   /// <summary>

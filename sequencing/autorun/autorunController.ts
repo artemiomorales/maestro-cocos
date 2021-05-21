@@ -97,16 +97,16 @@ export class AutorunController extends Component implements InputController {
           
           const marker = eventList[i];
 
-          if (marker.func == "play") {
+          if (marker.func == "mplay") {
             autoplayStarts.push(marker.frame);
           }
 
-          else if (marker.func == "end") {
+          else if (marker.func == "mend") {
               autoplayEnds.push(marker.frame);
               isEndIds.push(markerId - 1);
           }
 
-          else if(marker.func == "pause") {
+          else if(marker.func == "mpause") {
               autoplayEnds.push(marker.frame);
               autoplayStarts.push(marker.frame);
           }
