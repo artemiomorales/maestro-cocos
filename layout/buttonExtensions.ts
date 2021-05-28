@@ -15,14 +15,24 @@ export class ButtonExtensions extends Component {
   }
 
   start () {
+    this.initialize();
+  }
+
+  initialize() {
     this.buttonComponent = this.node.getComponent(Button) as Button;
   }
 
   activate() {
+    if(!this.buttonComponent) {
+      this.initialize();
+    }
     this.buttonComponent.interactable = true;
   }
 
   deactivate() {
+    if(!this.buttonComponent) {
+      this.initialize();
+    }
     this.buttonComponent.interactable = false;
   }
 

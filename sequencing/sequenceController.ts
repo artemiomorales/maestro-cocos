@@ -139,10 +139,6 @@ export class SequenceController extends Component {
       this.animState.speed = 0;
       
       this.duration = this.animState.duration;
-
-      if(this.loop) {
-        this.activateLoop();
-      }
     }
 
   }
@@ -155,9 +151,17 @@ export class SequenceController extends Component {
   /// the sequence controller's status via Cocos editor event handlers
   activate() {
     this.active = true;
+    if(this.loop) {
+      this.activateLoop();
+    }
   }
   deactivate() {
     this.active = false;
+    this.deactivateLoop();
+    this.setToBeginning();
+    const complexPayload = new ComplexPayload();
+    complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], this);
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], complexPayload)
   }
 
   activateLoop() {
@@ -273,10 +277,6 @@ export class SequenceController extends Component {
 
   setToBeginning() {
     this.setSequenceTimeWithoutCallbacks(this.node, 0);
-  }
-
-  setToEnd() {
-    this.setSequenceTimeWithoutCallbacks(this.node, this.duration);
   }
 
   ActivateForwardAutoplayState(targetSpeed: number)

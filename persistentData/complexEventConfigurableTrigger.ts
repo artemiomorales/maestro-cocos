@@ -3,11 +3,11 @@ import { _decorator, Node, find } from 'cc';
 import ComplexPayload from '../complexPayload';
 import { COMPLEX_EVENT, CONSTANTS, DATA_TYPE } from '../constants';
 import AppSettings from './appSettings';
-import { AudioClipDictionary } from './audioClipDictionary';
-import BoolDictionary from './boolDictionary';
-import FloatDictionary from './floatDictionary';
-import IntDictionary from './intDictionary';
-import StringDictionary from './stringDictionary';
+import { AudioClipReferenceDictionary } from './audioClipReferenceDictionary';
+import { BoolReferenceDictionary } from './boolReferenceDictionary';
+import { FloatReferenceDictionary } from './floatReferenceDictionary';
+import { IntReferenceDictionary } from './intReferenceDictionary';
+import { StringReferenceDictionary } from './stringReferenceDictionary';
 const { ccclass, property } = _decorator;
 
 @ccclass('ComplexEventConfigurableTrigger')
@@ -27,53 +27,53 @@ export class ComplexEventConfigurableTrigger {
     this._complexEvent = value;
   }
 
-  @property({type: [StringDictionary], visible: true})
-  private _stringDictionary: StringDictionary[] = [];
+  @property({type: [StringReferenceDictionary], visible: true})
+  private _stringDictionary: StringReferenceDictionary[] = [];
 
   public get stringDictionary() {
     return this._stringDictionary;
   }
-  public set stringDictionary(value: StringDictionary[]) {
+  public set stringDictionary(value: StringReferenceDictionary[]) {
     this._stringDictionary = value;
   }
 
-  @property({type: [IntDictionary], visible: true})
-  private _intDictionary: IntDictionary[] = [];
+  @property({type: [IntReferenceDictionary], visible: true})
+  private _intDictionary: IntReferenceDictionary[] = [];
 
   public get intDictionary() {
     return this._intDictionary;
   }
-  public set intDictionary(value: IntDictionary[]) {
+  public set intDictionary(value: IntReferenceDictionary[]) {
     this._intDictionary = value;
   }
 
-  @property({type: [FloatDictionary], visible: true})
-  private _floatDictionary: FloatDictionary[] = [];
+  @property({type: [FloatReferenceDictionary], visible: true})
+  private _floatDictionary: FloatReferenceDictionary[] = [];
 
   public get floatDictionary() {
     return this._floatDictionary;
   }
-  public set floatDictionary(value: FloatDictionary[]) {
+  public set floatDictionary(value: FloatReferenceDictionary[]) {
     this._floatDictionary = value;
   }
 
-  @property({type: [BoolDictionary], visible: true})
-  private _boolDictionary: BoolDictionary[] = [];
+  @property({type: [BoolReferenceDictionary], visible: true})
+  private _boolDictionary: BoolReferenceDictionary[] = [];
 
   public get boolDictionary() {
     return this._boolDictionary;
   }
-  public set boolDictionary(value: BoolDictionary[]) {
+  public set boolDictionary(value: BoolReferenceDictionary[]) {
     this._boolDictionary = value;
   }
 
-  @property({type: [AudioClipDictionary], visible: true})
-  private _audioClipDictionary: AudioClipDictionary[] = [];
+  @property({type: [AudioClipReferenceDictionary], visible: true})
+  private _audioClipDictionary: AudioClipReferenceDictionary[] = [];
 
   public get audioClipDictionary() {
     return this._audioClipDictionary;
   }
-  public set audioClipDictionary(value: AudioClipDictionary[]) {
+  public set audioClipDictionary(value: AudioClipReferenceDictionary[]) {
     this._audioClipDictionary = value;
   }
 
@@ -85,7 +85,7 @@ export class ComplexEventConfigurableTrigger {
   raiseEvent(callingObject: Node) {
     let complexPayload = new ComplexPayload();
     if(this.stringDictionary.length > 0) {
-      complexPayload = this.getStringValues(complexPayload);
+      complexPayload = this.getStringValues(callingObject, complexPayload);
     }
     if(this.floatDictionary.length > 0) {
       complexPayload = this.getFloatValues(complexPayload);
@@ -97,21 +97,22 @@ export class ComplexEventConfigurableTrigger {
       complexPayload = this.getIntValues(complexPayload);
     }
     if(this.audioClipDictionary.length > 0) {
-      complexPayload = this.getAudioClipValues(complexPayload);
+      complexPayload = this.getAudioClipValues(callingObject, complexPayload);
     }
 
     this.appSettings.triggerComplexEvent(callingObject, Object.keys(COMPLEX_EVENT)[this.complexEvent], complexPayload);
   }
 
-  getStringValues(complexPayload: ComplexPayload) {
+  getStringValues(callingObject: Node, complexPayload: ComplexPayload) {
     for(let i=0; i<this.stringDictionary.length; i++) {
-      const datum = this.stringDictionary[i]
+      const datum = this.stringDictionary[i];
       if(datum.customKey) {
-        complexPayload.set(datum.customKey.name, datum.value.name);
+        complexPayload.set(datum.customKey.name, datum.getValue(callingObject));
       } else {
-        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.stringType], datum.value.name);
+        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.stringType], datum.getValue(callingObject));
       }
     }
+    console.log(complexPayload);
     return complexPayload;
   }
 
@@ -151,13 +152,13 @@ export class ComplexEventConfigurableTrigger {
     return complexPayload;
   }
 
-  getAudioClipValues(complexPayload: ComplexPayload) {
+  getAudioClipValues(callingObject: Node, complexPayload: ComplexPayload) {
     for(let i=0; i<this.audioClipDictionary.length; i++) {
       const datum = this.audioClipDictionary[i]
       if(datum.customKey) {
-        complexPayload.set(datum.customKey.name, datum.value);
+        complexPayload.set(datum.customKey.name, datum.getValue(callingObject));
       } else {
-        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.audioClipType], datum.value);
+        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.audioClipType], datum.getValue(callingObject));
       }
     }
     return complexPayload;

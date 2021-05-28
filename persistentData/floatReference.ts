@@ -1,10 +1,10 @@
 
 import { _decorator, CCFloat } from 'cc';
-import VariableDictionary from './variableDictionary';
+import { VariableReference } from './variableReference';
 const { ccclass, property } = _decorator;
 
-@ccclass('FloatDictionary')
-export default class FloatDictionary extends VariableDictionary{
+@ccclass('FloatReference')
+export class FloatReference extends VariableReference{
 
   @property({type: CCFloat, visible: true})
   private _value: number = 0;

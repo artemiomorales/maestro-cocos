@@ -1,5 +1,6 @@
 
 import { _decorator, Component, Node, v2, Vec2, Vec3, CCFloat } from 'cc';
+import { BoolVariable } from './boolVariable';
 const { ccclass, property } = _decorator;
 
 @ccclass('InputGroup')
@@ -42,11 +43,11 @@ export default class InputGroup {
   }
 
   @property({visible: true})
-  private _isReversing: boolean = false;
+  private _isReversing: BoolVariable = new BoolVariable();
   public get isReversing() {
     return this._isReversing;
   }
-  public set isReversing(value: boolean) {
+  public set isReversing(value: BoolVariable) {
     this._isReversing = value;
   }
 
@@ -94,5 +95,16 @@ export default class InputGroup {
   public set autorunThreshold(value: number) {
     this._autorunThreshold = value;
   }
-    
+
+  private _variableMap: any = {};
+  public get variableMap() {
+    return this._variableMap;
+  }
+  public set variableMap(value: any) {
+    this._variableMap = value;
+  }
+  
+  initialize() {
+    this.variableMap[this.isReversing.variableKey.name] = this.isReversing;
+  }
 }

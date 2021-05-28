@@ -2,6 +2,9 @@
 import { _decorator, Node, CCInteger } from 'cc';
 import SimpleEventActionData from './simpleEventActionData';
 import ComplexEventActionData from './complexEventActionData';
+import { BoolActionData } from './boolActionData';
+import { IntActionData } from './intActionData';
+import { GenericActionData } from './genericActionData';
 
 const { ccclass, property } = _decorator;
 
@@ -53,6 +56,24 @@ export default class ActionTrigger {
     this._debug = value;
   }
 
+  @property({type: [BoolActionData], visible: true})
+  public _boolActionData: BoolActionData[] = [];
+  private get boolActionData() {
+    return this._boolActionData;
+  }
+  private set boolActionData(value: BoolActionData[]) {
+    this._boolActionData = value;
+  }
+
+  @property({type: [IntActionData], visible: true})
+  public _intActionData: IntActionData[] = [];
+  private get intActionData() {
+    return this._intActionData;
+  }
+  private set intActionData(value: IntActionData[]) {
+    this._intActionData = value;
+  }
+
   @property({type: [SimpleEventActionData], visible: true})
   public _simpleEventActionData: SimpleEventActionData[] = [];
   private get simpleEventActionData() {
@@ -71,21 +92,48 @@ export default class ActionTrigger {
     this._complexEventActionData = value;
   }
 
+  @property({type: [GenericActionData], visible: true})
+  public _genericActionData: GenericActionData[] = [];
+  private get genericActionData() {
+    return this._genericActionData;
+  }
+  private set genericActionData(value: GenericActionData[]) {
+    this._genericActionData = value;
+  }
+
   initialize () {
+    for(let i=0; i<this.boolActionData.length; i++) {
+      this.boolActionData[i].initialize();
+    }
+    for(let i=0; i<this.intActionData.length; i++) {
+      this.intActionData[i].initialize();
+    }
     for(let i=0; i<this.simpleEventActionData.length; i++) {
       this.simpleEventActionData[i].initialize();
     }
     for(let i=0; i<this.complexEventActionData.length; i++) {
       this.complexEventActionData[i].initialize();
     }
+    for(let i=0; i<this.genericActionData.length; i++) {
+      this.genericActionData[i].initialize();
+    }
   }
 
   performActions(callingObject: Node) {
+    for(let i=0; i<this.boolActionData.length; i++) {
+      this.boolActionData[i].performAction(callingObject);
+    }
+    for(let i=0; i<this.intActionData.length; i++) {
+      this.intActionData[i].performAction(callingObject);
+    }
     for(let i=0; i<this.simpleEventActionData.length; i++) {
       this.simpleEventActionData[i].performAction(callingObject);
     }
     for(let i=0; i<this.complexEventActionData.length; i++) {
       this.complexEventActionData[i].performAction(callingObject);
+    }
+    for(let i=0; i<this.genericActionData.length; i++) {
+      this.genericActionData[i].performAction(callingObject);
     }
   }
 

@@ -1,7 +1,8 @@
 import { Enum } from 'cc';
 
 export var CONSTANTS = {
-  APP_SETTINGS_PATH: "System Dependencies/App Settings"  
+  APP_SETTINGS_PATH: "System Dependencies/App Settings",
+  SCENE_DATA_PATH: "Logic/Scene Data"
 }
 
 export var EVENT_TYPE = Enum({
@@ -30,6 +31,7 @@ export var COMPLEX_EVENT = Enum({
 export var INTERNAL_COMPLEX_EVENT = Enum({
   ON_SEQUENCE_UPDATED: -1,
   ON_SEQUENCE_BOUNDARY_REACHED: -1,
+  ON_SEQUENCE_DEACTIVATED: -1,
   ACTIVATE_NEXT_SEQUENCE: -1,
   ACTIVATE_PREVIOUS_SEQUENCE: -1
 })

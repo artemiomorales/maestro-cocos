@@ -5,8 +5,10 @@
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
 
-import { _decorator, Component, Node, Vec2 } from 'cc';
+import { _decorator, Component, Node, Vec2, TextAsset } from 'cc';
 import ComplexPayload from '../complexPayload';
+import { AppSettingsVariableReference } from './appSettingsVariableReference';
+import { BoolVariable } from './boolVariable';
 import InputGroup from './inputGroup';
 import UserPreferences from './userPreferences';
 const { ccclass, property, executionOrder } = _decorator;
@@ -40,6 +42,38 @@ export default class AppSettings extends Component {
   }
   public set debug(value: Boolean) {
     this._debug = value;
+  }
+
+  start() {
+    this.inputGroup.initialize();
+  }
+
+  getValueViaVariableKey(callingObject: Node, variableKey: TextAsset) {
+    console.log(variableKey);
+    console.log(this.inputGroup.variableMap);
+    if(variableKey.name in this.inputGroup.variableMap) {
+      return this.inputGroup.variableMap[variableKey.name].getValue();
+    }
+  }
+
+  setValueViaVariableKey(callingObject: Node, variableKey: TextAsset, targetValue: any) {
+    console.log(variableKey);
+    console.log(this.inputGroup.variableMap);
+    if(variableKey.name in this.inputGroup.variableMap) {
+      const newValue = this.inputGroup.variableMap[variableKey.name].setValue(targetValue);
+      this.triggerSimpleEvent(callingObject, variableKey.name);
+      return newValue;
+    }
+  }
+
+  setDefaultValueViaVariableKey(callingObject: Node, variableKey: TextAsset) {
+    console.log(variableKey);
+    console.log(this.inputGroup.variableMap);
+    if(variableKey.name in this.inputGroup.variableMap) {
+      const newValue = this.inputGroup.variableMap[variableKey.name].setToDefaultValue();
+      this.triggerSimpleEvent(callingObject, variableKey.name);
+      return newValue;
+    }
   }
 
   // User Preferences ///
@@ -181,12 +215,14 @@ export default class AppSettings extends Component {
 
   // Is Reversing
 
-  getIsReversing(callingObject: Node) {
-    return this.inputGroup.isReversing;
+  getIsReversing(callingObject: Node): boolean {
+    return this.inputGroup.isReversing.getValue();
   }
 
-  setIsReversing(callingObject: Node, targetValue: boolean) {
-    this.inputGroup.isReversing = targetValue;
+  setIsReversing(callingObject: Node, targetValue: boolean): BoolVariable {
+    const newValue = this.inputGroup.isReversing.setValue(targetValue);
+    this.triggerSimpleEvent(callingObject, this.inputGroup.isReversing.variableKey.name);
+    return newValue;
   }
 
 

@@ -28,6 +28,7 @@ export class AudioSourceController extends Component {
 
   playAudio(complexPayload: ComplexPayload) {
     let audioClip = complexPayload.get(Object.keys(DATA_TYPE)[DATA_TYPE.audioClipType]);
+    console.log(complexPayload);
     this.audioSourceComponent.playOneShot(audioClip);
   }
 

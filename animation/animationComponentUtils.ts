@@ -12,7 +12,7 @@ export class AnimationComponentUtils extends Component {
   }
   public set animationComponent(value: AnimationComponent) {
     this._animationComponent = value;
-  }z
+  }
 
   @property({type: [EventHandler], visible: true})
   private _onFinishedEvents: EventHandler[] = [];

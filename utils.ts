@@ -1,4 +1,12 @@
-import { v2, Vec2 } from 'cc';
+import { find, Node, v2, Vec2 } from 'cc';
+import { CONSTANTS } from './constants';
+import { SceneData } from './persistentData/sceneData';
+
+export function GetSceneData()
+{  
+  const sceneDataNode = find(CONSTANTS.SCENE_DATA_PATH) as Node;
+  return sceneDataNode.getComponent(SceneData) as SceneData;
+}
 
 /*
 * @ClampVectorValue

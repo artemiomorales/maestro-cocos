@@ -1,10 +1,10 @@
 
-import { _decorator, TextAsset } from 'cc';
+import { _decorator, Component, Node, TextAsset } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('VariableDictionary')
-export default class VariableDictionary {
-    
+@ccclass('VariableReferenceDictionary')
+export class VariableReferenceDictionary {
+
   @property({type: TextAsset, visible: true})
   private _customKey: TextAsset = null!;
 
@@ -16,3 +16,4 @@ export default class VariableDictionary {
   }
 
 }
+
