@@ -5,7 +5,6 @@ const { ccclass, property } = _decorator;
 @ccclass('AnimationComponentUtils')
 export class AnimationComponentUtils extends Component {
     
-  @property({type: AnimationComponent, visible: true})
   private _animationComponent: AnimationComponent = null!;
   public get animationComponent() {
     return this._animationComponent;

@@ -7,7 +7,6 @@ export class VariableReference {
 
   @property({visible: true})
   private _useReference: Boolean = false;
-
   public get useReference() {
     return this._useReference;
   }
@@ -17,7 +16,6 @@ export class VariableReference {
     
   @property({type: TextAsset, visible: true})
   private _variableReference: TextAsset = null!;
-
   public get variableReference() {
     return this._variableReference;
   }

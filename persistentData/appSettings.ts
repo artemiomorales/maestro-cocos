@@ -10,12 +10,22 @@ import ComplexPayload from '../complexPayload';
 import { AppSettingsVariableReference } from './appSettingsVariableReference';
 import { BoolVariable } from './boolVariable';
 import InputGroup from './inputGroup';
+import SystemSettings from './systemSettings';
 import UserPreferences from './userPreferences';
 const { ccclass, property, executionOrder } = _decorator;
 
 @ccclass('AppSettings')
 @executionOrder(-1)
 export default class AppSettings extends Component {
+
+  @property({type: SystemSettings, visible: true})
+  public _systemSettings: SystemSettings = null!;
+  public get systemSettings() {
+    return this._systemSettings;
+  }
+  public set systemSettings(value: SystemSettings) {
+    this._systemSettings = value;
+  }
 
   @property({type: InputGroup, visible: true})
   public _inputGroup: InputGroup = null!;
@@ -45,12 +55,17 @@ export default class AppSettings extends Component {
   }
 
   start() {
+    this.systemSettings.initialize();
     this.inputGroup.initialize();
   }
 
   getValueViaVariableKey(callingObject: Node, variableKey: TextAsset) {
+    console.log(callingObject.name + " requesting " + variableKey.name);
     console.log(variableKey);
-    console.log(this.inputGroup.variableMap);
+    console.log(this.systemSettings.variableMap);
+    if(variableKey.name in this.systemSettings.variableMap) {
+      return this.systemSettings.variableMap[variableKey.name].getValue();
+    }
     if(variableKey.name in this.inputGroup.variableMap) {
       return this.inputGroup.variableMap[variableKey.name].getValue();
     }
@@ -58,7 +73,11 @@ export default class AppSettings extends Component {
 
   setValueViaVariableKey(callingObject: Node, variableKey: TextAsset, targetValue: any) {
     console.log(variableKey);
-    console.log(this.inputGroup.variableMap);
+    if(variableKey.name in this.systemSettings.variableMap) {
+      const newValue = this.systemSettings.variableMap[variableKey.name].setValue(targetValue);
+      this.triggerSimpleEvent(callingObject, variableKey.name);
+      return newValue;
+    }
     if(variableKey.name in this.inputGroup.variableMap) {
       const newValue = this.inputGroup.variableMap[variableKey.name].setValue(targetValue);
       this.triggerSimpleEvent(callingObject, variableKey.name);
@@ -69,6 +88,11 @@ export default class AppSettings extends Component {
   setDefaultValueViaVariableKey(callingObject: Node, variableKey: TextAsset) {
     console.log(variableKey);
     console.log(this.inputGroup.variableMap);
+    if(variableKey.name in this.systemSettings.variableMap) {
+      const newValue = this.systemSettings.variableMap[variableKey.name].setToDefaultValue();
+      this.triggerSimpleEvent(callingObject, variableKey.name);
+      return newValue;
+    }
     if(variableKey.name in this.inputGroup.variableMap) {
       const newValue = this.inputGroup.variableMap[variableKey.name].setToDefaultValue();
       this.triggerSimpleEvent(callingObject, variableKey.name);

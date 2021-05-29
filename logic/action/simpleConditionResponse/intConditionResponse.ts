@@ -2,10 +2,11 @@
 import { _decorator, Component, Node } from 'cc';
 import { IntReference } from '../../../persistentData/intReference';
 import { COMPARISON_VALUES } from '../../../constants';
+import { ConditionResponse } from './conditionResponse';
 const { ccclass, property } = _decorator;
 
 @ccclass('IntConditionResponse')
-export class IntConditionResponse {
+export class IntConditionResponse extends ConditionResponse {
 
   @property({type: IntReference, visible: true})
   private _intReference: IntReference = new IntReference();
@@ -35,6 +36,8 @@ export class IntConditionResponse {
   }
 
   checkCondition(callingObject: Node) {
+    super.checkCondition(callingObject);
+    
     switch (this.operation) {
 
       case COMPARISON_VALUES.EQUAL_TO:

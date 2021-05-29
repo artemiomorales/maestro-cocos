@@ -90,8 +90,9 @@ export class SceneData extends Component {
     console.log("setting bool value");
     for(let i=0; i<this.boolVariables.length; i++) {
       if(this.boolVariables[i].variableKey === variableKey) {
-        this.boolVariables[i].setValue(targetValue);
+        const newValue = this.boolVariables[i].setValue(targetValue);
         this.appSettings.triggerSimpleEvent(callingObject, variableKey.name);
+        return newValue;
       }
     }
     return this.setAppSettingsValue(callingObject, variableKey, targetValue);
@@ -111,8 +112,9 @@ export class SceneData extends Component {
   setIntValue(callingObject: Node, variableKey: TextAsset, targetValue: number)  {
     for(let i=0; i<this.intVariables.length; i++) {
       if(this.intVariables[i].variableKey === variableKey) {
-        this.intVariables[i].setValue(targetValue);
+        const newValue = this.intVariables[i].setValue(targetValue);
         this.appSettings.triggerSimpleEvent(callingObject, variableKey.name);
+        return newValue;
       }
     }
     return this.setAppSettingsValue(callingObject, variableKey, targetValue);
@@ -121,8 +123,9 @@ export class SceneData extends Component {
   setIntToDefault(callingObject: Node, variableKey: TextAsset)  {
     for(let i=0; i<this.intVariables.length; i++) {
       if(this.intVariables[i].variableKey === variableKey) {
-        this.intVariables[i].setToDefaultValue();
+        const newValue = this.intVariables[i].setToDefaultValue();
         this.appSettings.triggerSimpleEvent(callingObject, variableKey.name);
+        return newValue;
       }
     }
     return this.setAppSettingsValueToDefault(callingObject, variableKey);

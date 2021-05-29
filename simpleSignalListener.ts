@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, find, EventHandler } from 'cc';
+import { _decorator, Component, Node, find, EventHandler, TextAsset } from 'cc';
 import { CONSTANTS, SIMPLE_EVENT } from './constants';
 import AppSettings from './persistentData/appSettings';
 const { ccclass, property } = _decorator;
@@ -6,7 +6,7 @@ const { ccclass, property } = _decorator;
 @ccclass('SimpleSignalListener')
 export class SimpleSignalListener extends Component {
 
-    @property({type: Node})
+    @property({type: Node, visible: false})
     public appSettingsNode: Node = null!;
     private appSettings: AppSettings = null!;
 
@@ -17,6 +17,15 @@ export class SimpleSignalListener extends Component {
     }
     public set simpleSignal(value: number) {
       this._simpleSignal = value;
+    }
+
+    @property({type: TextAsset, visible: true})
+    private _variableReference: TextAsset = null!;
+    public get variableReference() {
+      return this._variableReference;
+    }
+    public set variableReference(value: TextAsset) {
+      this._variableReference = value;
     }
 
     @property({type: [EventHandler], visible: true})
@@ -41,11 +50,23 @@ export class SimpleSignalListener extends Component {
       this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
       this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-      this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
+      if(this.simpleSignal) {
+        this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
+      }
+
+      if(this.variableReference) {
+        console.log(this.variableReference.name);
+        this.appSettingsNode.on(this.variableReference.name, this.performActions, this);
+      }
     }
 
     onDestroy() {
-      this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
+      if(this.simpleSignal) {
+        this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
+      }
+      if(this.variableReference) {
+        this.appSettingsNode.off(this.variableReference.name, this.performActions, this);
+      }
     }
 
     performActions() {

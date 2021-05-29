@@ -50,7 +50,7 @@ export class ActionTriggerBehaviour extends Component {
     }
 
     if(this.logCallersOnRaise === true) {
-      console.log("Action triggered on " + this.node);
+      console.log("Action triggered on " + this.node.name);
       console.log("Called by " + callingObject);
       console.log("-------------------------")
     }
