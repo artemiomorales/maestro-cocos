@@ -1,12 +1,9 @@
 
-import { AudioClip, find, Node, _decorator } from 'cc';
-import { CONSTANTS } from '../constants';
-import { SceneData } from './sceneData';
-import { VariableReference }  from './variableReference';
+import { AudioClip, Node, _decorator } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('AudioClipReference')
-export class AudioClipReference extends VariableReference {
+export class AudioClipReference {
 
   @property({type: AudioClip, visible: true})
   private _value: AudioClip = null!;
@@ -19,17 +16,7 @@ export class AudioClipReference extends VariableReference {
   }
 
   getValue(callingObject: Node) {
-    if(this.useReference) {
-      const sceneData = this.getSceneData();
-
-    }
-    console.log(this.value);
     return this.value;
-  }
-
-  setValue(callingObject: Node) {
-    const sceneData = this.getSceneData();
-
   }
 
 }

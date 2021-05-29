@@ -41,11 +41,17 @@ export class SimpleSignalListener extends Component {
       this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
       this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-      this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[this.simpleSignal], () => {
-        if(this.active) {
-          EventHandler.emitEvents(this.action);
-        }
-      });
+      this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
+    }
+
+    onDestroy() {
+      this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
+    }
+
+    performActions() {
+      if(this.active) {
+        EventHandler.emitEvents(this.action);
+      }
     }
 
     /// Activate() and Deactivate() exist so that we can change

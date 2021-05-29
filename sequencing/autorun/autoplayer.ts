@@ -68,15 +68,15 @@ export default class Autoplayer extends Component implements AutorunModule {
     return this.autorunController.appSettings.getAutorunThreshold(this.node);
   }
 
-  Activate() {
+  activate() {
     this.moduleActive = true;
   }
 
-  Deactivate() {
+  deactivate() {
     this.moduleActive = false;
   }
 
-  TriggerInputActionComplete() {
+  triggerInputActionComplete() {
     for (let i = 0; i < this.inputController.masterSequences.length; i++) {
       this.inputController.masterSequences[i].unlockInputModule(this.node);
     }
@@ -87,22 +87,26 @@ export default class Autoplayer extends Component implements AutorunModule {
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], (complexPayload: ComplexPayload) => {
-      const targetSequence = complexPayload.get(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED]);
-      this.OnSequenceUpdated(targetSequence);
+      const targetSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED]);
+      this.onSequenceUpdated(targetSequence);
     });
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], (complexPayload: ComplexPayload) => {
-      const targetSequence = complexPayload.get(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED]);
+      const targetSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED]);
       this.deactivateAutoplaySequence(targetSequence);
     });
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], () => {
-      this.AutoplayAllSequences();
+      this.autoplayAllSequences();
     });
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE], () => {
-      this.AutoplayAllSequences();
+      this.autoplayAllSequences();
     });
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], () => {
-      this.DeactivateAutoplayAllSequences();
+      this.deactivateAutoplayAllSequences();
     });
+  }
+
+  onDestroy() {
+
   }
 
   // onDisable() {
@@ -116,7 +120,7 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// is updated. 
   /// </summary>
   /// <param name="targetSequence"></param>
-  OnSequenceUpdated(targetSequence: SequenceController)
+  onSequenceUpdated(targetSequence: SequenceController)
   {
       // if (moduleActive == false || appUtilsRequested == true || bookmarkLoadingCompleted == false) {
       //     return;
@@ -130,7 +134,7 @@ export default class Autoplayer extends Component implements AutorunModule {
 
       if (autorunData == null) return;
 
-      const [modifiedAutorunData, registrationSuccessful] = this.AttemptRegisterAutorunModule(this, autorunData);
+      const [modifiedAutorunData, registrationSuccessful] = this.attemptRegisterAutorunModule(this, autorunData);
 
       if (registrationSuccessful == false) { return; }
 
@@ -138,19 +142,19 @@ export default class Autoplayer extends Component implements AutorunModule {
       // beyond the thresholds of the extents where the autoplay originated.
       // (This is how we pause autoplay between intervals).
       // Note that, if looping is activated, we ignore intervals.
-      if(this.HasValidAutoplayInterval(autorunData)) {
+      if(this.hasValidAutoplayInterval(autorunData)) {
 
         if(this.autorunController.isReversing == false &&
             (targetSequence.currentTime + this.autorunThreshold > targetSequence.duration ||
-          AutorunExtents.TimeBeyondEndThresholdExclusive(targetSequence.currentTime + this.autorunThreshold, autorunData.activeInterval))) {
+          AutorunExtents.timeBeyondEndThresholdExclusive(targetSequence.currentTime + this.autorunThreshold, autorunData.activeInterval))) {
           this.FinishForwardAutoplay(this, autorunData);
           return;
         }
         
         if (this.autorunController.isReversing == true &&
             (targetSequence.currentTime - this.autorunThreshold <= 0 ||
-            AutorunExtents.TimeBeyondStartThresholdExclusive(targetSequence.currentTime - this.autorunThreshold, autorunData.activeInterval))) {
-          this.FinishBackwardAutoplay(this, autorunData);
+            AutorunExtents.timeBeyondStartThresholdExclusive(targetSequence.currentTime - this.autorunThreshold, autorunData.activeInterval))) {
+          this.finishBackwardAutoplay(this, autorunData);
           return;
         }
           
@@ -163,7 +167,7 @@ export default class Autoplayer extends Component implements AutorunModule {
           // don't want to activate it again until the autoplay is either
           // interrupted or completed.
           if (autorunData.forwardUpdateActive == false) {
-              Autoplayer.AttemptForwardAutoplay(this, autorunData);
+              Autoplayer.attemptForwardAutoplay(this, autorunData);
           }
           autorunData.backwardUpdateActive = false;
       }
@@ -177,7 +181,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       }
   }
 
-  TriggerAutorunIntervalComplete(autorunModule: AutorunModule, autorunData: AutorunData) : AutorunData
+  triggerAutorunIntervalComplete(autorunModule: AutorunModule, autorunData: AutorunData) : AutorunData
   {
       const targetSequence = autorunData.sequenceController;
       const targetMasterSequence: MasterSequence = this.autorunController.rootConfig.masterSequences.find(x => x.node === targetSequence.masterSequenceNode) as MasterSequence;
@@ -194,7 +198,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       return autorunData;
   }
 
-  HasValidAutoplayInterval(autorunData: AutorunData) : boolean
+  hasValidAutoplayInterval(autorunData: AutorunData) : boolean
   {
       if (autorunData.sequenceController.loop == false && autorunData.activeInterval != null) {
           return true;
@@ -208,8 +212,8 @@ export default class Autoplayer extends Component implements AutorunModule {
       const targetSequence: SequenceController = autorunData.sequenceController;
       
       const currentInterval: AutorunExtents = autorunData.activeInterval;
-      autoplayer.TriggerAutorunIntervalComplete(autoplayer, autorunData);
-      autoplayer.TriggerInputActionComplete();
+      autoplayer.triggerAutorunIntervalComplete(autoplayer, autorunData);
+      autoplayer.triggerInputActionComplete();
               
       if (currentInterval.endTime >= targetSequence.duration) {
           autorunData.sequenceController.setEndBoundaryReached(autoplayer.node);
@@ -221,11 +225,11 @@ export default class Autoplayer extends Component implements AutorunModule {
       return autorunData;
   }
   
-  FinishBackwardAutoplay(autoplayer: Autoplayer, autorunData: AutorunData)
+  finishBackwardAutoplay(autoplayer: Autoplayer, autorunData: AutorunData)
   {
       const currentInterval: AutorunExtents = autorunData.activeInterval;
-      autoplayer.TriggerAutorunIntervalComplete(autoplayer, autorunData);
-      autoplayer.TriggerInputActionComplete();
+      autoplayer.triggerAutorunIntervalComplete(autoplayer, autorunData);
+      autoplayer.triggerInputActionComplete();
               
       if (currentInterval.startTime == 0) {
           autorunData.sequenceController.setStartBoundaryReached(autoplayer.node);
@@ -237,7 +241,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       return autorunData;
   }
 
-  AttemptRegisterAutorunModule(autorunModule: AutorunModule, autorunData: AutorunData) : [AutorunData, boolean]
+  attemptRegisterAutorunModule(autorunModule: AutorunModule, autorunData: AutorunData) : [AutorunData, boolean]
   {
     let registrationSuccessful = false;
     
@@ -267,14 +271,14 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// </summary>
   /// <param name="autorunData"></param>
   /// <returns></returns>
-  static AttemptForwardAutoplay(autoplayer: Autoplayer, autorunData: AutorunData) : AutorunData
+  static attemptForwardAutoplay(autoplayer: Autoplayer, autorunData: AutorunData) : AutorunData
   {
     const targetMasterSequence: MasterSequence =
       autoplayer.autorunController.rootConfig.masterSequences.find(x => x.node === autorunData.sequenceController.masterSequenceNode) as MasterSequence;
     const targetSequence: SequenceController = autorunData.sequenceController; 
     
     const [currentInterval, withinThreshold] =
-      AutorunExtents.TimeWithinThresholdLowerBoundsInclusiveDescending(targetSequence.currentTime, autorunData.autorunIntervals)
+      AutorunExtents.timeWithinThresholdLowerBoundsInclusiveDescending(targetSequence.currentTime, autorunData.autorunIntervals)
     if (withinThreshold) {
         const [modifiedSequence, requestSuccessful] = targetMasterSequence.RequestActivateForwardAutoplay(targetSequence,
             autoplayer.priority, autoplayer.node.name, 1);
@@ -290,7 +294,7 @@ export default class Autoplayer extends Component implements AutorunModule {
             autorunData.activeInterval = currentInterval;
             autorunData.forwardUpdateActive = true;
 
-            this.PauseMomentumIfNeeded(autoplayer.autorunController, autorunData);
+            this.pauseMomentumIfNeeded(autoplayer.autorunController, autorunData);
         }
     }
 
@@ -315,7 +319,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       var autorunData = this.autorunController.autorunData[q];
       
       if (autorunData.backwardUpdateActive == true) {
-          this.AttemptReverseAutoplay(autorunData, this);
+          this.attemptReverseAutoplay(autorunData, this);
       }
     }
   }
@@ -329,26 +333,26 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// </summary>
   /// <param name="autorunData"></param>
   /// <returns></returns>
-  AttemptReverseAutoplay(autorunData: AutorunData, autoplayer: Autoplayer)
+  attemptReverseAutoplay(autorunData: AutorunData, autoplayer: Autoplayer)
   {
-      if (this.SequenceOrAutoplayDeactivated(autorunData)) {
+      if (this.sequenceOrAutoplayDeactivated(autorunData)) {
           return autorunData;
       }
 
-      const [currentInterval, withinThreshold] = AutorunExtents.TimeWithinThresholdBothBoundsInclusive(autorunData.sequenceController.currentTime,
+      const [currentInterval, withinThreshold] = AutorunExtents.timeWithinThresholdBothBoundsInclusive(autorunData.sequenceController.currentTime,
               autorunData.autorunIntervals);
 
       if (withinThreshold == false) {
-          autoplayer.OnSequenceUpdated(autorunData.sequenceController);
+          autoplayer.onSequenceUpdated(autorunData.sequenceController);
           return autorunData;
       }
 
       const autorunController: AutorunController = autoplayer.autorunController;
-      Autoplayer.PauseMomentumIfNeeded(autorunController, autorunData);
+      Autoplayer.pauseMomentumIfNeeded(autorunController, autorunData);
 
       autorunData.activeInterval = currentInterval;
 
-      const autoplayModifer = Autoplayer.GetAutoplayModifier(autoplayer);
+      const autoplayModifer = Autoplayer.getAutoplayModifier(autoplayer);
       // if (this.SequenceWithinEaseThreshold(autorunData.sequence, currentInterval, true, autoplayer.autoplayEaseThreshold)) {
       //     autoplayModifer *= CalculateModifierEase(autorunData.loop, autorunData.easingUtility);
       // }
@@ -360,7 +364,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       return autorunData;
   }
 
-  SequenceOrAutoplayDeactivated(autorunData: AutorunData)
+  sequenceOrAutoplayDeactivated(autorunData: AutorunData)
   {
       if (autorunData.sequenceController.active === false || autorunData.eligibleForAutoplay === false) {
           return true;
@@ -369,7 +373,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       return false;
   }
 
-  static PauseMomentumIfNeeded(autorunController: AutorunController, autorunData: AutorunData) : AutorunController
+  static pauseMomentumIfNeeded(autorunController: AutorunController, autorunData: AutorunData) : AutorunController
   {
       if (autorunController.pauseMomentumDuringAutorun == true) {
           // autorunController.TriggerPauseMomentum(autorunData.sequence);
@@ -378,7 +382,7 @@ export default class Autoplayer extends Component implements AutorunModule {
       return autorunController;
   }
 
-  static GetAutoplayModifier(autoplayer: Autoplayer) : number
+  static getAutoplayModifier(autoplayer: Autoplayer) : number
   {
      let autoplayModifier = 0.0166667;
 
@@ -411,13 +415,13 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// either with our without explicit input (an example of the
   /// latter: a joiner activating a preceding or following sequence)
   /// </summary>
-  AutoplayAllSequences()
+  autoplayAllSequences()
   {
     for (let q = 0; q < this.autorunController.autorunData.length; q++) {
       const sequence: SequenceController = this.autorunController.autorunData[q].sequenceController;
       if (sequence.active == true) {
         this.autorunController.autorunData[q].eligibleForAutoplay = true;
-        this.OnSequenceUpdated(sequence);
+        this.onSequenceUpdated(sequence);
       }
     }
   }
@@ -426,11 +430,11 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// By default, we disable autoplay when app utils get requested,
   /// or a swipe begins.
   /// </summary>
-  DeactivateAutoplayAllSequences()
+  deactivateAutoplayAllSequences()
   {
     for (let q = 0; q < this.autorunController.autorunData.length; q++) {
       const sequence: SequenceController = this.autorunController.autorunData[q].sequenceController;
-      this.TriggerAutorunIntervalComplete(this, this.autorunController.autorunData[q]);
+      this.triggerAutorunIntervalComplete(this, this.autorunController.autorunData[q]);
     }
   }
 
@@ -438,7 +442,7 @@ export default class Autoplayer extends Component implements AutorunModule {
   {
     const autorunData = this.autorunController.autorunData.find(x => x.sequenceController === targetSequence);
     if(autorunData) {
-      this.TriggerAutorunIntervalComplete(this, autorunData); 
+      this.triggerAutorunIntervalComplete(this, autorunData); 
     } else {
       console.log("No autorun data found on target sequence");
     }

@@ -112,7 +112,6 @@ export class ComplexEventConfigurableTrigger {
         complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.stringType], datum.getValue(callingObject));
       }
     }
-    console.log(complexPayload);
     return complexPayload;
   }
 

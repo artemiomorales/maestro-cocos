@@ -44,7 +44,6 @@ export class SceneController extends Component {
 
   @property({visible: true, readonly: true})
   private _targetScene: string = "";
-
   public get targetScene() {
     return this._targetScene;
   }
@@ -52,21 +51,37 @@ export class SceneController extends Component {
     this._targetScene = value;
   }
 
+  private _sceneLoadInProgress: boolean = false;
+  public get sceneLoadInProgress() {
+    return this._sceneLoadInProgress;
+  }
+  public set sceneLoadInProgress(value: boolean) {
+    this._sceneLoadInProgress = value;
+  }
+
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-    this.appSettingsNode.on(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_SCENE_LOAD], (complexPayload: ComplexPayload) => {
-      this.triggerSceneLoad(complexPayload);
-    })
+    this.appSettingsNode.on(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_SCENE_LOAD], this.triggerSceneLoad, this);
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.FADE_TO_BLACK_COMPLETED], this.fadeToBlackCompletedCallback, this)
+  }
 
-    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.FADE_TO_BLACK_COMPLETED], () => {
-      this.fadeToBlackCompletedCallback();
-    })
+  onDestroy() {
+    this.appSettingsNode.off(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_SCENE_LOAD], this.triggerSceneLoad, this);
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.FADE_TO_BLACK_COMPLETED], this.fadeToBlackCompletedCallback, this)
   }
 
   triggerSceneLoad(complexPayload: ComplexPayload) {
-    this.targetScene = complexPayload.get(this.triggerSceneLoadKey.name);
+
+    // This is to prevent the scene controller failing silently in case you
+    // accidentally trigger two scene loads at once
+    if(this.sceneLoadInProgress) {
+      throw "You are trying to trigger two scene loads at once; this is not allowed";
+    }
+
+    this.targetScene = complexPayload.get(this.node, this.triggerSceneLoadKey.name);
+    this.sceneLoadInProgress = true;
     
     // TO DO
     // Add option for loading scene immediately
@@ -84,7 +99,7 @@ export class SceneController extends Component {
 
     // Store the callback so we can retrieve it once the fadeToBlack animation is complete
     // (Note: the callback may be null at this point - we'll check later when it's time to use it)
-    this.sceneLoadCompletedCallback = complexPayload.get(this.eventCallbackKey.name);
+    this.sceneLoadCompletedCallback = complexPayload.get(this.node, this.eventCallbackKey.name);
 
     // Modify the complex payload, inserting a callback that we can
     // use to respond when the fadeToBlack animation is complete
@@ -103,6 +118,8 @@ export class SceneController extends Component {
   fadeToBlackCompletedCallback() {
 
     director.loadScene(this.targetScene, () => {
+
+      this.sceneLoadInProgress = false;
       // Now that we're faded to black, determine which event
       // we'll send to the fader as our final callback
       if(this.sceneLoadCompletedCallback && this.sceneLoadCompletedCallback !== "") {

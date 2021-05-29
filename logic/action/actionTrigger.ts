@@ -5,6 +5,8 @@ import ComplexEventActionData from './complexEventActionData';
 import { BoolActionData } from './boolActionData';
 import { IntActionData } from './intActionData';
 import { GenericActionData } from './genericActionData';
+import { SimpleConditionResponseActionData } from './simpleConditionResponseActionData';
+import { ComplexConditionResponseActionData } from './complexConditionResponseActionData';
 
 const { ccclass, property } = _decorator;
 
@@ -74,6 +76,24 @@ export default class ActionTrigger {
     this._intActionData = value;
   }
 
+  @property({type: [SimpleConditionResponseActionData], visible: true})
+  public _simpleConditionResponseActionData: SimpleConditionResponseActionData[] = [];
+  private get simpleConditionResponseActionData() {
+    return this._simpleConditionResponseActionData;
+  }
+  private set simpleConditionResponseActionData(value: SimpleConditionResponseActionData[]) {
+    this._simpleConditionResponseActionData = value;
+  }
+
+  @property({type: [ComplexConditionResponseActionData], visible: true})
+  public _complexConditionResponseActionData: ComplexConditionResponseActionData[] = [];
+  private get complexConditionResponseActionData() {
+    return this._complexConditionResponseActionData;
+  }
+  private set complexConditionResponseActionData(value: ComplexConditionResponseActionData[]) {
+    this._complexConditionResponseActionData = value;
+  }
+
   @property({type: [SimpleEventActionData], visible: true})
   public _simpleEventActionData: SimpleEventActionData[] = [];
   private get simpleEventActionData() {
@@ -102,11 +122,40 @@ export default class ActionTrigger {
   }
 
   initialize () {
+    console.log("initializing");
+    // if(this.boolActionData.length === 0) {
+    //   this.boolActionData = null!;
+    // }
+    // if(this.intActionData.length === 0) {
+    //   this.intActionData = null!;
+    // }
+    // if(this.simpleConditionResponseActionData.length === 0) {
+    //   this.simpleConditionResponseActionData = null!;
+    // }
+    // if(this.complexConditionResponseActionData.length === 0) {
+    //   this.complexConditionResponseActionData = null!;
+    // }
+    // if(this.simpleEventActionData.length === 0) {
+    //   this.simpleEventActionData = null!;
+    // }
+    // if(this.complexEventActionData.length === 0) {
+    //   this.complexEventActionData = null!;
+    // }
+    // if(this.genericActionData.length === 0) {
+    //   this.genericActionData = null!;
+    // }
+
     for(let i=0; i<this.boolActionData.length; i++) {
       this.boolActionData[i].initialize();
     }
     for(let i=0; i<this.intActionData.length; i++) {
       this.intActionData[i].initialize();
+    }
+    for(let i=0; i<this.simpleConditionResponseActionData.length; i++) {
+      this.simpleConditionResponseActionData[i].initialize();
+    }
+    for(let i=0; i<this.complexConditionResponseActionData.length; i++) {
+      this.complexConditionResponseActionData[i].initialize();
     }
     for(let i=0; i<this.simpleEventActionData.length; i++) {
       this.simpleEventActionData[i].initialize();
@@ -120,20 +169,40 @@ export default class ActionTrigger {
   }
 
   performActions(callingObject: Node) {
-    for(let i=0; i<this.boolActionData.length; i++) {
-      this.boolActionData[i].performAction(callingObject);
+    if(this.boolActionData) {
+      for(let i=0; i<this.boolActionData.length; i++) {
+        this.boolActionData[i].performAction(callingObject);
+      }
     }
-    for(let i=0; i<this.intActionData.length; i++) {
-      this.intActionData[i].performAction(callingObject);
+    if(this.intActionData) {
+      for(let i=0; i<this.intActionData.length; i++) {
+        this.intActionData[i].performAction(callingObject);
+      }
     }
-    for(let i=0; i<this.simpleEventActionData.length; i++) {
-      this.simpleEventActionData[i].performAction(callingObject);
+    if(this.simpleConditionResponseActionData) {
+      for(let i=0; i<this.simpleConditionResponseActionData.length; i++) {
+        this.simpleConditionResponseActionData[i].performAction(callingObject);
+      }
     }
-    for(let i=0; i<this.complexEventActionData.length; i++) {
-      this.complexEventActionData[i].performAction(callingObject);
+    if(this.complexConditionResponseActionData) {
+      for(let i=0; i<this.complexConditionResponseActionData.length; i++) {
+        this.complexConditionResponseActionData[i].performAction(callingObject);
+      }
     }
-    for(let i=0; i<this.genericActionData.length; i++) {
-      this.genericActionData[i].performAction(callingObject);
+    if(this.simpleEventActionData) {
+      for(let i=0; i<this.simpleEventActionData.length; i++) {
+        this.simpleEventActionData[i].performAction(callingObject);
+      }
+    }
+    if(this.complexEventActionData) {
+      for(let i=0; i<this.complexEventActionData.length; i++) {
+        this.complexEventActionData[i].performAction(callingObject);
+      }
+    }
+    if(this.genericActionData) {
+      for(let i=0; i<this.genericActionData.length; i++) {
+        this.genericActionData[i].performAction(callingObject);
+      }
     }
   }
 

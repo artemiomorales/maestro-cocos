@@ -43,11 +43,11 @@ export class Joiner extends Component {
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], (complexPayload: ComplexPayload) => {
-      const sourceSequence = complexPayload.get(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE]);
+      const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE]);
       this.activateNextSequence(sourceSequence);
     });
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], (complexPayload: ComplexPayload) => {
-      const sourceSequence = complexPayload.get(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE]);
+      const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE]);
       this.activatePreviousSequence(sourceSequence);
     });
 

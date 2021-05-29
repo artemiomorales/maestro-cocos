@@ -1,5 +1,5 @@
 
-import { _decorator } from 'cc';
+import { Node, _decorator } from 'cc';
 const { ccclass, property } = _decorator;
 
 interface ComplexPayloadInterface {
@@ -10,7 +10,6 @@ interface ComplexPayloadInterface {
 export default class ComplexPayload {
 
   private _payload: ComplexPayloadInterface = {};
-
   public get payload() {
     return this._payload;
   }
@@ -22,10 +21,11 @@ export default class ComplexPayload {
     this.payload[key] = value;
   }
 
-  get(key: string) {
-    if(this.payload[key]) {
+  get(callingObject: Node, key: string) {
+    if(this.payload.hasOwnProperty(key)) {
       return this.payload[key];
     }
+    console.log("Key " + key + " not found in complex payload");
     return null;
   }
 }

@@ -10,6 +10,13 @@ export var EVENT_TYPE = Enum({
   COMPLEX: -1
 })
 
+export var COMPARISON_VALUES = Enum({
+  EQUAL_TO: -1,
+  NOT_EQUAL_TO: -1,
+  GREATER_THAN: -1,
+  LESS_THAN: -1
+})
+
 export var SIMPLE_EVENT = Enum({
   ON_TOUCH_START: -1,
   ON_SWIPE: -1,
@@ -23,8 +30,10 @@ export var SIMPLE_EVENT = Enum({
 })
 
 export var COMPLEX_EVENT = Enum({
-  PLAY_AUDIO: -1,
   TRIGGER_SCENE_LOAD: -1,
+  PLAY_AUDIO: -1,
+  PLAY_ONE_SHOT: -1,
+  FADE_OUT_AUDIO: -1,
   TRIGGER_FADE_TO_BLACK: -1
 })
 

@@ -44,15 +44,15 @@ export default class SwipeApplier extends Component implements TouchModule {
     return this.touchController;
   }
 
-  Activate() {
+  activate() {
     this.moduleActive = true;
   }
 
-  Deactivate() {
+  deactivate() {
     this.moduleActive = false;
   }
 
-  TriggerInputActionComplete() {
+  triggerInputActionComplete() {
     for (let i = 0; i < this.inputController.masterSequences.length; i++) {
       this.inputController.masterSequences[i].unlockInputModule(this.node);
     }
@@ -63,13 +63,13 @@ export default class SwipeApplier extends Component implements TouchModule {
       this.updateSequenceWithSwipe();
     });
     this.touchController.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], () => {
-      this.TriggerInputActionComplete();
+      this.triggerInputActionComplete();
     });
   }
 
   onDisable () {
     this.touchController.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], this.updateSequenceWithSwipe, this);
-    this.touchController.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.TriggerInputActionComplete);
+    this.touchController.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.triggerInputActionComplete);
   }
 
   updateSequenceWithSwipe () {

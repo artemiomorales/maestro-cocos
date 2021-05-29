@@ -9,7 +9,7 @@ export default interface AutorunModule extends InputModule {
     autorunController: AutorunController;
     autorunThreshold: number;
     inputController: InputController;
-    OnSequenceUpdated: Function;
-    TriggerAutorunIntervalComplete: Function;
-    AttemptRegisterAutorunModule: Function;
+    onSequenceUpdated: Function;
+    triggerAutorunIntervalComplete: Function;
+    attemptRegisterAutorunModule: Function;
 }

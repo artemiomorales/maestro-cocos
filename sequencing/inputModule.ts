@@ -5,8 +5,8 @@ export default interface InputModule {
   moduleActive: boolean;
   priority: number;
   inputController: InputController;
-  Activate: Function;
-  Deactivate: Function;
-  TriggerInputActionComplete: Function;
+  activate: Function;
+  deactivate: Function;
+  triggerInputActionComplete: Function;
   nodeElement: Node;
 }

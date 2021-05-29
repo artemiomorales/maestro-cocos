@@ -53,7 +53,7 @@ export default class AutorunExtents implements Extents {
     return extents;
   }
 
-  static TimeWithinThresholdLowerBoundsInclusiveAscending(sourceTime: number, intervals: AutorunExtents[]) : boolean
+  static timeWithinThresholdLowerBoundsInclusiveAscending(sourceTime: number, intervals: AutorunExtents[]) : boolean
   {
       // Check if we're inside a pauseMomentumThreshold
       let withinThreshold = false;
@@ -70,7 +70,7 @@ export default class AutorunExtents implements Extents {
       return withinThreshold;
   }
   
-  static TimeWithinThresholdUpperBoundsInclusiveOut(sourceTime: number, intervals: AutorunExtents[], currentExtents: AutorunExtents) : boolean
+  static timeWithinThresholdUpperBoundsInclusiveOut(sourceTime: number, intervals: AutorunExtents[], currentExtents: AutorunExtents) : boolean
   {
       for (let q = 0; q < intervals.length; q++) {
           if(sourceTime > intervals[q].startTime &&
@@ -84,7 +84,7 @@ export default class AutorunExtents implements Extents {
       return false;
   }
   
-  static TimeWithinThresholdLowerBoundsInclusiveAscendingOut(sourceTime: number, intervals: AutorunExtents[], currentExtents: AutorunExtents) : boolean
+  static timeWithinThresholdLowerBoundsInclusiveAscendingOut(sourceTime: number, intervals: AutorunExtents[], currentExtents: AutorunExtents) : boolean
   {
       for (let q = 0; q < intervals.length; q++) {
           if((sourceTime > intervals[q].startTime - .00001 && sourceTime < intervals[q].startTime + .00001) ||
@@ -98,7 +98,7 @@ export default class AutorunExtents implements Extents {
       return false;
   }
   
-  static TimeWithinThresholdLowerBoundsInclusiveDescending(sourceTime: number, intervals: AutorunExtents[]) : [AutorunExtents, boolean]
+  static timeWithinThresholdLowerBoundsInclusiveDescending(sourceTime: number, intervals: AutorunExtents[]) : [AutorunExtents, boolean]
   {
       let currentExtents = new AutorunExtents();
       for (let q = intervals.length - 1; q >= 0; q--) {
@@ -113,7 +113,7 @@ export default class AutorunExtents implements Extents {
       return [currentExtents, false];
   }
   
-  static TimeWithinThresholdBothBoundsInclusive(sourceTime: number, intervals: AutorunExtents[]) : [AutorunExtents, boolean]
+  static timeWithinThresholdBothBoundsInclusive(sourceTime: number, intervals: AutorunExtents[]) : [AutorunExtents, boolean]
   {
     let currentExtents = new AutorunExtents();
     for (let q = 0; q < intervals.length; q++) {
@@ -129,7 +129,7 @@ export default class AutorunExtents implements Extents {
     return [currentExtents, false];
   }
 
-  static TimeBeyondEndThresholdExclusive(sourceTime: number, interval: AutorunExtents) {
+  static timeBeyondEndThresholdExclusive(sourceTime: number, interval: AutorunExtents) {
     if(sourceTime > interval.endTime) {
       return true;
     }
@@ -137,7 +137,7 @@ export default class AutorunExtents implements Extents {
     return false;
   }
 
-  static TimeBeyondStartThresholdExclusive(sourceTime: number, interval: AutorunExtents) {
+  static timeBeyondStartThresholdExclusive(sourceTime: number, interval: AutorunExtents) {
     if(sourceTime < interval.startTime) {
       return true;
     }

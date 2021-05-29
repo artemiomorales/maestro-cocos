@@ -24,16 +24,13 @@ export class ActionTriggerBehaviour extends Component {
   public set actionTrigger(value: ActionTrigger) {
     this._actionTrigger = value;
   }
-    
-  onLoad () {
-    this.initialize();
-  }
 
   initialize() {
     this.actionTrigger.initialize();
   }
 
   start () {
+    this.initialize();
     if(this.actionTrigger.active === false) {
       return;
     }

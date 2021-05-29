@@ -61,7 +61,7 @@ export class Fader extends Component {
       .to(this.fadeToBlackTime, {opacity: 255}, {
         easing: 'quadInOut',
         'onComplete': () => {
-          this.appSettings.triggerSimpleEvent(this.node, complexPayload.get(this.eventCallbackKey.name))
+          this.appSettings.triggerSimpleEvent(this.node, complexPayload.get(this.node, this.eventCallbackKey.name))
         }
       })
       .start();
