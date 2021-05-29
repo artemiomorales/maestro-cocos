@@ -32,15 +32,18 @@ export class AudioElement {
     this.audioSource.play();
   }
 
-  fadeOut(fadeTime: number = .5) {
-    tween(this.audioSource)
-      .to(fadeTime, {volume: 0}, {
-        easing: 'quadInOut',
-        'onComplete': () => {
-          this.audioClip.stop();
-        }
-      })
-      .start();
+  fadeOut(fadeTime: number) {
+    return new Promise<void>((resolve, reject) => {
+      tween(this.audioSource)
+        .to(fadeTime, {volume: 0}, {
+          easing: 'quadInOut',
+          'onComplete': () => {
+            this.audioClip.stop();
+            resolve();
+          }
+        })
+        .start();
+    });
   }
 
 }

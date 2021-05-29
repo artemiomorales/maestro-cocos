@@ -42,19 +42,28 @@ export class Joiner extends Component {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], (complexPayload: ComplexPayload) => {
-      const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE]);
-      this.activateNextSequence(sourceSequence);
-    });
-    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], (complexPayload: ComplexPayload) => {
-      const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE]);
-      this.activatePreviousSequence(sourceSequence);
-    });
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], this.callActivateNextSequence, this);
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], this.callActivatePreviousSequence, this);
 
-    this.ConfigureData();
+    this.configureData();
   }
 
-  ConfigureData()
+  onDestroy() {
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], this.callActivateNextSequence, this);
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], this.callActivatePreviousSequence, this);
+  }
+
+  callActivateNextSequence(complexPayload: ComplexPayload) {
+    const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE]);
+      this.activateNextSequence(sourceSequence);
+  }
+
+  callActivatePreviousSequence(complexPayload: ComplexPayload) {
+    const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE]);
+      this.activatePreviousSequence(sourceSequence);
+  }
+
+  configureData()
   {
       this.joinerDataCollection = [];
       //forkDataCollection.Clear();
@@ -65,13 +74,13 @@ export class Joiner extends Component {
             
           var sequence = this.masterSequences[i].sequenceControllers[q];
 
-          Joiner.SetJoinData(this, sequence);
+          Joiner.setJoinData(this, sequence);
         }
       }
   }
 
 
-  static SetJoinData(joiner: Joiner, sequence: SequenceController) : Joiner
+  static setJoinData(joiner: Joiner, sequence: SequenceController) : Joiner
   {
       // We need to make an entry for every sequence, regardless of whether it
       // has any sibling sequences, so we know when we've reached the end of a path

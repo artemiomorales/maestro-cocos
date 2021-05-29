@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, find, AudioSourceComponent, Prefab, TextAsset, instantiate, game, tween } from 'cc';
+import { _decorator, Component, Node, find, AudioSourceComponent, Prefab, TextAsset, instantiate, game } from 'cc';
 import ComplexPayload from '../complexPayload';
 import { COMPLEX_EVENT, CONSTANTS, DATA_TYPE } from '../constants';
 import AppSettings from '../persistentData/appSettings';
@@ -30,23 +30,13 @@ export class AudioSourceController extends Component {
     this._audioElementPrefab = value;
   }
 
-  @property({type: [AudioSourceComponent], visible: true})
-  private _audioSources: AudioSourceComponent[] = []
-  private get audioSources() {
-    return this._audioSources;
+  private _audioElements: AudioElement[] = [];
+  private get audioElements() {
+    return this._audioElements;
   }
-  private set audioSources(value: AudioSourceComponent[]) {
-    this._audioSources = value;
+  private set audioElements(value: AudioElement[]) {
+    this._audioElements = value;
   }
-  
-  // @property({type: [AudioElement], visible: true})
-  // private _audioElements: AudioElement[] = [];
-  // private get audioElements() {
-  //   return this._audioElements;
-  // }
-  // private set audioElements(value: AudioElement[]) {
-  //   this._audioElements = value;
-  // }
 
   @property({type: TextAsset, visible: true})
   private _loopAudioKey: TextAsset = null!;
@@ -107,22 +97,20 @@ export class AudioSourceController extends Component {
       volume = volumeSetting;
     }
 
-    const audioObject = instantiate(this.audioElementPrefab);
-    audioObject.setParent(this.node);
-    for(let i=0; i<this.audioSources.length; i++) {
-      if(!this.audioSources[i].clip) {
-        const targetAudioSource = this.audioSources[i];
-        targetAudioSource.clip = audioClip;
-        targetAudioSource.volume = volume;
-        targetAudioSource.loop = loop;
-        targetAudioSource.play();
+    for(let i=0; i<this.audioElements.length; i++) {
+      const audioElement = this.audioElements[i];
+      if(audioElement.audioClip == audioClip) {
+        if(!audioElement.audioSource.playing) {
+          audioElement.audioSource.play();
+        }
         return;
-        // const audioElement = new AudioElement(audioObject, audioClip, loop, volume);
-        // this.audioElements.push(audioElement);
       }
     }
 
-    throw "Not enough audio sources on audio source controller; add more in the initializer";
+    const audioObject = instantiate(this.audioElementPrefab);
+    audioObject.setParent(this.node);
+    const audioElement = new AudioElement(audioObject, audioClip, loop, volume);
+    this.audioElements.push(audioElement);
   }
 
   playOneShot(complexPayload: ComplexPayload) {
@@ -136,20 +124,26 @@ export class AudioSourceController extends Component {
     if(!fadeOutTime) {
       fadeOutTime = 2;
     }
-    for(let i=0; i<this.audioSources.length; i++) {
-      const targetAudioSource = this.audioSources[i];
-      if(targetAudioSource.clip === audioClip) {
-         tween(targetAudioSource)
-          .to(fadeOutTime, {volume: 0}, {
-            easing: 'quadInOut',
-            'onComplete': () => {
-              targetAudioSource.stop();
-              targetAudioSource.clip = null;
-            }
-          })
-          .start();
+    for(let i=0; i<this.audioElements.length; i++) {
+      const audioElement = this.audioElements[i];
+      if(audioElement.audioClip === audioClip) {
+        audioElement.fadeOut(fadeOutTime).then(() => {
+          this.fadeOutAudioCallback(audioElement);
+        });
       }
     }
+  }
+
+  fadeOutAudioCallback(audioElement: AudioElement) {
+    const audioElements: AudioElement[] = [];
+    for(let i=0; i<this.audioElements.length; i++) {
+      if(this.audioElements[i] === audioElement) {
+        this.audioElements[i].audioSource.node.destroy();
+      } else {
+        audioElements.push(this.audioElements[i]);
+      }
+    }
+    this.audioElements = audioElements;
   }
 
 }

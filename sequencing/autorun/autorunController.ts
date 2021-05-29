@@ -55,9 +55,7 @@ export class AutorunController extends Component implements InputController {
   start() {
     console.log("autorun is starting");
     this.configureData();
-    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SEQUENCE_CONFIGURATION_COMPLETE], () => {
-      this.configureData();
-    })
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SEQUENCE_CONFIGURATION_COMPLETE], this.configureData, this);
   }
 
   onDisable () {
@@ -65,8 +63,6 @@ export class AutorunController extends Component implements InputController {
   }
 
   configureData() {
-    console.log("configuring");
-
     for(let i=0; i<this.rootConfig.masterSequences.length; i++) {
       const masterSequence = this.rootConfig.masterSequences[i];
 
@@ -76,7 +72,6 @@ export class AutorunController extends Component implements InputController {
         this.autorunData.push(this.CreateAutorunData(sequenceController, markerConfig[0], markerConfig[1], markerConfig[2], markerConfig[3]))
       }
     }
-    console.log(this.autorunData);
   }
 
   GetConfigTimes(eventList: [{

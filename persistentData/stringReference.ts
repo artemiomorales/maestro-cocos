@@ -6,7 +6,7 @@ const { ccclass, property } = _decorator;
 @ccclass('StringReference')
 export class StringReference extends VariableReference {
 
-  @property({type: CCString, visible: true})
+  @property({visible: true})
   private _value: string = "";
 
   public get value() {
