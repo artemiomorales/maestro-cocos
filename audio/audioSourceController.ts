@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, find, AudioSourceComponent, Prefab, TextAsset, instantiate, game } from 'cc';
+import { _decorator, Component, Node, find, AudioSourceComponent, Prefab, TextAsset, instantiate, game, AudioClip } from 'cc';
 import ComplexPayload from '../complexPayload';
 import { COMPLEX_EVENT, CONSTANTS, DATA_TYPE } from '../constants';
 import AppSettings from '../persistentData/appSettings';
@@ -124,6 +124,14 @@ export class AudioSourceController extends Component {
     if(!fadeOutTime) {
       fadeOutTime = 2;
     }
+    if(audioClip) {
+      this.fadeOutClip(audioClip, fadeOutTime);
+    } else {
+      this.fadeOutAll(fadeOutTime);
+    }
+  }
+
+  fadeOutClip(audioClip: AudioClip, fadeOutTime: number) {
     for(let i=0; i<this.audioElements.length; i++) {
       const audioElement = this.audioElements[i];
       if(audioElement.audioClip === audioClip) {
@@ -131,6 +139,15 @@ export class AudioSourceController extends Component {
           this.fadeOutAudioCallback(audioElement);
         });
       }
+    }
+  }
+
+  fadeOutAll(fadeOutTime: number) {
+    for(let i=0; i<this.audioElements.length; i++) {
+      const audioElement = this.audioElements[i];
+      audioElement.fadeOut(fadeOutTime).then(() => {
+        this.fadeOutAudioCallback(audioElement);
+      });
     }
   }
 

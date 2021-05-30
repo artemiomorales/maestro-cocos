@@ -13,4 +13,8 @@ export class NodeExtensions extends Component {
     this.node.active = false;
   }
 
+  destroyNode() {
+    this.node.destroy();
+  }
+
 }

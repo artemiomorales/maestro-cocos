@@ -15,6 +15,15 @@ export default class SystemSettings {
     this._appUtilsRequested = value;
   }
 
+  @property({visible: true})
+  private _menuRequested: BoolVariable = new BoolVariable();
+  public get menuRequested() {
+    return this._menuRequested;
+  }
+  public set menuRequested(value: BoolVariable) {
+    this._menuRequested = value;
+  }
+
   private _variableMap: any = {};
   public get variableMap() {
     return this._variableMap;
@@ -25,5 +34,6 @@ export default class SystemSettings {
   
   initialize() {
     this.variableMap[this.appUtilsRequested.variableKey.name] = this.appUtilsRequested;
+    this.variableMap[this.menuRequested.variableKey.name] = this.menuRequested;
   }
 }
