@@ -60,6 +60,16 @@ export default class InputGroup {
     this._touchMonitorMomentum = value;
   }
 
+
+  @property({type: Vec2, visible: true})
+  private _touchMonitorMomentumCache: Vec2 = v2(0,0)
+  public get touchMonitorMomentumCache() {
+    return this._touchMonitorMomentumCache;
+  }
+  public set touchMonitorMomentumCache(value: Vec2) {
+    this._touchMonitorMomentumCache = value;
+  }
+
   @property({type: CCFloat, visible: true})
   private _swipeModifierOutput: number = 0;
   public get swipeModifierOutput() {
@@ -94,6 +104,15 @@ export default class InputGroup {
   }
   public set autorunThreshold(value: number) {
     this._autorunThreshold = value;
+  }
+
+  @property({visible: true})
+  private _momentumDecay = .95;
+  public get momentumDecay() {
+    return this._momentumDecay;
+  }
+  public set momentumDecay(value: number) {
+    this._momentumDecay = value;
   }
 
   private _variableMap: any = {};

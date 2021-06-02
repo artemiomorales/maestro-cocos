@@ -36,12 +36,12 @@ export class SimpleConditionResponseActionData extends ActionData {
   }
 
   initialize () {
-    if(this.intConditions.length === 0) {
-      this.intConditions = null!;
-    }
-    if(this.boolConditions.length === 0) {
-      this.boolConditions = null!;
-    }
+    // if(this.intConditions.length === 0) {
+    //   this.intConditions = null!;
+    // }
+    // if(this.boolConditions.length === 0) {
+    //   this.boolConditions = null!;
+    // }
   }
 
   performAction (callingObject: Node) {

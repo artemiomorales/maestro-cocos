@@ -108,3 +108,8 @@ export function GetVector2Totals(vectors: Vec2[])
     
     return v2(totalXForce, totalYForce);
 }
+
+export function GetSquareMagnitude(vector: Vec2) {
+  const total = ((vector.x * vector.x) + (vector.x * vector.x) + (vector.z * vector.z));
+  return Math.pow(total, 2);
+}

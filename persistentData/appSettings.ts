@@ -100,7 +100,20 @@ export default class AppSettings extends Component {
     }
   }
 
-  // User Preferences ///
+  /// System Settings ///
+
+  getAppUtilsRequested(callingObject: Node) {
+    return this.systemSettings.appUtilsRequested.getValue();
+  }
+
+  setAppUtilsRequested(callingObject: Node, targetValue: boolean) {
+    const newValue = this.systemSettings.appUtilsRequested.setValue(targetValue);
+    this.triggerSimpleEvent(callingObject, this.systemSettings.appUtilsRequested.variableKey.name);
+    return newValue;
+  }
+
+
+  /// User Preferences ///
 
 
   // Y Sensitivity
@@ -201,6 +214,16 @@ export default class AppSettings extends Component {
     this.inputGroup.touchMonitorMomentum = targetValue;
   }
 
+    // Touch Monitor Momentum
+
+  getTouchMonitorMomentumCache(callingObject: Node) {
+    return this.inputGroup.touchMonitorMomentumCache;
+  }
+
+  setTouchMonitorMomentumCache(callingObject: Node, targetValue: Vec2) {
+    this.inputGroup.touchMonitorMomentumCache = targetValue;
+  }
+
 
   // Swipe Modifer Output
 
@@ -222,6 +245,18 @@ export default class AppSettings extends Component {
   setMomentumModifierOutput(callingObject: Node, targetValue: number) {
     this.inputGroup.momentumModifierOutput = targetValue;
   }
+
+
+  // Momentum Decay
+
+  getMomentumDecay(callingObject: Node) {
+    return this.inputGroup.momentumDecay;
+  }
+
+  setMomentumDecay(callingObject: Node, targetValue: number) {
+    this.inputGroup.momentumDecay = targetValue;
+  }
+
 
   // Frame Step Value
         

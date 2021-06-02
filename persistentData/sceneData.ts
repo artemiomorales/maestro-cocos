@@ -75,6 +75,19 @@ export class SceneData extends Component {
     return this.appSettings.setDefaultValueViaVariableKey(callingObject, variableKey);
   }
 
+  /// GENERIC /// 
+  
+  getValue(callingObject: Node, variableKey: TextAsset)  {
+    let value: any;
+    const methods = [this.getBoolValue, this.getIntValue];
+    for(let i=0; i<methods.length; i++) {
+      value = methods[i].call(this, callingObject, variableKey);
+      if(value) {
+        return value;
+      }
+    }
+  }
+
   /// BOOL ///
 
   getBoolValue(callingObject: Node, variableKey: TextAsset)  {

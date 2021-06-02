@@ -68,7 +68,12 @@ export class TouchMonitor extends Component {
     this.appSettings.setTouchMonitorMomentum(this.node, value);
   }
 
-  public touchMonitorMomentumCache = v2(0, 0);
+  public get touchMonitorMomentumCache() {
+    return this.appSettings.getTouchMonitorMomentumCache(this.node);
+  }
+  public set touchMonitorMomentumCache(value: Vec2) {
+    this.appSettings.setTouchMonitorMomentumCache(this.node, value);
+  }
 
   public momentumMinMax = 2000;
   public momentumDecay = .95;

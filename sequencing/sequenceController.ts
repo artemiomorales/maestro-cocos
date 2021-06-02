@@ -83,7 +83,6 @@ export class SequenceController extends Component {
     this._animationClip = value;
   }
 
-  @property({type:AnimationComponent, visible: true})
   public _animationComponent: AnimationComponent = null!;
   public get animationComponent() {
     return this._animationComponent;
@@ -131,6 +130,8 @@ export class SequenceController extends Component {
   start() {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+
+    this.animationComponent = this.getComponent(AnimationComponent) as AnimationComponent;
 
     if(this.animationComponent.defaultClip !== null) {
       this.animationClip = this.animationComponent.defaultClip;
