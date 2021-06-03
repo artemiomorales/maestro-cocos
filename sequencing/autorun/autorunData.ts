@@ -18,7 +18,6 @@ export class AutorunData implements InputData {
     this._sequenceController = value;
   }
 
-
   @property({type: [AutorunExtents], visible: true})
   private _autorunIntervals: AutorunExtents[] = [];
   public get autorunIntervals() {

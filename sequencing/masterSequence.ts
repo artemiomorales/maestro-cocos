@@ -1,6 +1,7 @@
 
 import { _decorator, Component, Node, CCInteger, find, CCFloat } from 'cc';
-import { CONSTANTS } from '../constants';
+import ComplexPayload from '../complexPayload';
+import { CONSTANTS, INTERNAL_COMPLEX_EVENT } from '../constants';
 import AppSettings from '../persistentData/appSettings';
 import { SequenceController } from './sequenceController';
 
@@ -101,12 +102,43 @@ export default class MasterSequence extends Component {
     this._activeInputModule = value;
   }
 
+  private _hasActiveSequence: boolean = false;
+  public get hasActiveSequence() {
+    return this._hasActiveSequence;
+  }
+  public set hasActiveSequence(value: boolean) {
+    this._hasActiveSequence = value;
+  }
+
+  private _elapsedTime: number = 0;
+  public get elapsedTime() {
+    return this._elapsedTime;
+  }
+  public set elapsedTime(value: number) {
+    if(this.masterTimeDataList.length < 1) {
+      this.init();
+    }
+    this._elapsedTime = value;
+  }
+
   start() {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshHasActiveSequence, this);
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], this.refreshElapsedTime, this);
+  }
+
+  onDestroy() {
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshHasActiveSequence, this);
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], this.refreshElapsedTime, this);
   }
 
   init () {
+    console.log("master sequence initializing");
+    // Generate master times for sequences
+    this.masterTimeDataList = MasterSequence.generateSequenceData(this.sequenceControllers);
+
     for (let i = 0; i < this.sequenceControllers.length; i++) {
       this.sequenceControllers[i].init();
     }   
@@ -145,10 +177,10 @@ export default class MasterSequence extends Component {
   /// <returns></returns>
   lockInputModule(masterSequence: MasterSequence, moduleName: string, priority: number)
   {
-      masterSequence.activeInputModule.name = moduleName;
-      masterSequence.activeInputModule.priority = priority;
+    masterSequence.activeInputModule.name = moduleName;
+    masterSequence.activeInputModule.priority = priority;
 
-      return masterSequence.activeInputModule;
+    return masterSequence.activeInputModule;
   }
 
   /// <summary>
@@ -182,25 +214,25 @@ export default class MasterSequence extends Component {
   /// <param name="targetSpeed"></param>
   /// <param name="requestSuccessful"></param>
   /// <returns></returns>
-  RequestActivateForwardAutoplay(targetSequence: SequenceController, requestPriority: number, moduleName: string, targetSpeed: number) : [SequenceController, boolean]
+  requestActivateForwardAutoplay(targetSequence: SequenceController, requestPriority: number, moduleName: string, targetSpeed: number) : [SequenceController, boolean]
   {
-      let requestSuccessful = false;
-      
-      // if (this.rootConfig.appUtilsRequested == true) {
-      //     return targetSequence;
-      // }
-      
-      const sequenceController: SequenceController = this.sequenceControllers.find(x => x === targetSequence) as SequenceController;
+    let requestSuccessful = false;
+    
+    // if (this.rootConfig.appUtilsRequested == true) {
+    //     return targetSequence;
+    // }
+    
+    const sequenceController: SequenceController = this.sequenceControllers.find(x => x === targetSequence) as SequenceController;
 
-      if ((this.activeInputModule.name === "" || !this.activeInputModule) || this.activeInputModule.name == moduleName || requestPriority > this.activeInputModule.priority)
-      {
-          this.activeInputModule = this.lockInputModule(this, moduleName, requestPriority);
-          
-          sequenceController.ActivateForwardAutoplayState(targetSpeed);
-          requestSuccessful = true;
-      }
+    if ((this.activeInputModule.name === "" || !this.activeInputModule) || this.activeInputModule.name == moduleName || requestPriority > this.activeInputModule.priority)
+    {
+        this.activeInputModule = this.lockInputModule(this, moduleName, requestPriority);
+        
+        sequenceController.activateForwardAutoplayState(targetSpeed);
+        requestSuccessful = true;
+    }
 
-      return [targetSequence, requestSuccessful];
+    return [targetSequence, requestSuccessful];
   }
 
   /// <summary>
@@ -212,29 +244,94 @@ export default class MasterSequence extends Component {
   /// <param name="moduleName"></param>
   requestDeactivateForwardAutoplay(targetSequence: SequenceController, requestPriority: number, moduleName: string)
   {
-      // if (this.rootConfig.appUtilsRequested == true) {
-      //     return;
-      // }
+    // if (this.rootConfig.appUtilsRequested == true) {
+    //     return;
+    // }
 
-      console.log("deactivated");
-      
-      const sequenceController: SequenceController = this.sequenceControllers.find(x => x === targetSequence) as SequenceController;
+    const sequenceController: SequenceController = this.sequenceControllers.find(x => x === targetSequence) as SequenceController;
 
-      if (this.activeInputModule.name === "" || this.activeInputModule.name == moduleName || requestPriority > this.activeInputModule.priority)
-      {
-          sequenceController.activateManualUpdateState();
-      }
+    if (this.activeInputModule.name === "" || this.activeInputModule.name == moduleName || requestPriority > this.activeInputModule.priority)
+    {
+        sequenceController.activateManualUpdateState();
+    }
   }
 
   triggerSequenceBoundaryReached(modifiedSequence: SequenceController) : MasterSequence
   {
-      const sequenceTimeData: MasterTimeData | undefined = this.masterTimeDataList.find(x => x.sequenceController == modifiedSequence);
+    const sequenceTimeData: MasterTimeData | undefined = this.masterTimeDataList.find(x => x.sequenceController == modifiedSequence);
 
-      if (sequenceTimeData) {
-          // _sequenceBoundaryReached.Invoke(this.node, modifiedSequence);
+    if (sequenceTimeData) {
+        // _sequenceBoundaryReached.Invoke(this.node, modifiedSequence);
+    }
+
+    return this;
+  }
+
+  /// <summary>
+  /// We need to know if the MasterSequence is currently active -
+  /// the AxisMonitor uses that data to make sure we're not inadvertently
+  /// activating / deactivating playable directors and sequences the user
+  /// hasn't reached yet
+  /// </summary>
+  refreshHasActiveSequence()
+  {
+    for (let i = 0; i < this.sequenceControllers.length; i++) {
+      if (this.sequenceControllers[i].active == true) {
+        this.hasActiveSequence = true;
+        return;
+      }
+    }
+    this.hasActiveSequence = false;
+  }
+
+  /// <summary>
+  /// We need to refresh elapsed time whenever a child sequence is modified
+  /// in order to make sure the scrubber and other navigation modules
+  /// can initialize with the correct time data
+  /// </summary>
+  /// <param name="modifiedSequence"></param>
+  /// <returns></returns>
+  refreshElapsedTime(complexPayload: ComplexPayload)
+  {
+    const modifiedSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME]);
+      
+    const sequenceTimeData: MasterTimeData = this.masterTimeDataList.find(x => x.sequenceController == modifiedSequence) as MasterTimeData;
+    
+    if(sequenceTimeData) {
+      this.elapsedTime = sequenceTimeData.masterTimeStart + modifiedSequence.currentTime;
+    }
+
+    return this;
+  }
+  
+  /// <summary>
+  /// The MasterSequence iterates through its child sequences to convert their local
+  /// time into global time, as we need global times to ensure scrubbing, bookmarking,
+  /// and axis monitoring can operate consistently across timelines.
+  /// </summary>
+  /// <param name="sourceSequenceControllers"></param>
+  /// <returns></returns>
+  static generateSequenceData(sourceSequenceControllers: SequenceController[]): MasterTimeData[]
+  {
+      const sequenceData: MasterTimeData[] = [];
+      for (let i = 0; i < sourceSequenceControllers.length; i++)
+      {
+          let masterTimeStart = 0;
+          let masterTimeEnd = 0;
+
+          if (i == 0)  {
+              masterTimeEnd = sourceSequenceControllers[i].animationClip.duration;
+          } else {
+              masterTimeStart = sequenceData[i - 1].masterTimeEnd;
+              masterTimeEnd = sourceSequenceControllers[i].animationClip.duration + sequenceData[i - 1].masterTimeEnd;
+          }
+
+          const newSequenceData: MasterTimeData = new MasterTimeData();
+          newSequenceData.initialize(sourceSequenceControllers[i], masterTimeStart, masterTimeEnd);
+          sequenceData.push(newSequenceData);
       }
 
-      return this;
+      return sequenceData;
   }
 
 }

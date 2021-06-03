@@ -1,5 +1,6 @@
 
 import { _decorator, Component, Node, v2, Vec2, Vec3, CCFloat } from 'cc';
+import { Axis } from './axis';
 import { BoolVariable } from './boolVariable';
 const { ccclass, property } = _decorator;
 
@@ -60,9 +61,8 @@ export default class InputGroup {
     this._touchMonitorMomentum = value;
   }
 
-
   @property({type: Vec2, visible: true})
-  private _touchMonitorMomentumCache: Vec2 = v2(0,0)
+  private _touchMonitorMomentumCache: Vec2 = v2(0,0);
   public get touchMonitorMomentumCache() {
     return this._touchMonitorMomentumCache;
   }
@@ -86,6 +86,60 @@ export default class InputGroup {
   }
   public set momentumModifierOutput(value: number) {
     this._momentumModifierOutput = value;
+  }
+
+  @property({visible: true})
+  private _axisTransitionActive: boolean = false;
+  public get axisTransitionActive() {
+    return this._axisTransitionActive;
+  }
+  public set axisTransitionActive(value: boolean) {
+    this._axisTransitionActive = value;
+  }
+
+  @property({type: CCFloat, visible: true})
+  private _axisTransitionSpread: number = 0;
+  public get axisTransitionSpread() {
+    return this._axisTransitionSpread;
+  }
+  public set axisTransitionSpread(value: number) {
+    this._axisTransitionSpread = value;
+  }
+
+  @property({type: Axis, visible: true})
+  private _ySwipeAxis: Axis = new Axis();
+  public get ySwipeAxis() {
+    return this._ySwipeAxis;
+  }
+  public set ySwipeAxis(value: Axis) {
+    this._ySwipeAxis = value;
+  }
+
+  @property({type: Axis, visible: true})
+  private _xSwipeAxis: Axis = new Axis();
+  public get xSwipeAxis() {
+    return this._xSwipeAxis;
+  }
+  public set xSwipeAxis(value: Axis) {
+    this._xSwipeAxis = value;
+  }
+
+  @property({type: Axis, visible: true})
+  private _yMomentumAxis: Axis = new Axis();
+  public get yMomentumAxis() {
+    return this._yMomentumAxis;
+  }
+  public set yMomentumAxis(value: Axis) {
+    this._yMomentumAxis = value;
+  }
+
+  @property({type: Axis, visible: true})
+  private _xMomentumAxis: Axis = new Axis();
+  public get xMomentumAxis() {
+    return this._xMomentumAxis;
+  }
+  public set xMomentumAxis(value: Axis) {
+    this._xMomentumAxis = value;
   }
 
   @property({type: CCFloat, visible: true})

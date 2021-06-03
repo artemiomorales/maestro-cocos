@@ -86,9 +86,6 @@ export class TouchMonitor extends Component {
   public cancelMomentumMagnitudeThreshold = 815;
   public pauseMomentumThreshold = .03;
 
-  public get swipeDirection() {
-    return this.appSettings.getSwipeDirection(this.node);
-  }
   public set swipeDirection(value: string) {
     this.appSettings.setSwipeDirection(this.node, value);
   }
@@ -105,6 +102,7 @@ export class TouchMonitor extends Component {
   start() {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+    TouchMonitor.resetSwipeHistory(this);
   }
 
   update() {
@@ -146,6 +144,7 @@ export class TouchMonitor extends Component {
     this.isTouching = true;
     this._gestureStartTime = Date.now();
     this.haltMomentum();
+    TouchMonitor.resetSwipeHistory(this);
 
     this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START])
   }
@@ -153,9 +152,10 @@ export class TouchMonitor extends Component {
   onTouchMove(event: Touch) {
       this.touchCurrentPosition = event.getLocation();
       const swipeVector = v2(
-        (this.touchPreviousPosition.x - this.touchCurrentPosition.x) * -1,
+        (this.touchPreviousPosition.x - this.touchCurrentPosition.x),
         (this.touchPreviousPosition.y - this.touchCurrentPosition.y) * -1
       );
+      this.swipeDirection = this.getSwipeDirection(this, swipeVector);
 
       // log(swipeVector.y);
 
@@ -188,9 +188,6 @@ export class TouchMonitor extends Component {
     this.gestureActionTime = (Date.now() - this._gestureStartTime) / 1000;
 
     const delta = v2(Math.abs(this.touchStartPosition.x - this.touchCurrentPosition.x), Math.abs(this.touchStartPosition.y - this.touchCurrentPosition.y));
-
-    console.log(delta);
-    console.log(delta.dot(delta));
 
     // Cancel momentum on certain long swipe gestures with low delta at the end of the movement.
     if((delta.dot(delta) < this.cancelMomentumMagnitudeThreshold && this.gestureActionTime > this.cancelMomentumTimeThreshold) || delta.dot(delta) === 0) {
@@ -246,29 +243,15 @@ export class TouchMonitor extends Component {
 
   getSwipeDirection(touchMonitor: TouchMonitor, deltaPosition: Vec2)
   {
-      this.updateSwipeHistory(touchMonitor, deltaPosition);
+      TouchMonitor.updateSwipeHistory(touchMonitor, deltaPosition);
       const vectorDirection = GetVector2Direction(touchMonitor.swipeHistory, touchMonitor.invertXInput,
           touchMonitor.invertYInput);
-          
+      
       if (Math.abs(vectorDirection.x) > Math.abs(vectorDirection.y)) {
           return vectorDirection.x > 0 ? SWIPE_DIRECTION.xPositive : SWIPE_DIRECTION.xNegative;
       }
       
       return vectorDirection.y > 0 ? SWIPE_DIRECTION.yPositive : SWIPE_DIRECTION.yNegative;
-  }
-
-  updateSwipeHistory(touchMonitor: TouchMonitor, deltaPosition: Vec2)
-  {
-      if (touchMonitor.swipeHistoryIndex < touchMonitor.swipeHistory.length - 1) {
-          touchMonitor.swipeHistory[touchMonitor.swipeHistoryIndex] = deltaPosition;
-      }
-
-      touchMonitor.swipeHistoryIndex++;
-      if (touchMonitor.swipeHistoryIndex > touchMonitor.swipeHistory.length - 1) {
-          touchMonitor.swipeHistoryIndex = 0;
-      }
-      
-      return touchMonitor.swipeHistory;
   }
 
   haltMomentum() {
@@ -305,6 +288,30 @@ export class TouchMonitor extends Component {
       const v2Force = v2(correctedV2.x * this.xSensitivity, correctedV2.y * this.ySensitivity);
 
       return v2Force;
+  }
+
+  static resetSwipeHistory(touchMonitor: TouchMonitor)
+  {
+    touchMonitor.swipeHistory = [];
+    for(let i=0; i<10; i++) {
+      touchMonitor.swipeHistory.push(new Vec2());
+    }
+    touchMonitor.swipeHistoryIndex = 0;
+    return touchMonitor;
+  }
+
+  static updateSwipeHistory(touchMonitor: TouchMonitor, deltaPosition: Vec2)
+  {
+    if (touchMonitor.swipeHistoryIndex < touchMonitor.swipeHistory.length - 1) {
+      touchMonitor.swipeHistory[touchMonitor.swipeHistoryIndex] = deltaPosition;
+    }
+
+    touchMonitor.swipeHistoryIndex++;
+    if (touchMonitor.swipeHistoryIndex > touchMonitor.swipeHistory.length - 1) {
+      touchMonitor.swipeHistoryIndex = 0;
+    }
+    
+    return touchMonitor.swipeHistory;
   }
 
 }

@@ -1,12 +1,18 @@
 
-import { Component, _decorator } from 'cc';
+import { Component, find, Node, _decorator, Vec2 } from 'cc';
+import { CONSTANTS, SIMPLE_EVENT, SWIPE_DIRECTION } from '../../constants';
+import AppSettings from '../../persistentData/appSettings';
 import { InputController } from '../inputController';
 import { RootConfig } from '../rootConfig';
+import { TouchData } from './touchData';
 const { ccclass, property, executionOrder } = _decorator;
 
 @ccclass('TouchController')
 @executionOrder(10)
 export default class TouchController extends Component implements InputController {
+
+  public appSettingsNode: Node = null!;
+  public appSettings: AppSettings = null!;
 
   @property({type: RootConfig, visible: true})
   private _rootConfig: RootConfig = null!;
@@ -17,14 +23,6 @@ export default class TouchController extends Component implements InputControlle
     this._rootConfig = value;
   }
   
-  public get appSettingsNode() {
-    return this._rootConfig.appSettingsNode;
-  }
-
-  public get appSettings() {
-    return this._rootConfig.appSettings;
-  }
-
   public get masterSequences() {
     return this._rootConfig.masterSequences;
   }
@@ -35,6 +33,22 @@ export default class TouchController extends Component implements InputControlle
 
   public get swipeDirection() {
     return this.appSettings.getSwipeDirection(this.node);
+  }
+
+  public get ySwipeAxis() {
+    return this.appSettings.getYSwipeAxisReference(this.node);
+  }
+
+  public get xSwipeAxis() {
+    return this.appSettings.getXSwipeAxisReference(this.node);
+  }
+
+  public get yMomentumAxis() {
+    return this.appSettings.getYMomentumAxisReference(this.node);
+  }
+
+  public get xMomentumAxis() {
+    return this.appSettings.getXMomentumAxisReference(this.node);
   }
 
   public get swipeModifierOutput() {
@@ -58,6 +72,52 @@ export default class TouchController extends Component implements InputControlle
     this.appSettings.setIsReversing(this.node, value);
   }
 
-  configureData() { } 
+  private _touchDataList: TouchData[] = null!;
+  public get touchDataList() {
+    return this._touchDataList;
+  }
+  public set touchDataList(value: TouchData[]) {
+    this._touchDataList = value;
+  }
+
+  start() {
+    this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
+    this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SEQUENCE_CONFIGURATION_COMPLETE], this.configureData, this);
+  }
+
+  onDisable () {
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SEQUENCE_CONFIGURATION_COMPLETE], this.configureData, this);
+  }
+
+  configureData()
+  {
+    this.touchDataList = [];
+
+    for (let i = 0; i < this.masterSequences.length; i++)
+    {
+      for (let q = 0; q < this.masterSequences[i].sequenceControllers.length; q++)
+      {
+        var sequence = this.masterSequences[i].sequenceControllers[q];
+        this.touchDataList.push(TouchData.createInstance(sequence));
+      }
+    }
+
+    this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE]);
+
+    console.log("touch controller configuration complete");
+  }
+
+  getDominantTouchForce(vector2: Vec2)
+  {
+    console.log(this.swipeDirection);
+    if (this.swipeDirection == SWIPE_DIRECTION.xPositive ||
+      this.swipeDirection == SWIPE_DIRECTION.xNegative) {
+      return new Vec2(vector2.x, 0);
+    }
+    
+    return new Vec2(0, vector2.y);
+  }
 
 }

@@ -17,6 +17,11 @@ export var COMPARISON_VALUES = Enum({
   LESS_THAN: -1
 })
 
+export var AXIS_TYPE = Enum({
+  X: -1,
+  Y: -1
+})
+
 export var SIMPLE_EVENT = Enum({
   ON_TOUCH_START: -1,
   ON_SWIPE: -1,
@@ -26,7 +31,8 @@ export var SIMPLE_EVENT = Enum({
   SCENE_LOAD_COMPLETED: -1,
   FADE_IN_COMPLETED: -1,
   SEQUENCE_CONFIGURATION_COMPLETE: -1,
-  AUTOPLAY_ACTIVATE: -1
+  AUTOPLAY_ACTIVATE: -1,
+  TOUCH_CONTROLLER_CONFIGURATION_COMPLETE: -1
 })
 
 export var COMPLEX_EVENT = Enum({
@@ -39,6 +45,7 @@ export var COMPLEX_EVENT = Enum({
 
 export var INTERNAL_COMPLEX_EVENT = Enum({
   ON_SEQUENCE_UPDATED: -1,
+  ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME: -1,
   ON_SEQUENCE_BOUNDARY_REACHED: -1,
   ON_SEQUENCE_DEACTIVATED: -1,
   ACTIVATE_NEXT_SEQUENCE: -1,
@@ -62,5 +69,5 @@ export enum SWIPE_DIRECTION {
   yPositive = "yPositive",
   yNegative = "yNegative",
   xPositive = "xPositive",
-  xNegative = "xNegative",
+  xNegative = "xNegative"
 }

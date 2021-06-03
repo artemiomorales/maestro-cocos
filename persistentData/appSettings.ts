@@ -7,7 +7,6 @@
 
 import { _decorator, Component, Node, Vec2, TextAsset } from 'cc';
 import ComplexPayload from '../complexPayload';
-import { AppSettingsVariableReference } from './appSettingsVariableReference';
 import { BoolVariable } from './boolVariable';
 import InputGroup from './inputGroup';
 import SystemSettings from './systemSettings';
@@ -214,7 +213,7 @@ export default class AppSettings extends Component {
     this.inputGroup.touchMonitorMomentum = targetValue;
   }
 
-    // Touch Monitor Momentum
+  // Touch Monitor Momentum
 
   getTouchMonitorMomentumCache(callingObject: Node) {
     return this.inputGroup.touchMonitorMomentumCache;
@@ -222,6 +221,26 @@ export default class AppSettings extends Component {
 
   setTouchMonitorMomentumCache(callingObject: Node, targetValue: Vec2) {
     this.inputGroup.touchMonitorMomentumCache = targetValue;
+  }
+
+  // Axis Transition Active
+
+  getAxisTransitionActive(callingObject: Node) {
+    return this.inputGroup.axisTransitionActive;
+  }
+
+  setAxisTransitionActive(callingObject: Node, targetValue: boolean) {
+    this.inputGroup.axisTransitionActive = targetValue;
+  }
+
+  // Axis Transition Spread
+
+  getAxisTransitionSpread(callingObject: Node) {
+    return this.inputGroup.axisTransitionSpread;
+  }
+
+  setAxisTransitionSpread(callingObject: Node, targetValue: number) {
+    this.inputGroup.axisTransitionSpread = targetValue;
   }
 
 
@@ -244,6 +263,32 @@ export default class AppSettings extends Component {
 
   setMomentumModifierOutput(callingObject: Node, targetValue: number) {
     this.inputGroup.momentumModifierOutput = targetValue;
+  }
+
+
+  // Y Axes
+
+  getYSwipeAxisReference(callingObject: Node)
+  {
+    return this.inputGroup.ySwipeAxis;
+  }
+
+  getYMomentumAxisReference(callingObject: Node)
+  {
+    return this.inputGroup.yMomentumAxis;
+  }
+  
+  
+  // X Axes
+
+  getXSwipeAxisReference(callingObject: Node)
+  {
+    return this.inputGroup.xSwipeAxis;
+  }
+
+  getXMomentumAxisReference(callingObject: Node)
+  {
+    return this.inputGroup.xMomentumAxis;
   }
 
 

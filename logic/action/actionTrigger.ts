@@ -122,7 +122,6 @@ export default class ActionTrigger {
   }
 
   initialize () {
-    console.log("initializing");
     // if(this.boolActionData.length === 0) {
     //   this.boolActionData = null!;
     // }

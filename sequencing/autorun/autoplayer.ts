@@ -221,7 +221,7 @@ export default class Autoplayer extends Component implements AutorunModule {
           autorunData.sequenceController.setEndBoundaryReached(autoplayer.node);
       }
       else {
-          autorunData.sequenceController.setSequenceTimeWithoutCallbacks(autoplayer.node, currentInterval.endTime);
+          autorunData.sequenceController.setSequenceTimeWithoutModuleCallbacks(autoplayer.node, currentInterval.endTime);
       }
       
       return autorunData;
@@ -237,7 +237,7 @@ export default class Autoplayer extends Component implements AutorunModule {
           autorunData.sequenceController.setStartBoundaryReached(autoplayer.node);
       }
       else {
-          autorunData.sequenceController.setSequenceTimeWithoutCallbacks(autoplayer.node, currentInterval.startTime);
+          autorunData.sequenceController.setSequenceTimeWithoutModuleCallbacks(autoplayer.node, currentInterval.startTime);
       }
       
       return autorunData;
@@ -282,7 +282,7 @@ export default class Autoplayer extends Component implements AutorunModule {
     const [currentInterval, withinThreshold] =
       AutorunExtents.timeWithinThresholdLowerBoundsInclusiveDescending(targetSequence.currentTime, autorunData.autorunIntervals)
     if (withinThreshold) {
-        const [modifiedSequence, requestSuccessful] = targetMasterSequence.RequestActivateForwardAutoplay(targetSequence,
+        const [modifiedSequence, requestSuccessful] = targetMasterSequence.requestActivateForwardAutoplay(targetSequence,
             autoplayer.priority, autoplayer.node.name, 1);
       
         // We should only store the interval and activate autoplay

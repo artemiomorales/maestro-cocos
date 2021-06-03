@@ -182,7 +182,9 @@ export class SequenceController extends Component {
       } else {
         const complexPayload = new ComplexPayload();
         complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this);
+        complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], this);
         this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], complexPayload)
+        this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], complexPayload)
       }
     }
   }
@@ -207,7 +209,7 @@ export class SequenceController extends Component {
 
   setStartBoundaryReached(caller: Node)
   {
-    this.setSequenceTimeWithoutCallbacks(this.node, 0);
+    this.setSequenceTimeWithoutModuleCallbacks(this.node, 0);
 
     const boundaryReachedPayload = new ComplexPayload();
     boundaryReachedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this);
@@ -226,7 +228,7 @@ export class SequenceController extends Component {
 
   setEndBoundaryReached(caller: Node)
   {
-    this.setSequenceTimeWithoutCallbacks(this.node, this.duration);
+    this.setSequenceTimeWithoutModuleCallbacks(this.node, this.duration);
 
     const boundaryReachedPayload = new ComplexPayload();
     boundaryReachedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this);
@@ -255,14 +257,15 @@ export class SequenceController extends Component {
 
       const complexPayload = new ComplexPayload();
       complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this);
+      complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], this);
 
       this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], complexPayload)
-      // sequence.sequenceController.masterSequence.RefreshElapsedTime(sequence);
+      this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], complexPayload)
 
       return this;
   }
 
-  setSequenceTimeWithoutCallbacks(caller: Node, targetTime: number)
+  setSequenceTimeWithoutModuleCallbacks(caller: Node, targetTime: number)
   {
       // if (sequence.paused == true) return sequence;
       
@@ -271,16 +274,21 @@ export class SequenceController extends Component {
       this.currentTime = targetTime;
       this.animState.play();
       this.animState.time = this.currentTime;
-      // sequence.sequenceController.masterSequence.RefreshElapsedTime(sequence);
+
+      const complexPayload = new ComplexPayload();
+      complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this);
+      complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], this);
+
+      this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME], complexPayload)
 
       return this;
   }
 
   setToBeginning() {
-    this.setSequenceTimeWithoutCallbacks(this.node, 0);
+    this.setSequenceTimeWithoutModuleCallbacks(this.node, 0);
   }
 
-  ActivateForwardAutoplayState(targetSpeed: number)
+  activateForwardAutoplayState(targetSpeed: number)
   {
     // if (audioMuted == true) {
     //     EnableAudioSources();
@@ -288,14 +296,14 @@ export class SequenceController extends Component {
     
     if (this.sequenceUpdateState == Object.keys(SEQUENCE_UPDATE_STATE)[SEQUENCE_UPDATE_STATE.MANUAL_UPDATE] ||
         this.animState.speed < 1) {
-        this.SetSpeed(targetSpeed);
+        this.setSpeed(targetSpeed);
         this.animState.play();
         this.animState.time = this.currentTime;
         this.sequenceUpdateState = Object.keys(SEQUENCE_UPDATE_STATE)[SEQUENCE_UPDATE_STATE.FORWARD_AUTOPLAY];
     }
   }
 
-  SetSpeed(targetSpeed: number)
+  setSpeed(targetSpeed: number)
   {
     this.currentSpeed = targetSpeed; // This value is for debugging purposes  
     this.animState.speed = targetSpeed;
@@ -312,8 +320,16 @@ export class SequenceController extends Component {
 
       // playableDirector.Play();
       // this.animState.play();
-      this.SetSpeed(0);
+      this.setSpeed(0);
       this.sequenceUpdateState = Object.keys(SEQUENCE_UPDATE_STATE)[SEQUENCE_UPDATE_STATE.MANUAL_UPDATE];
+  }
+
+  static frameToLocalTime(sequence: SequenceController, frame: number)
+  {
+    const animationClip: any = sequence.animationClip;
+    console.log("frame rate");
+    console.log(animationClip.frameRate);
+    return frame / animationClip.frameRate;
   }
 
   mplay() {

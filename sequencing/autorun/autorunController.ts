@@ -1,9 +1,10 @@
 
-import { _decorator, Component } from 'cc';
-import { SIMPLE_EVENT } from '../../constants';
+import { _decorator, Component, Node, find } from 'cc';
+import { CONSTANTS, SIMPLE_EVENT } from '../../constants';
+import AppSettings from '../../persistentData/appSettings';
+import { AnimationEvent } from '../../utils';
 import { InputController } from '../inputController';
 import { RootConfig } from '../rootConfig';
-import { RootDataCollector } from '../rootDataCollector';
 import { SequenceController } from '../sequenceController';
 import { AutorunData } from './autorunData';
 import AutorunExtents from './autorunExtents';
@@ -21,13 +22,8 @@ export class AutorunController extends Component implements InputController {
     this._rootConfig = value;
   }
   
-  public get appSettingsNode() {
-    return this._rootConfig.appSettingsNode;
-  }
-
-  public get appSettings() {
-    return this._rootConfig.appSettings;
-  }
+  public appSettingsNode: Node = null!;
+  public appSettings: AppSettings = null!;
 
   public get isReversing() {
     return this.appSettings.getIsReversing(this.node);
@@ -53,8 +49,9 @@ export class AutorunController extends Component implements InputController {
   }
 
   start() {
-    console.log("autorun is starting");
-    this.configureData();
+    this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
+    this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SEQUENCE_CONFIGURATION_COMPLETE], this.configureData, this);
   }
 
@@ -74,11 +71,7 @@ export class AutorunController extends Component implements InputController {
     }
   }
 
-  GetConfigTimes(eventList: [{
-      frame: number;
-      func: string;
-      params: any[];
-  }]) : [number[], number[], string[], number[]]
+  GetConfigTimes(eventList: AnimationEvent[]) : [number[], number[], string[], number[]]
   {
       const autoplayStarts: number[] = [];
       const autoplayEnds: number[] = [];

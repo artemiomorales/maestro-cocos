@@ -7,9 +7,9 @@ import MasterSequence from './masterSequence';
 const { ccclass, property, executionOrder } = _decorator;
 
 @ccclass('RootConfig')
+@executionOrder(20)
 export class RootConfig extends Component {
 
-  @property({type: Node, visible: true})
   public appSettingsNode: Node = null!;
   public appSettings: AppSettings = null!;
 

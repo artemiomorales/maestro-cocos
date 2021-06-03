@@ -2,6 +2,12 @@ import { find, Node, v2, Vec2 } from 'cc';
 import { CONSTANTS } from './constants';
 import { SceneData } from './persistentData/sceneData';
 
+export interface AnimationEvent {
+  frame: number;
+  func: string;
+  params: any[];
+}
+
 export function GetSceneData()
 {  
   const sceneDataNode = find(CONSTANTS.SCENE_DATA_PATH) as Node;

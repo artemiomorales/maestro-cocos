@@ -15,14 +15,15 @@ export class RichTextExtensions extends Component {
     this._variableReference = value;
   }
 
-  @property({type: Color, visible: true})
-  private _targetColor: Color = null!;
+  @property({visible: true})
+  private _targetColor: Color = new Color();
   public get targetColor() {
     return this._targetColor;
   }
   public set targetColor(value: Color) {
     this._targetColor = value;
   }
+
 
   private _richTextComponent: RichTextComponent = null!;
   public get richTextComponent() {
