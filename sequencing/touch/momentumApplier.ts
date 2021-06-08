@@ -5,7 +5,7 @@ import AppSettings from '../../persistentData/appSettings';
 import { Axis } from '../../persistentData/axis';
 import InputModule from '../inputModule';
 import MasterSequence from '../masterSequence';
-import { SequenceController } from '../sequenceController';
+import SequenceController from '../sequenceController';
 import TouchController from './touchController';
 import TouchModule from './touchModule';
 const { ccclass, property, executionOrder} = _decorator;

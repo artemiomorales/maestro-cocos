@@ -60,7 +60,7 @@ export class ActionTriggerBehaviour extends Component {
     } else {
       setTimeout(() => {
         this.actionTrigger.performActions(this.node);
-      }, this.actionTrigger.delay)
+      }, this.actionTrigger.delay * 1000)
     }
   }
 

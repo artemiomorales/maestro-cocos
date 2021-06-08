@@ -4,8 +4,9 @@ import { AxisMonitor } from './axisMonitor';
 import { TouchData } from './touchData';
 import { TouchExtents } from './touchExtents';
 import { AnimationEvent } from '../../utils';
-import { SequenceController } from '../sequenceController';
+import SequenceController from '../sequenceController';
 import { Axis } from '../../persistentData/axis';
+import MasterSequence from '../masterSequence';
 const { ccclass, property } = _decorator;
 
 @ccclass('AxisExtents')
@@ -50,10 +51,10 @@ export class AxisExtents extends TouchExtents {
     this.axisMonitor = axisMonitor;
     this.sequence = touchData.sequenceController;
     // this.description = axisMarker.description;
-    this.markerMasterTime = marker.frame;
-  
 
-    // this.markerMasterTime = MasterSequence.LocalToMasterTime(touchData.sequence.sequenceController.masterSequence, touchData.sequence, axisMarker.time);
+    const targetMasterSequence = axisMonitor.touchController.rootConfig.masterSequences.find(x => x.node === touchData.sequenceController.masterSequenceNode) as MasterSequence;
+  
+    this.markerMasterTime = MasterSequence.localToMasterTime(targetMasterSequence, touchData.sequenceController, marker.frame);
     
     if (marker.func.indexOf('y') !== -1) {
       this.swipeAxis = axisMonitor.touchController.ySwipeAxis;

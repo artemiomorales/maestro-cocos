@@ -3,7 +3,7 @@ import { _decorator, Component, Node, CCInteger, find, CCFloat } from 'cc';
 import ComplexPayload from '../complexPayload';
 import { CONSTANTS, INTERNAL_COMPLEX_EVENT } from '../constants';
 import AppSettings from '../persistentData/appSettings';
-import { SequenceController } from './sequenceController';
+import SequenceController from './sequenceController';
 
 const { ccclass, property } = _decorator;
 
@@ -62,9 +62,9 @@ class MasterTimeData
 
   initialize(sourceSequence: SequenceController, masterTimeStart: number, masterTimeEnd: number)
   {
-      this.sequenceController = sourceSequence;
-      this.masterTimeStart = masterTimeStart;
-      this.masterTimeEnd = masterTimeEnd;
+    this.sequenceController = sourceSequence;
+    this.masterTimeStart = masterTimeStart;
+    this.masterTimeEnd = masterTimeEnd;
   }
 }
 
@@ -332,6 +332,33 @@ export default class MasterSequence extends Component {
       }
 
       return sequenceData;
+  }
+
+  /// <summary>
+  /// Modules need to be able to convert local sequence time to
+  /// global time when configuring themselves so they can create the correct
+  /// intervals to use when evaluating user input 
+  /// </summary>
+  /// <param name="masterSequence"></param>
+  /// <param name="sourceSequence"></param>
+  /// <param name="localTime"></param>
+  /// <returns></returns>
+  /// <exception cref="SystemException"></exception>
+  static localToMasterTime(masterSequence: MasterSequence, sourceSequence: SequenceController, localTime: number)
+  {
+    if (masterSequence.masterTimeDataList.length < 1) {
+        masterSequence.init();
+    }
+    const masterTimeData = masterSequence.masterTimeDataList;
+    for (let i = 0; i < masterTimeData.length; i++)
+    {
+        if (masterTimeData[i].sequenceController == sourceSequence)
+        {
+            return masterTimeData[i].masterTimeStart + localTime;
+        }
+    }
+    
+    throw "Source sequence not found in sequence data.";
   }
 
 }

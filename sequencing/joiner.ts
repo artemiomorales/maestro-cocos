@@ -2,9 +2,9 @@
 import { _decorator, Component, Node, find } from 'cc';
 import ComplexPayload from '../complexPayload';
 import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT, SIMPLE_EVENT } from '../constants';
-import { SequenceController } from './sequenceController';
+import SequenceController, { DestinationConfig } from './sequenceController';
 import AppSettings from '../persistentData/appSettings';
-import { JoinerDataCollection } from './joinerDataCollection';
+import { JoinerDataDictionary } from './joinerDataDictionary';
 import { RootConfig } from './rootConfig';
 import { JoinerData } from './joinerData';
 const { ccclass, property } = _decorator;
@@ -29,14 +29,13 @@ export class Joiner extends Component {
     return this.rootConfig.masterSequences;
   }
 
-  @property({type: [JoinerDataCollection], visible: true})
-  private _joinerDataCollection: JoinerDataCollection[] = [];
-  public get joinerDataCollection() {
-    return this._joinerDataCollection;
-  }
-  public set joinerDataCollection(value: JoinerDataCollection[]) {
-    this._joinerDataCollection = value;
-  }
+  // private _joinerDataCollection: JoinerDataDictionary[] = [];
+  // public get joinerDataCollection() {
+  //   return this._joinerDataCollection;
+  // }
+  // public set joinerDataCollection(value: JoinerDataDictionary[]) {
+  //   this._joinerDataCollection = value;
+  // }
 
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
@@ -54,6 +53,7 @@ export class Joiner extends Component {
   }
 
   callActivateNextSequence(complexPayload: ComplexPayload) {
+    console.log(complexPayload);
     const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE]);
       this.activateNextSequence(sourceSequence);
   }
@@ -65,78 +65,111 @@ export class Joiner extends Component {
 
   configureData()
   {
-      this.joinerDataCollection = [];
-      //forkDataCollection.Clear();
+      // this.joinerDataCollection = [];
+      // //forkDataCollection.Clear();
 
-      for (let i = 0; i < this.masterSequences.length; i++)
-      {
-        for (let q = 0; q < this.masterSequences[i].sequenceControllers.length; q++) {
+      // for (let i = 0; i < this.masterSequences.length; i++)
+      // {
+      //   for (let q = 0; q < this.masterSequences[i].sequenceControllers.length; q++) {
             
-          var sequence = this.masterSequences[i].sequenceControllers[q];
+      //     var sequence = this.masterSequences[i].sequenceControllers[q];
 
-          Joiner.setJoinData(this, sequence);
-        }
-      }
+      //     Joiner.setJoinData(this, sequence);
+      //   }
+      // }
   }
 
 
-  static setJoinData(joiner: Joiner, sequence: SequenceController) : Joiner
-  {
-      // We need to make an entry for every sequence, regardless of whether it
-      // has any sibling sequences, so we know when we've reached the end of a path
+  // static setJoinData(joiner: Joiner, sequence: SequenceController) : Joiner
+  // {
+  //     // We need to make an entry for every sequence, regardless of whether it
+  //     // has any sibling sequences, so we know when we've reached the end of a path
 
-      let hasBeenAdded = false;
+  //     let hasBeenAdded = false;
 
-      for(let i=0; i<joiner.joinerDataCollection.length; i++) {
-        if(joiner.joinerDataCollection[i].sequence === sequence) {
-          hasBeenAdded = true;
-        }
-      }
+  //     for(let i=0; i<joiner.joinerDataCollection.length; i++) {
+  //       if(joiner.joinerDataCollection[i].sequence === sequence) {
+  //         hasBeenAdded = true;
+  //       }
+  //     }
 
-      if(!hasBeenAdded) {
-        const joinerDataCollection = new JoinerDataCollection();
-        joinerDataCollection.sequence = sequence;
-        const joinerData = new JoinerData();
-        if(sequence.previousDestination.length > 1) {
-          // TO DO -- add support for forks
-        } else if(sequence.previousDestination.length === 1) {
-          joinerData.previousDestination.push(sequence.previousDestination[0].destination.getComponent(SequenceController) as SequenceController);
-        }
+  //     if(!hasBeenAdded) {
+  //       const joinerDataDictionary = new JoinerDataDictionary();
 
-        if(sequence.nextDestination.length > 1) {
-          // TO DO -- add support for forks
-        } else if(sequence.nextDestination.length === 1) {
-          joinerData.nextDestination.push(sequence.nextDestination[0].destination.getComponent(SequenceController) as SequenceController);
-        }
+  //       const previousJoinData = new JoinerData();
+  //       const previousDestinationConfig = sequence.joinConfig.previousDestination;
+  //       if(previousDestinationConfig.destinations.length > 1) {
+  //         previousJoinData.isFork = true;
+  //       }
+  //       for(let i=0; i<previousDestinationConfig.destinations.length; i++) {
+  //         previousJoinData.previousDestination.push(previousDestinationConfig.destinations[i].getComponent(SequenceController) as SequenceController);
+  //       }
+        
+  //       const nextDestinationConfig = sequence.joinConfig.nextDestination;
+  //       if(nextDestinationConfig.destinations.length > 1) {
+  //         // TO DO -- add support for forks
+  //       } else if(sequence.nextDestination.length === 1) {
+  //         previousJoinData.nextDestination.push(sequence.nextDestination[0].destination.getComponent(SequenceController) as SequenceController);
+  //       }
 
-        joinerDataCollection.joinerData = joinerData;
-        joiner.joinerDataCollection.push(joinerDataCollection);
-      }
+  //       joinerDataDictionary.sequence = sequence;
+  //       joinerDataDictionary.joinerData = previousJoinData;
+  //       joiner.joinerDataCollection.push(joinerDataDictionary);
+  //     }
       
-      return joiner;
-  }
+  //     return joiner;
+  // }
 
   activatePreviousSequence (sourceSequence: SequenceController) {
-    const sequenceSettings: JoinerData | undefined = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData;
+    // const sequenceSettings: JoinerData | undefined = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData;
 
-    if (sequenceSettings && sequenceSettings.previousDestination.length > 0)
+    const joinConfig = sourceSequence.joinConfig;
+    const previousDestinationConfig = joinConfig.previousDestination;
+
+    if(!joinConfig.previousDestination.active) {
+      return;
+    }
+
+    if (previousDestinationConfig.destinations.length > 0)
     {
       let previousSequence: SequenceController;
       
-      if (!sequenceSettings.isFork) {
+      if (previousDestinationConfig.destinations.length === 1) {
           sourceSequence.active = false;
-          previousSequence = sequenceSettings.previousDestination[0];
+          previousSequence = previousDestinationConfig.destinations[0].getComponent(SequenceController) as SequenceController;
           previousSequence.active = true;
+          previousSequence.triggerJoinActivateEvent();
           previousSequence.setSequenceTime(this.node, previousSequence.duration);
           // previousSequence.sequenceController.masterSequence.RefreshElapsedTime(previousSequence);
           // rootConfig.sequenceModified.RaiseEvent(this.gameObject);
           
           // In some cases, like looping, we don't
           // want to deactivate the playable director
-          // if (previousSequence != sourceSequence) {
-            // sourceSequence.sequenceController.gameObject.SetActive(false);
-          // }
+          if(previousSequence !== sourceSequence) {
+            sourceSequence.triggerJoinDeactivateEvent();
+          }
           this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE]);
+      } else {
+        sourceSequence.active = false;
+        const destinationSequence = Joiner.getDestination(previousDestinationConfig);
+        if(!destinationSequence) {
+          throw("Unable to find destination on " + sourceSequence.name + ". Did you populate your branch and branch keys correctly?")
+        }
+
+        for(let i=0; i<previousDestinationConfig.destinations.length; i++) {
+          const sequence = previousDestinationConfig.destinations[i].getComponent(SequenceController) as SequenceController;
+          sequence.active = false;
+        }
+
+        destinationSequence.active = true;
+        destinationSequence.triggerJoinDeactivateEvent();
+        destinationSequence.setSequenceTime(this.node, destinationSequence.duration);
+
+        if(destinationSequence !== sourceSequence) {
+          sourceSequence.triggerJoinDeactivateEvent();
+        }
+        this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE]);
+
       }
       // else if (sequenceSettings.previousDestination is Fork fork) {
       //   if (fork.active == false || fork.TryGetDestinationBranch(out BranchingPath destinationBranch) == false) {
@@ -170,15 +203,24 @@ export class Joiner extends Component {
   }
 
   activateNextSequence (sourceSequence: SequenceController) {
-    const sequenceSettings: JoinerData | undefined = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData;
+    // const sequenceSettings: JoinerData | undefined = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData;
 
-    if (sequenceSettings && sequenceSettings.nextDestination.length > 0) {
+    const joinConfig = sourceSequence.joinConfig;
+    const nextDestinationConfig = joinConfig.nextDestination;
+
+    if(!joinConfig.nextDestination.active) {
+      return;
+    }
+
+
+    if (nextDestinationConfig.destinations.length > 0) {
         let nextSequence: SequenceController;
         
-        if (!sequenceSettings.isFork) {
+        if (nextDestinationConfig.destinations.length === 1) {
             sourceSequence.active = false;
-            nextSequence = sequenceSettings.nextDestination[0];
+            nextSequence = nextDestinationConfig.destinations[0].getComponent(SequenceController) as SequenceController;
             nextSequence.active = true;
+            nextSequence.triggerJoinActivateEvent();
             // nextSequence.sequenceController.gameObject.SetActive(true);
             nextSequence.setSequenceTime(this.node, 0);
             // nextSequence.sequenceController.masterSequence.RefreshElapsedTime(nextSequence);
@@ -186,10 +228,34 @@ export class Joiner extends Component {
             
             // In some cases, namely looping, we don't
             // want to deactivate the playable director
-            // if (nextSequence != sourceSequence) {
-              // sourceSequence.sequenceController.gameObject.SetActive(false);
-            // }
+            if (nextSequence !== sourceSequence) {
+              sourceSequence.triggerJoinDeactivateEvent();
+            }
             this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE]);
+        } else {
+          sourceSequence.active = false;
+          const destinationSequence = Joiner.getDestination(nextDestinationConfig);
+          if(!destinationSequence) {
+            throw("Unable to find destination on " + sourceSequence.name + ". Did you populate your branch and branch keys correctly?")
+          }
+          
+          for(let i=0; i<nextDestinationConfig.destinations.length; i++) {
+            const sequence = nextDestinationConfig.destinations[i].getComponent(SequenceController) as SequenceController;
+            sequence.active = false;
+          }
+
+          destinationSequence.active = true;
+          destinationSequence.triggerJoinActivateEvent();   
+          destinationSequence.setSequenceTime(this.node, 0);
+
+          console.log(destinationSequence);
+
+          // In some cases, namely looping, we don't
+          // want to deactivate the playable director
+          if (destinationSequence !== sourceSequence) {
+            sourceSequence.triggerJoinDeactivateEvent();
+          }
+          this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE]);
         }
         // else if (sequenceSettings.nextDestination is Fork fork) {
         //     if (fork.active == false || fork.TryGetDestinationBranch(out BranchingPath destinationBranch) == false) {
@@ -223,5 +289,23 @@ export class Joiner extends Component {
     return sourceSequence;
   }
 
+  static getDestination(destinationConfig: DestinationConfig) {
+    const destinationKey = destinationConfig.destinationKey;
+    if(destinationKey) {
+      const destination = destinationConfig.destinations.find(x => {
+        const sequenceController = x.getComponent(SequenceController) as SequenceController;
+        console.log(sequenceController);
+        if(sequenceController && destinationKey === sequenceController.joinConfig.branchKey) {
+          return true;
+        }
+      });
+
+      if(destination) {
+        return destination.getComponent(SequenceController) as SequenceController;
+      } 
+    
+    }
+
+  }
 
 }

@@ -56,6 +56,16 @@ export class SceneData extends Component {
     this._intVariables = value;
   }
 
+  @property({type: [TextAsset], visible: true})
+  private _stringVariables: TextAsset[] = [];
+
+  public get stringVariables() {
+    return this._stringVariables;
+  }
+  public set stringVariables(value: TextAsset[]) {
+    this._stringVariables = value;
+  }
+
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
@@ -79,7 +89,7 @@ export class SceneData extends Component {
   
   getValue(callingObject: Node, variableKey: TextAsset)  {
     let value: any;
-    const methods = [this.getBoolValue, this.getIntValue];
+    const methods = [this.getBoolValue, this.getIntValue, this.getStringValue];
     for(let i=0; i<methods.length; i++) {
       value = methods[i].call(this, callingObject, variableKey);
       if(value) {
@@ -144,6 +154,16 @@ export class SceneData extends Component {
     return this.setAppSettingsValueToDefault(callingObject, variableKey);
   }
 
+  /// String ///
+
+  getStringValue(callingObject: Node, variableKey: TextAsset)  {
+    for(let i=0; i<this.stringVariables.length; i++) {
+      if(this.stringVariables[i] === variableKey) {
+        return this.stringVariables[i].name;
+      }
+    }
+    return this.getAppSettingsValue(callingObject, variableKey);
+  }
 
 
 }

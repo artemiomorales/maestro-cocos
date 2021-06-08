@@ -5,7 +5,7 @@ import AppSettings from '../../persistentData/appSettings';
 import { AnimationEvent } from '../../utils';
 import { InputController } from '../inputController';
 import { RootConfig } from '../rootConfig';
-import { SequenceController } from '../sequenceController';
+import SequenceController from '../sequenceController';
 import { AutorunData } from './autorunData';
 import AutorunExtents from './autorunExtents';
 const { ccclass, property, executionOrder} = _decorator;

@@ -1,7 +1,7 @@
 
 import { _decorator, Component, Node, CCFloat } from 'cc';
 import Extents from '../extents';
-import { SequenceController } from '../sequenceController';
+import SequenceController from '../sequenceController';
 import { AxisMonitor } from './axisMonitor';
 const { ccclass, property } = _decorator;
 

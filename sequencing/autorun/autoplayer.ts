@@ -4,7 +4,7 @@ import ComplexPayload from '../../complexPayload';
 import { CONSTANTS, INTERNAL_COMPLEX_EVENT, SIMPLE_EVENT } from '../../constants';
 import AppSettings from '../../persistentData/appSettings';
 import MasterSequence from '../masterSequence';
-import { SequenceController } from '../sequenceController';
+import SequenceController from '../sequenceController';
 import { AutorunController } from './autorunController';
 import { AutorunData } from './autorunData';
 import AutorunExtents from './autorunExtents';

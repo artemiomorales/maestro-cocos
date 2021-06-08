@@ -117,7 +117,7 @@ export class AxisMonitor extends Component {
 
   setTransitionStatus(targetStatus: boolean)
   {
-      this.axisTransitionActive = targetStatus;
+    this.axisTransitionActive = targetStatus;
   }
 
   configureData()
@@ -148,6 +148,7 @@ export class AxisMonitor extends Component {
     for( let i=0; i<this.touchExtentsCollection.length; i++) {
       AxisMonitor.configureTouchExtents(this.touchExtentsCollection[i].touchExtents);
     }
+    console.log(this.touchExtentsCollection);
   }
 
   refreshAxes()
