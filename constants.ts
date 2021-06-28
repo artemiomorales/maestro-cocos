@@ -47,9 +47,11 @@ export var INTERNAL_COMPLEX_EVENT = Enum({
   ON_SEQUENCE_UPDATED: -1,
   ON_SEQUENCE_SHOULD_REFRESH_ELAPSED_TIME: -1,
   ON_SEQUENCE_BOUNDARY_REACHED: -1,
+  ON_SEQUENCE_ACTIVATED: -1,
   ON_SEQUENCE_DEACTIVATED: -1,
   ACTIVATE_NEXT_SEQUENCE: -1,
-  ACTIVATE_PREVIOUS_SEQUENCE: -1
+  ACTIVATE_PREVIOUS_SEQUENCE: -1,
+  SET_FORK_DESTINATION: -1
 })
 
 export var COMPLEX_PAYLOAD_KEY = Enum({
@@ -64,6 +66,21 @@ export var DATA_TYPE = Enum({
   boolType: -1,
   audioClipType: -1
 })
+
+export enum DESTINATION_TYPE {
+  previous = "previous",
+  next = "next"
+}
+
+export var DESTINATION_ACTIVATION_TYPE = Enum({
+  SET_TO_END: -1,
+  SET_TO_BEGINNING: -1
+});
+
+export enum INVERT_STATUS {
+  normal = "normal",
+  inverted = "inverted"
+}
 
 export enum SWIPE_DIRECTION {
   yPositive = "yPositive",

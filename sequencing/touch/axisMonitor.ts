@@ -1,14 +1,19 @@
 
 import { _decorator, Component, Node, TextAsset, find } from 'cc';
-import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT, SIMPLE_EVENT } from '../../constants';
+import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT, DESTINATION_TYPE, SIMPLE_EVENT, INVERT_STATUS } from '../../constants';
 import AppSettings from '../../persistentData/appSettings';
 import { AnimationEvent } from '../../utils';
+import { SequenceJoinerDictionary } from '../joiner';
 import MasterSequence from '../masterSequence';
+import { DestinationConfig, JoinConfig } from '../sequenceController';
+import { TouchForkJoinerDestination } from '../touchForkJoinerDestination';
 import { AxisExtents } from './axisExtents';
 import { AxisUtils } from './axisUtils';
 import TouchController from './touchController';
 import { TouchData } from './touchData';
 import { TouchExtents } from './touchExtents';
+import { TouchForkExtents } from './touchForkExtents';
+import { TouchForkUtils } from './touchForkUtils';
 const { ccclass, property, executionOrder } = _decorator;
 
 
@@ -49,12 +54,24 @@ export class AxisMonitor extends Component {
     return this.appSettings.getAxisTransitionSpread(this.node);
   }
 
+  public get forkTransitionSpread() {
+    return this.appSettings.getForkTransitionSpread(this.node);
+  }
+
   private _touchExtentsCollection: TouchExtentsDictionary[] = null!;
   public get touchExtentsCollection() {
     return this._touchExtentsCollection;
   }
   public set touchExtentsCollection(value: TouchExtentsDictionary[]) {
     this._touchExtentsCollection = value;
+  }
+
+  private _touchForkExtents: TouchForkExtents[] = [];
+  public get touchForkExtents() {
+    return this._touchForkExtents;
+  }
+  public set touchForkExtents(value: TouchForkExtents[]) {
+    this._touchForkExtents = value;
   }
 
   @property({type: TouchController, visible: true})
@@ -66,40 +83,28 @@ export class AxisMonitor extends Component {
     this._touchController = value;
   }
 
-  @property({type: TextAsset, visible: true})
-  private _yNorthKey: TextAsset = null!;
+  public get joiner() {
+    return this.touchController.joiner;
+  }
+
   public get yNorthKey() {
-    return this._yNorthKey;
-  }
-  public set yNorthKey(value: TextAsset) {
-    this._yNorthKey = value;
+    return this.appSettings.getYNorthBranchKey(this.node);
   }
 
-  @property({type: TextAsset, visible: true})
-  private _ySouthKey: TextAsset = null!;
   public get ySouthKey() {
-    return this._ySouthKey;
-  }
-  public set ySouthKey(value: TextAsset) {
-    this._ySouthKey = value;
+    return this.appSettings.getYSouthBranchKey(this.node);
   }
 
-  @property({type: TextAsset, visible: true})
-  private _xEastKey: TextAsset = null!;
-  public get xEastKey() {
-    return this._xEastKey;
-  }
-  public set xEastKey(value: TextAsset) {
-    this._xEastKey = value;
-  }
-
-  @property({type: TextAsset, visible: true})
-  private _xWestKey: TextAsset = null!;
   public get xWestKey() {
-    return this._xWestKey;
+    return this.appSettings.getXWestBranchKey(this.node);
   }
-  public set xWestKey(value: TextAsset) {
-    this._xWestKey = value;
+
+  public get xEastKey() {
+    return this.appSettings.getXEastBranchKey(this.node);
+  }
+
+  public get touchBranchKeys() {
+    return this.appSettings.getTouchBranchKeys(this.node);
   }
 
   start() {
@@ -108,11 +113,18 @@ export class AxisMonitor extends Component {
 
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE], this.configureData, this);
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshAxes, this);
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_ACTIVATED], this.refreshAxes, this);
+
+    this.touchBranchKeys.push(this.yNorthKey);
+    this.touchBranchKeys.push(this.ySouthKey);
+    this.touchBranchKeys.push(this.xEastKey);
+    this.touchBranchKeys.push(this.xWestKey);
   }
 
   onDisable () {
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE], this.configureData, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshAxes, this);
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_ACTIVATED], this.refreshAxes, this);
   }
 
   setTransitionStatus(targetStatus: boolean)
@@ -129,7 +141,7 @@ export class AxisMonitor extends Component {
         var touchData = this.touchController.touchDataList[i];
         
         const markers = touchData.sequenceController.animationClip.events;
-        const rawExtents = AxisMonitor.createExtentsList(this, touchData, markers as any);
+        const rawExtents = AxisMonitor.createExtentsList(this, this.touchController.touchDataList[i], markers as any);
 
         const targetMasterSequence: MasterSequence = this.touchController.rootConfig.masterSequences.find(x => x.node === touchData.sequenceController.masterSequenceNode) as MasterSequence;
         
@@ -148,7 +160,6 @@ export class AxisMonitor extends Component {
     for( let i=0; i<this.touchExtentsCollection.length; i++) {
       AxisMonitor.configureTouchExtents(this.touchExtentsCollection[i].touchExtents);
     }
-    console.log(this.touchExtentsCollection);
   }
 
   refreshAxes()
@@ -162,50 +173,98 @@ export class AxisMonitor extends Component {
     for(let i=0; i<this.touchExtentsCollection.length; i++) {
       const touchExtentsDictionary = this.touchExtentsCollection[i];
 
+
       if (touchExtentsDictionary.masterSequence.hasActiveSequence == false) continue;
       
       const masterTime = touchExtentsDictionary.masterSequence.elapsedTime;
       const [currentExtents, withinThreshold] = TouchExtents.timeWithinExtents(masterTime, touchExtentsDictionary.touchExtents);
 
       if (withinThreshold) {
-        
+
         if (currentExtents instanceof AxisExtents ) {
-          AxisUtils.ActivateAxisExtents(masterTime, currentExtents);
+          AxisUtils.activateAxisExtents(masterTime, currentExtents);
         }
         
-        // else if (currentExtents is TouchForkExtents forkExtents) {
-        //     TouchForkUtils.ActivateTouchFork(masterTime, forkExtents);
-        // }
+        else if (currentExtents instanceof TouchForkExtents) {
+          TouchForkUtils.activateTouchFork(masterTime, currentExtents);
+        }
           
       }
     }
   }
 
+  // sequenceHasTouchBranchKey(joinConfig: JoinConfig) {
+  //   for(let i=0; i<this.touchBranchKeys.length; i++) {
+  //     if(this.touchBranchKeys[i] === joinConfig.branchKey) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+
   static createExtentsList(axisMonitor: AxisMonitor, touchData: TouchData, markers: AnimationEvent[])
   {
-      const touchExtentsData: TouchExtents[] = [];
-      
-      for(let i=0; i<markers.length; i++) {
-          switch (markers[i].func) {
+    const touchExtentsData: TouchExtents[] = [];
+    const touchForkExtentsData: TouchForkExtents[] = [];
+    const joiner = axisMonitor.joiner;
 
-            case "y":
-            case "x":
-            case "-x":
-            case "-y":
-              touchExtentsData.push(new AxisExtents(axisMonitor, touchData, markers[i]));
-          }
+    const sequenceJoinerDictionary = joiner.joinerDataCollection.find(x => x.sequence === touchData.sequenceController) as SequenceJoinerDictionary;
+
+    const previousDestinationConfig = sequenceJoinerDictionary.joinerData.previousDestination;
+    if(previousDestinationConfig instanceof TouchForkJoinerDestination) {
+
+      if(previousDestinationConfig.branchingPaths.length > 1) {
+        const touchForkExtents = new TouchForkExtents(axisMonitor, touchData, DESTINATION_TYPE.previous, previousDestinationConfig);
+        touchExtentsData.push(touchForkExtents);
+        axisMonitor.touchForkExtents.push(touchForkExtents);
       }
 
-      // Joiner.ForkDataCollection forkDataCollection = axisMonitor.touchController.joiner.forkDataCollection;
-      
-      // if (forkDataCollection.ContainsKey(touchData.sequence) && forkDataCollection[touchData.sequence][0].fork is TouchFork) {
-      //     for (int i = 0; i < forkDataCollection[touchData.sequence].Count; i++) {
-      //         touchExtentsData.Add(new TouchForkExtents(axisMonitor, touchData, forkDataCollection[touchData.sequence][i]));
-      //     }
-      // }
-      
-      // touchExtentsData.Sort(new AxisExtentsSort());
-      return touchExtentsData;
+    }
+    
+    for(let i=0; i<markers.length; i++) {
+        switch (markers[i].func) {
+          case "y":
+          case "x":
+          case "-x":
+          case "-y":
+            touchExtentsData.push(new AxisExtents(axisMonitor, touchData, markers[i]));
+        }
+    }
+
+    const nextDestinationConfig = sequenceJoinerDictionary.joinerData.nextDestination;
+    if(nextDestinationConfig instanceof TouchForkJoinerDestination) {
+
+      if(nextDestinationConfig.branchingPaths.length > 1) {
+        touchExtentsData.push(new TouchForkExtents(axisMonitor, touchData, DESTINATION_TYPE.next, nextDestinationConfig));
+      }
+
+    }
+
+    // Joiner.ForkDataCollection forkDataCollection = axisMonitor.touchController.joiner.forkDataCollection;
+    
+    // if (forkDataCollection.ContainsKey(touchData.sequence) && forkDataCollection[touchData.sequence][0].fork is TouchFork) {
+    //     for (int i = 0; i < forkDataCollection[touchData.sequence].Count; i++) {
+    //         touchExtentsData.Add(new TouchForkExtents(axisMonitor, touchData, forkDataCollection[touchData.sequence][i]));
+    //     }
+    // }
+    
+    touchExtentsData.sort(AxisMonitor.axisExtentsSort);
+    return touchExtentsData;
+  }
+
+  static axisExtentsSort(x: TouchExtents, y: TouchExtents) {
+
+    if(x instanceof AxisExtents && y instanceof AxisExtents) {
+      return x.markerMasterTime < y.markerMasterTime ? -1 : 1;
+    } else if (x instanceof AxisExtents && y instanceof TouchForkExtents) {
+      return x.markerMasterTime < y.startTime ? -1 : 1;
+    } else if (x instanceof TouchForkExtents && y instanceof AxisExtents) {
+      return x.startTime < y.markerMasterTime ? -1 : 1;
+    } else if (x instanceof TouchForkExtents && y instanceof TouchForkExtents) {
+      return x.startTime < y.startTime ? -1 : 1;
+    }
+
+    throw "Unable to sort axis extents";
   }
 
   // Whereas we can populate Fork Extents with all of their data upon creation, we need to

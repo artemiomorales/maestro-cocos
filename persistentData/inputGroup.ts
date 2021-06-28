@@ -98,12 +98,30 @@ export default class InputGroup {
   }
 
   @property({type: CCFloat, visible: true})
-  private _axisTransitionSpread: number = 0;
+  private _axisTransitionSpread: number = 0.5;
   public get axisTransitionSpread() {
     return this._axisTransitionSpread;
   }
   public set axisTransitionSpread(value: number) {
     this._axisTransitionSpread = value;
+  }
+
+  @property({visible: true})
+  private _forkTransitionActive: boolean = false;
+  public get forkTransitionActive() {
+    return this._forkTransitionActive;
+  }
+  public set forkTransitionActive(value: boolean) {
+    this._forkTransitionActive = value;
+  }
+
+  @property({type: CCFloat, visible: true})
+  private _forkTransitionSpread: number = 2;
+  public get forkTransitionSpread() {
+    return this._forkTransitionSpread;
+  }
+  public set forkTransitionSpread(value: number) {
+    this._forkTransitionSpread = value;
   }
 
   @property({type: Axis, visible: true})

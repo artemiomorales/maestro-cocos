@@ -2,7 +2,9 @@
 import { Component, find, Node, _decorator, Vec2 } from 'cc';
 import { CONSTANTS, SIMPLE_EVENT, SWIPE_DIRECTION } from '../../constants';
 import AppSettings from '../../persistentData/appSettings';
+import { Axis } from '../../persistentData/axis';
 import { InputController } from '../inputController';
+import Joiner from '../joiner';
 import { RootConfig } from '../rootConfig';
 import { TouchData } from './touchData';
 const { ccclass, property, executionOrder } = _decorator;
@@ -21,6 +23,15 @@ export default class TouchController extends Component implements InputControlle
   }
   public set rootConfig(value: RootConfig) {
     this._rootConfig = value;
+  }
+
+  @property({type: Joiner, visible: true})
+  private _joiner: Joiner = null!;
+  public get joiner() {
+    return this._joiner;
+  }
+  public set joiner(value: Joiner) {
+    this._joiner = value;
   }
   
   public get masterSequences() {
@@ -105,19 +116,52 @@ export default class TouchController extends Component implements InputControlle
     }
 
     this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE]);
-
-    console.log("touch controller configuration complete");
   }
 
   getDominantTouchForce(vector2: Vec2)
   {
-    console.log(this.swipeDirection);
     if (this.swipeDirection == SWIPE_DIRECTION.xPositive ||
       this.swipeDirection == SWIPE_DIRECTION.xNegative) {
       return new Vec2(vector2.x, 0);
     }
     
     return new Vec2(0, vector2.y);
+  }
+
+  static refreshIsReversing(touchController: TouchController, swipeDirection: string, sourceAxis: Axis) : TouchController
+  {
+      switch (swipeDirection) {
+          
+          case SWIPE_DIRECTION.yPositive:
+          case SWIPE_DIRECTION.xPositive:
+          {
+              if (sourceAxis.inverted == false) {
+                  touchController.isReversing = false;
+              }
+              else {
+                  touchController.isReversing = true;
+              }
+
+              break;
+          }
+          case SWIPE_DIRECTION.yNegative:
+          case SWIPE_DIRECTION.xNegative:
+          {
+              if (sourceAxis.inverted == false) {
+                  touchController.isReversing = true;
+              }
+              else {
+                  touchController.isReversing = false;
+              }
+
+              break;
+          }
+          
+          default:
+              throw `${swipeDirection} is invalid`;
+      }
+
+      return touchController;
   }
 
 }

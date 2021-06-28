@@ -111,6 +111,28 @@ export default class AppSettings extends Component {
     return newValue;
   }
 
+  // Touch Branch Keys
+
+  getYNorthBranchKey(callingObject: Node) {
+    return this.systemSettings.yNorthKey.variableReference;
+  }
+
+  getYSouthBranchKey(callingObject: Node) {
+    return this.systemSettings.ySouthKey.variableReference;
+  }
+
+  getXWestBranchKey(callingObject: Node) {
+    return this.systemSettings.xWestKey.variableReference;
+  }
+
+  getXEastBranchKey(callingObject: Node) {
+    return this.systemSettings.xEastKey.variableReference;
+  }
+
+  getTouchBranchKeys(callingObject: Node) {
+    return this.systemSettings.touchBranchKeys;
+  }
+
 
   /// User Preferences ///
 
@@ -243,6 +265,25 @@ export default class AppSettings extends Component {
     this.inputGroup.axisTransitionSpread = targetValue;
   }
 
+  // Fork Transition Active
+
+  getForkTransitionActive(callingObject: Node) {
+    return this.inputGroup.forkTransitionActive;
+  }
+
+  setForkTransitionActive(callingObject: Node, targetValue: boolean) {
+    this.inputGroup.forkTransitionActive = targetValue;
+  }
+
+  // Fork Transition Spread
+
+  getForkTransitionSpread(callingObject: Node) {
+    return this.inputGroup.axisTransitionSpread;
+  }
+
+  setForkTransitionSpread(callingObject: Node, targetValue: number) {
+    this.inputGroup.axisTransitionSpread = targetValue;
+  }
 
   // Swipe Modifer Output
 

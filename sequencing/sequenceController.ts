@@ -2,52 +2,22 @@ import { _decorator, Component, AnimationComponent, Node, AnimationState, Animat
 
 import AppSettings from '../persistentData/appSettings';
 
-import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT } from '../constants';
+import { COMPLEX_EVENT, CONSTANTS, DESTINATION_ACTIVATION_TYPE, DESTINATION_TYPE, INTERNAL_COMPLEX_EVENT } from '../constants';
 import ComplexPayload from '../complexPayload';
+import { IForkDestinationPayload } from './iForkDestinationPayload';
 
 const { ccclass, property } = _decorator;
 
 var SEQUENCE_UPDATE_STATE = Enum({
   FORWARD_AUTOPLAY: -1,
   MANUAL_UPDATE: -1
-})
+});
 
-@ccclass('DestinationConfig')
-export class DestinationConfig {
 
-  @property({visible: true})
-  private _active = true;
-  public get active() {
-    return this._active;
-  }
-  public set active(value: boolean) {
-    this._active = value;
-  }
+@ccclass('Destination')
+export class Destination {
 
   @property({type:TextAsset, visible: true, tooltip: "Only required if there are multiple destinations"})
-  public _destinationKey: TextAsset = null!;
-  public get destinationKey() {
-    return this._destinationKey;
-  }
-  public set destinationKey(value: TextAsset) {
-    this._destinationKey = value;
-  }
-
-  @property({type:[Node], visible: true, tooltip: "Each destination must be a sequence controller"})
-  public _destinations: Node[] = [];
-  public get destinations() {
-    return this._destinations;
-  }
-  public set destinations(value: Node[]) {
-    this._destinations = value;
-  }
-
-}
-
-@ccclass('JoinConfig')
-export class JoinConfig {
-
-  @property({type:TextAsset, visible: true, tooltip: "Only required if this sequence is a destination in a fork"})
   public _branchKey: TextAsset = null!;
   public get branchKey() {
     return this._branchKey;
@@ -55,6 +25,71 @@ export class JoinConfig {
   public set branchKey(value: TextAsset) {
     this._branchKey = value;
   }
+
+  @property({type:Node, visible: true, tooltip: "Each destination must be a sequence controller"})
+  public _sequenceNode: Node = null!;
+  public get sequenceNode() {
+    return this._sequenceNode;
+  }
+  public set sequenceNode(value: Node) {
+    this._sequenceNode = value;
+  }
+
+  @property({type:DESTINATION_ACTIVATION_TYPE, visible: true, tooltip: "Only required if there are multiple destinations"})
+  public _activationType: number = null!;
+  public get activationType() {
+    return this._activationType;
+  }
+  public set activationType(value: number) {
+    this._activationType = value;
+  }
+
+}
+
+
+@ccclass('DestinationConfig')
+export class DestinationConfig {
+
+  @property({visible: true})
+  private _activeByDefault = true;
+  public get activeByDefault() {
+    return this._activeByDefault;
+  }
+  public set activeByDefault(value: boolean) {
+    this._activeByDefault = value;
+  }
+
+  @property({type:TextAsset, visible: true, tooltip: "Only required if there are multiple destinations"})
+  public _originKey: TextAsset = null!;
+  public get originKey() {
+    return this._originKey;
+  }
+  public set originKey(value: TextAsset) {
+    this._originKey = value;
+  }
+
+  @property({type:TextAsset, visible: true, tooltip: "Only required if there are multiple destinations"})
+  public _defaultDestinationKey: TextAsset = null!;
+  public get defaultDestinationKey() {
+    return this._defaultDestinationKey;
+  }
+  public set defaultDestinationKey(value: TextAsset) {
+    this._defaultDestinationKey = value;
+  }
+
+  @property({type:[Destination], visible: true, tooltip: "Each destination must be a sequence controller"})
+  public _destinations: Destination[] = [];
+  public get destinations() {
+    return this._destinations;
+  }
+  public set destinations(value: Destination[]) {
+    this._destinations = value;
+  }
+
+}
+
+@ccclass('JoinConfig')
+export class JoinConfig {
 
   @property({type:DestinationConfig, visible: true})
   public _previousDestination: DestinationConfig = new DestinationConfig();
@@ -395,8 +430,6 @@ export default class SequenceController extends Component {
   static frameToLocalTime(sequence: SequenceController, frame: number)
   {
     const animationClip: any = sequence.animationClip;
-    console.log("frame rate");
-    console.log(animationClip.frameRate);
     return frame / animationClip.frameRate;
   }
 
@@ -409,56 +442,72 @@ export default class SequenceController extends Component {
   }
 
   setPreviousDestination(destinationKey: string) {
-    const destination = SequenceController.getNodeViaDestinationKey(destinationKey, this.joinConfig.previousDestination);
-    if(destination) {
-      this.joinConfig.previousDestination.destinationKey = (destination.getComponent(SequenceController) as SequenceController).joinConfig.branchKey;
-    } else {
-      throw 'Destination key not found in node list in ' + this.name + '. Did you populate branch keys on your target sequence contollers?'
+    
+    const complexPayload = new ComplexPayload();
+    const payload: IForkDestinationPayload = {
+      sequence: this,
+      branchKey: destinationKey,
+      destinationType: DESTINATION_TYPE.previous
     }
+    complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_FORK_DESTINATION], payload);
+
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_FORK_DESTINATION], complexPayload)
+
+    // const destination = SequenceController.getDestinationViaKey(destinationKey, this.joinConfig.previousDestination);
+    // if(destination) {
+    //   this.joinConfig.previousDestination.defaultDestinationKey = destination.branchKey;
+    // } else {
+    //   throw 'Destination key not found in node list in ' + this.name + '. Did you populate branch keys on your target sequence contollers?'
+    // }
 
   }
 
   setNextDestination(destinationKey: string) {
-    const destination = SequenceController.getNodeViaDestinationKey(destinationKey, this.joinConfig.nextDestination);
-    if(destination) {
-      this.joinConfig.nextDestination.destinationKey = (destination.getComponent(SequenceController) as SequenceController).joinConfig.branchKey;
-    } else {
-      throw 'Destination key not found in node list in ' + this.name + '. Did you populate branch keys on your target sequence contollers?'
+        
+    const complexPayload = new ComplexPayload();
+    const payload: IForkDestinationPayload = {
+      sequence: this,
+      branchKey: destinationKey,
+      destinationType: DESTINATION_TYPE.next
     }
+    complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_FORK_DESTINATION], payload);
+
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_FORK_DESTINATION], complexPayload)
+
+    // const destination = SequenceController.getDestinationViaKey(destinationKey, this.joinConfig.nextDestination);
+    // if(destination) {
+    //   this.joinConfig.nextDestination.defaultDestinationKey = destination.branchKey;
+    // } else {
+    //   throw 'Destination key not found in node list in ' + this.name + '. Did you populate branch keys on your target sequence contollers?'
+    // }
 
   }
 
-  static getNodeViaDestinationKey(destinationKey: string, destinationConfig: DestinationConfig) {
-    console.log(destinationKey);
+  static getDestinationViaKey(destinationKey: string, destinationConfig: DestinationConfig) {
     const destination = destinationConfig.destinations.find(x => {
-      const sequenceController = x.getComponent(SequenceController) as SequenceController;
-      if(sequenceController && destinationKey === sequenceController.joinConfig.branchKey.name) {
+      const sequenceController = x.sequenceNode.getComponent(SequenceController) as SequenceController;
+      if(sequenceController && destinationKey === x.branchKey.name) {
         return true;
       }
     });
 
-    if(destination) {
-      return destination.getComponent(SequenceController) as SequenceController;
-    }
+    return destination;
   }
 
   mplay() {
     this.animState.speed = this.currentSpeed;
     this.animState.play();
     this.animState.time = this.currentTime;
-    console.log("play");
   }
   mpause() {
     this.animState.speed = this.currentSpeed;
     this.animState.play();
     this.animState.time = this.currentTime;
-    console.log("paused");
   }
   mend() {
     this.animState.speed = this.currentSpeed;
     this.animState.play();
     this.animState.time = this.currentTime;
-    console.log("end");
   }
 
 

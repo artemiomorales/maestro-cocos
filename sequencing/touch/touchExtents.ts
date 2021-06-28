@@ -81,6 +81,14 @@ export class TouchExtents implements Extents {
     this._axisMonitor = value;
   }
 
+  private _inverted: boolean = false;
+  public get inverted() {
+    return this._inverted;
+  }
+  public set inverted(value: boolean) {
+    this._inverted = value;
+  }
+
   initialize(startTime: number, endTime: number, description: string) {
     this.startTime = startTime;
     this.endTime = endTime;

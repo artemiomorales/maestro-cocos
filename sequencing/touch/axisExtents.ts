@@ -7,6 +7,7 @@ import { AnimationEvent } from '../../utils';
 import SequenceController from '../sequenceController';
 import { Axis } from '../../persistentData/axis';
 import MasterSequence from '../masterSequence';
+import { TouchForkExtents } from './touchForkExtents';
 const { ccclass, property } = _decorator;
 
 @ccclass('AxisExtents')
@@ -26,14 +27,6 @@ export class AxisExtents extends TouchExtents {
   }
   public set momentumAxis(value: Axis) {
     this._momentumAxis = value;
-  }
-
-  private _inverted: boolean = false;
-  public get inverted() {
-    return this._inverted;
-  }
-  public set inverted(value: boolean) {
-    this._inverted = value;
   }
 
   private _markerMasterTime: number = 0;
@@ -83,9 +76,9 @@ export class AxisExtents extends TouchExtents {
                         this.markerMasterTime + this.axisMonitor.axisTransitionSpread;
         }
         
-        // else if(previousTouchExtents instanceof TouchForkExtents) {
-        //   this.startTransitionThreshold = this.startTime + this.axisMonitor.axisTransitionSpread;
-        // }
+        else if(previousTouchExtents instanceof TouchForkExtents) {
+          this.startTransitionThreshold = this.startTime + this.axisMonitor.axisTransitionSpread;
+        }
 
     } else {
         this.startTime = this.markerMasterTime;
@@ -101,10 +94,10 @@ export class AxisExtents extends TouchExtents {
           this.endTransitionThreshold = nextTouchExtents.markerMasterTime - this.axisMonitor.axisTransitionSpread;
         }
 
-        // else if(nextTouchExtents instanceof TouchForExtents) {
-        //   this.endTime = nextTouchExtents.startTime;
-        //   this.endTransitionThreshold = nextTouchExtents.startTime;
-        // }
+        else if(nextTouchExtents instanceof TouchForkExtents) {
+          this.endTime = nextTouchExtents.startTime;
+          this.endTransitionThreshold = nextTouchExtents.startTime;
+        }
 
     } else {
         this.endTime = Number.MAX_VALUE;

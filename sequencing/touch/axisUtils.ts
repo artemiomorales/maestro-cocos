@@ -6,7 +6,7 @@ const { ccclass, property } = _decorator;
 
 export class AxisUtils {
     
-  static ActivateAxisExtents(masterTime: number, activeExtents: AxisExtents) : TouchExtents
+  static activateAxisExtents(masterTime: number, activeExtents: AxisExtents) : TouchExtents
   {
     const axisMonitorObject = activeExtents.axisMonitor.node; 
     

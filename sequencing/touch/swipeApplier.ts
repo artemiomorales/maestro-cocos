@@ -2,6 +2,7 @@
 import { _decorator, Vec2, Component, CCInteger, Node, find } from 'cc';
 import { CONSTANTS, SIMPLE_EVENT } from '../../constants';
 import AppSettings from '../../persistentData/appSettings';
+import SequenceController from '../sequenceController';
 import TouchController from './touchController';
 import TouchModule from './touchModule';
 const { ccclass, property, executionOrder} = _decorator;
@@ -28,6 +29,10 @@ export default class SwipeApplier extends Component implements TouchModule {
 
   public get axisTransitionActive() {
     return this.appSettings.getAxisTransitionActive(this.node);
+  }
+
+  public get forkTransitionActive() {
+    return this.appSettings.getForkTransitionActive(this.node);
   }
 
   @property({type: TouchController, visible: true})
@@ -83,12 +88,9 @@ export default class SwipeApplier extends Component implements TouchModule {
     let swipeForceToApply: Vec2 = this.touchController.swipeForce;
 
     // If we're in a fork, only apply force from the axis currently receiving greatest input
-    if (this.axisTransitionActive == true) {
+    if (this.axisTransitionActive === true || this.forkTransitionActive === true) {
       swipeForceToApply = this.touchController.getDominantTouchForce(swipeForceToApply);
     }
-    // if (touchController.axisMonitor.axisTransitionActive == true || touchController.joiner.forkTransitionActive == true) {
-    //     swipeForceToApply = touchController.GetDominantTouchForce(swipeForceToApply);
-    // }
 
     this.touchController.swipeModifierOutput = 0;
 
@@ -116,15 +118,26 @@ export default class SwipeApplier extends Component implements TouchModule {
       this.touchController.isReversing = true;
     }
     
-    this.applySwipeModifier(this, this.touchController.swipeModifierOutput);
+
+    for(let i=0; i<this.touchController.touchDataList.length; i++) {
+      const touchData = this.touchController.touchDataList[i];
+      if(touchData.sequenceController.active === false) {
+        continue;
+      }
+      if(touchData.forceForward === true) {
+        this.touchController.swipeModifierOutput = Math.abs(this.touchController.swipeModifierOutput);
+      } else if (touchData.forceBackward == true) {
+        this.touchController.swipeModifierOutput = Math.abs(this.touchController.swipeModifierOutput) * -1;
+      }
+      this.applySwipeModifier(this, touchData.sequenceController, this.touchController.swipeModifierOutput);
+    }
   }
 
-
-  applySwipeModifier(source: SwipeApplier, timeModifier: number) {
+  applySwipeModifier(source: SwipeApplier, targetSequence: SequenceController, timeModifier: number) {
     for(let i=0; i<this.touchController.rootConfig.masterSequences.length; i++) {
       let masterSequence = this.touchController.rootConfig.masterSequences[i];
       for(let q=0; q<masterSequence.sequenceControllers.length; q++) {
-        if(masterSequence.sequenceControllers[q].active === true) {
+        if(masterSequence.sequenceControllers[q] === targetSequence) {
           masterSequence.requestModifySequenceTime(masterSequence.sequenceControllers[q], source.priority, source.node.name, timeModifier);
         }
       }
