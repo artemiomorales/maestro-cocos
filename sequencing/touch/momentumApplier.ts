@@ -34,6 +34,10 @@ export default class MomentumApplier extends Component implements TouchModule  {
     return this.appSettings.getAxisTransitionActive(this.node);
   }
 
+  public get forkTransitionActive() {
+    return this.appSettings.getForkTransitionActive(this.node);
+  }
+
   public get swipeDirection() {
     return this.appSettings.getSwipeDirection(this.node);
   }
@@ -131,7 +135,7 @@ export default class MomentumApplier extends Component implements TouchModule  {
       
       let momentumModifier = 0;
 
-      if (this.axisTransitionActive == false) {
+      if (this.axisTransitionActive === false && this.forkTransitionActive === false) {
           momentumModifier = this.getMomentumModifier(this.touchController, this.momentumForceToApply);
 
           // if (this.touchController.axisMonitor.axisTransitionActive == false &&
@@ -140,6 +144,7 @@ export default class MomentumApplier extends Component implements TouchModule  {
 
       } else {
           // If we're in a transition, only apply force from the axis currently receiving greatest input
+
           this.momentumForceToApply = MomentumApplier.normalizeMomentumForce(this.lastSwipeDirection, this.momentumForceToApply);
           const modifiedForce = MomentumApplier.getDominantMomentumForce(this.lastSwipeDirection, this.momentumForceToApply);
           momentumModifier = this.getMomentumModifier(this.touchController, modifiedForce);
@@ -171,13 +176,19 @@ export default class MomentumApplier extends Component implements TouchModule  {
     const touchController = momentumApplier.touchController;
     touchController.momentumModifierOutput = momentumModifier;
 
-    for(let i=0; i<this.touchController.rootConfig.masterSequences.length; i++) {
-      let masterSequence = this.touchController.rootConfig.masterSequences[i];
-      for(let q=0; q<masterSequence.sequenceControllers.length; q++) {
-        if(masterSequence.sequenceControllers[q].active === true) {
-          MomentumApplier.applyMomentumModifier(touchController.rootConfig.masterSequences, momentumApplier, masterSequence.sequenceControllers[q], touchController.momentumModifierOutput);
-        }
+    for(let i=0; i<this.touchController.touchDataList.length; i++) {
+      const touchData = this.touchController.touchDataList[i];
+      if(touchData.sequenceController.active === false) {
+        continue;
       }
+
+      if(touchData.forceForward === true) {
+        touchController.momentumModifierOutput = Math.abs(momentumModifier);
+      } else if (touchData.forceBackward === true) {
+        touchController.momentumModifierOutput = Math.abs(momentumModifier) * -1;
+      }
+
+      this.applyMomentumModifier(this, touchData.sequenceController, touchController.momentumModifierOutput);
     }
 
             
@@ -204,12 +215,16 @@ export default class MomentumApplier extends Component implements TouchModule  {
     return touchController;
   }
 
-  static applyMomentumModifier(masterSequences: MasterSequence[], source: InputModule, targetSequence: SequenceController, timeModifier: number)
+  applyMomentumModifier(source: MomentumApplier, targetSequence: SequenceController, timeModifier: number)
   {
-      const masterSequence = masterSequences.find(x => x.sequenceControllers.find(y => y == targetSequence)) as MasterSequence;
-      masterSequence.requestModifySequenceTime(targetSequence, source.priority, source.nodeElement.name, timeModifier);
-
-      return targetSequence;
+    for(let i=0; i<this.touchController.rootConfig.masterSequences.length; i++) {
+      let masterSequence = this.touchController.rootConfig.masterSequences[i];
+      for(let q=0; q<masterSequence.sequenceControllers.length; q++) {
+        if(masterSequence.sequenceControllers[q] === targetSequence) {
+          masterSequence.requestModifySequenceTime(masterSequence.sequenceControllers[q], source.priority, source.node.name, timeModifier);
+        }
+      }
+    }
   }
 
   getMomentumModifier(touchController: TouchController, momentumForce: Vec2)

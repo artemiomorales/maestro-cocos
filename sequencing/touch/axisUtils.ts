@@ -1,7 +1,9 @@
 
 import { _decorator, Component, Node } from 'cc';
 import { AxisExtents } from './axisExtents';
+import TouchController from './touchController';
 import { TouchExtents } from './touchExtents';
+import { TouchForkExtents } from './touchForkExtents';
 const { ccclass, property } = _decorator;
 
 export class AxisUtils {
@@ -34,26 +36,24 @@ export class AxisUtils {
               return AxisUtils.setAxisTransitionState(activeExtents, activeExtents.previousTouchExtents);
             }
             
-            // else if(case TouchForkExtents previousForkExtents:
-            //         return SetForkTransitionState(activeExtents.axisMonitor.touchController, previousForkExtents);) {
-
-            // }
+            else if(activeExtents.previousTouchExtents instanceof TouchForkExtents) {
+              return AxisUtils.setForkTransitionState(activeExtents.previousTouchExtents);
+            }
         }
     }
 
     if (activeExtents.nextTouchExtents != null) {
-            
-        if (masterTime >= activeExtents.endTransitionThreshold) {
+          
+      if (masterTime >= activeExtents.endTransitionThreshold) {
 
-            if (activeExtents.nextTouchExtents instanceof AxisExtents) {
-              return AxisUtils.setAxisTransitionState(activeExtents, activeExtents.nextTouchExtents);
-            }
-
-            // else if(case TouchForkExtents nextForkExtents:
-            //         return SetForkTransitionState(activeExtents.axisMonitor.touchController, nextForkExtents) {
-
-            //         }
+        if (activeExtents.nextTouchExtents instanceof AxisExtents) {
+          return AxisUtils.setAxisTransitionState(activeExtents, activeExtents.nextTouchExtents);
         }
+
+        else if(activeExtents.nextTouchExtents instanceof TouchForkExtents) {
+          return AxisUtils.setForkTransitionState(activeExtents.nextTouchExtents)
+        }
+      }
     }
 
     return activeExtents;
@@ -94,6 +94,28 @@ export class AxisUtils {
       siblingAxisExtents.momentumAxis.setInverted(axisMonitorObject, siblingAxisExtents.inverted);
 
       return activeExtents;
+  }
+
+  static setForkTransitionState(touchForkExtents: TouchForkExtents) : TouchForkExtents
+  {
+      const touchController = touchForkExtents.axisMonitor.touchController;
+      const axisMonitorObject = touchForkExtents.axisMonitor.node;
+
+      touchForkExtents.axisMonitor.setTransitionStatus(true);
+      
+      if (touchForkExtents.touchForkJoinerDestination.originKey == touchForkExtents.axisMonitor.yNorthKey ||
+          touchForkExtents.touchForkJoinerDestination.originKey == touchForkExtents.axisMonitor.ySouthKey) {
+          touchController.ySwipeAxis.setStatus(axisMonitorObject, true);
+          touchController.yMomentumAxis.setStatus(axisMonitorObject, true);
+      }
+      
+      else if (touchForkExtents.touchForkJoinerDestination.originKey == touchForkExtents.axisMonitor.xEastKey ||
+                touchForkExtents.touchForkJoinerDestination.originKey == touchForkExtents.axisMonitor.xWestKey) {
+          touchController.xSwipeAxis.setStatus(axisMonitorObject, true);
+          touchController.xMomentumAxis.setStatus(axisMonitorObject, true);
+      }
+
+      return touchForkExtents;
   }
 
 }

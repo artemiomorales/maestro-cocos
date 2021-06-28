@@ -277,11 +277,13 @@ export default class Joiner extends Component {
     } else if(previousDestination instanceof ForkJoinerDestination) {
 
       if(!previousDestination.destinationBranch) {
+        this.callTriggerSequenceBoundaryReached(sourceSequence);
         return;
       }
 
       const previousSequence: SequenceController = previousDestination.destinationBranch.sequence;
       if(!previousSequence) {
+        this.callTriggerSequenceBoundaryReached(sourceSequence);
         return;
       }
       sourceSequence.active = false;
@@ -328,10 +330,10 @@ export default class Joiner extends Component {
       //   }
       // }
     
-    // else
-    // {
-    //     boundaryReached.RaiseEvent(this.gameObject, sourceSequence);
-    // }
+    else
+    {
+      this.callTriggerSequenceBoundaryReached(sourceSequence);
+    }
 
     return sourceSequence;
   }
@@ -362,11 +364,13 @@ export default class Joiner extends Component {
     } else if(nextDestination instanceof ForkJoinerDestination) {
 
       if(!nextDestination.destinationBranch) {
+        this.callTriggerSequenceBoundaryReached(sourceSequence);
         return;
       }
 
       const nextSequence = nextDestination.destinationBranch.sequence;
       if(!nextSequence) {
+        this.callTriggerSequenceBoundaryReached(sourceSequence);
         return;
       }
       sourceSequence.active = false;
@@ -384,11 +388,6 @@ export default class Joiner extends Component {
       if (nextSequence !== sourceSequence) {
         sourceSequence.triggerJoinDeactivateEvent();
       }
-
-      const sequenceActivatedPayload = new ComplexPayload();
-      sequenceActivatedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_ACTIVATED], nextSequence);
-      this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_ACTIVATED], sequenceActivatedPayload);
-
 
       this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE]);
     }
@@ -416,12 +415,18 @@ export default class Joiner extends Component {
     //     }
     // }
     
-    // else
-    // {
-    //     boundaryReached.RaiseEvent(this.gameObject, sourceSequence);
-    // }
+    else
+    {
+      this.callTriggerSequenceBoundaryReached(sourceSequence);
+    }
 
     return sourceSequence;
+  }
+
+  callTriggerSequenceBoundaryReached(sequence: SequenceController) {
+    const sequenceBoundaryReachedPayload = new ComplexPayload();
+    sequenceBoundaryReachedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], sequence);
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], sequenceBoundaryReachedPayload);
   }
 
   // static getDestinationNode(destinationConfig: ForkJoinerDestination) {

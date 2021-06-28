@@ -1,8 +1,8 @@
 
 import { _decorator, Component, Node, TextAsset, find } from 'cc';
-import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT, DESTINATION_TYPE, SIMPLE_EVENT, INVERT_STATUS } from '../../constants';
+import { COMPLEX_EVENT, CONSTANTS, INTERNAL_COMPLEX_EVENT, DESTINATION_TYPE, SIMPLE_EVENT, INVERT_STATUS, SWIPE_DIRECTION } from '../../constants';
 import AppSettings from '../../persistentData/appSettings';
-import { AnimationEvent } from '../../utils';
+import { AnimationEvent, GetVector2Direction } from '../../utils';
 import { SequenceJoinerDictionary } from '../joiner';
 import MasterSequence from '../masterSequence';
 import { DestinationConfig, JoinConfig } from '../sequenceController';
@@ -107,13 +107,35 @@ export class AxisMonitor extends Component {
     return this.appSettings.getTouchBranchKeys(this.node);
   }
 
+  public get swipeForce() {
+    return this.appSettings.getSwipeForce(this.node);
+  }
+
+  private _previousSwipeDirection: string = null!;
+  public get previousSwipeDirection() {
+    return this._previousSwipeDirection;
+  }
+  public set previousSwipeDirection(value: string) {
+    this._previousSwipeDirection = value;
+  }
+
+  public get invertYInput() {
+    return this.appSettings.getInvertYInput(this.node);
+  }
+
+  public get invertXInput() {
+    return this.appSettings.getInvertXInput(this.node);
+  }
+
+
   start() {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE], this.configureData, this);
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshAxes, this);
-    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_ACTIVATED], this.refreshAxes, this);
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this.refreshAxes, this);
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], this.callResetBranchStates, this);
 
     this.touchBranchKeys.push(this.yNorthKey);
     this.touchBranchKeys.push(this.ySouthKey);
@@ -124,7 +146,8 @@ export class AxisMonitor extends Component {
   onDisable () {
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE], this.configureData, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshAxes, this);
-    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_ACTIVATED], this.refreshAxes, this);
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this.refreshAxes, this);
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], this.callResetBranchStates, this);
   }
 
   setTransitionStatus(targetStatus: boolean)
@@ -181,11 +204,16 @@ export class AxisMonitor extends Component {
 
       if (withinThreshold) {
 
+        console.log(masterTime);
+        
+
         if (currentExtents instanceof AxisExtents ) {
           AxisUtils.activateAxisExtents(masterTime, currentExtents);
         }
         
         else if (currentExtents instanceof TouchForkExtents) {
+          console.log(currentExtents.touchForkJoinerDestination.originKey);
+          console.log(currentExtents);
           TouchForkUtils.activateTouchFork(masterTime, currentExtents);
         }
           
@@ -235,7 +263,9 @@ export class AxisMonitor extends Component {
     if(nextDestinationConfig instanceof TouchForkJoinerDestination) {
 
       if(nextDestinationConfig.branchingPaths.length > 1) {
-        touchExtentsData.push(new TouchForkExtents(axisMonitor, touchData, DESTINATION_TYPE.next, nextDestinationConfig));
+        const touchForkExtents = new TouchForkExtents(axisMonitor, touchData, DESTINATION_TYPE.next, nextDestinationConfig);
+        touchExtentsData.push(touchForkExtents);
+        axisMonitor.touchForkExtents.push(touchForkExtents);
       }
 
     }
@@ -279,7 +309,7 @@ export class AxisMonitor extends Component {
           touchExtents.configure(null, null);
           break;
       }
-          
+
       if (j == 0) {
           touchExtents.configure(null, touchExtentsData[j + 1]);
       }
@@ -292,6 +322,42 @@ export class AxisMonitor extends Component {
     }
 
     return touchExtentsData;
+  }
+
+  callResetBranchStates()
+  {
+    if(this.moduleActive == false) {
+        return;
+    }
+
+
+    if(this.previousSwipeDirection !== this.touchController.swipeDirection) {
+      for(let i=0; i<this.touchExtentsCollection.length; i++) {
+        const touchExtentsDictionary = this.touchExtentsCollection[i];
+        
+        const masterTime = touchExtentsDictionary.masterSequence.elapsedTime;
+        const [currentExtents, withinThreshold] = TouchExtents.timeWithinExtents(masterTime, touchExtentsDictionary.touchExtents);
+
+        if (withinThreshold) {
+
+          if (currentExtents instanceof TouchForkExtents) {
+            TouchForkUtils.resetAllBranches(currentExtents);
+          }     
+        }
+      }
+    }
+
+    this.previousSwipeDirection = this.touchController.swipeDirection;
+  }
+
+  getSwipeDirection() {
+    const vectorDirection = GetVector2Direction([this.swipeForce], this.invertXInput, this.invertYInput);
+
+    if (Math.abs(vectorDirection.x) > Math.abs(vectorDirection.y)) {
+        return vectorDirection.x > 0 ? SWIPE_DIRECTION.xPositive : SWIPE_DIRECTION.xNegative;
+    }
+    
+    return vectorDirection.y > 0 ? SWIPE_DIRECTION.yPositive : SWIPE_DIRECTION.yNegative;
   }
 
 }

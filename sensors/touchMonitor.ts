@@ -26,7 +26,7 @@ export class TouchMonitor extends Component {
   }
 
   public get invertYInput() {
-    return this.appSettings.getInverYInput(this.node);
+    return this.appSettings.getInvertYInput(this.node);
   }
 
   public get xSensitivity() {
@@ -34,7 +34,7 @@ export class TouchMonitor extends Component {
   }
 
   public get invertXInput() {
-    return this.appSettings.getInverYInput(this.node);
+    return this.appSettings.getInvertXInput(this.node);
   }
 
   public get isSwiping() {

@@ -149,7 +149,7 @@ export default class AppSettings extends Component {
 
   // Invert Y Input
 
-  getInverYInput(callingObject: Node) {
+  getInvertYInput(callingObject: Node) {
     return this.userPreferences.invertYInput;
   }
 
@@ -169,7 +169,7 @@ export default class AppSettings extends Component {
 
   // Invert X Input
 
-  getInverXInput(callingObject: Node) {
+  getInvertXInput(callingObject: Node) {
     return this.userPreferences.invertXInput;
   }
 
@@ -278,11 +278,11 @@ export default class AppSettings extends Component {
   // Fork Transition Spread
 
   getForkTransitionSpread(callingObject: Node) {
-    return this.inputGroup.axisTransitionSpread;
+    return this.inputGroup.forkTransitionSpread;
   }
 
   setForkTransitionSpread(callingObject: Node, targetValue: number) {
-    this.inputGroup.axisTransitionSpread = targetValue;
+    this.inputGroup.forkTransitionSpread = targetValue;
   }
 
   // Swipe Modifer Output
