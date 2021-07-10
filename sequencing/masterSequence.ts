@@ -33,7 +33,7 @@ class ActiveInputModuleData {
 @ccclass('MasterTimeData')
 class MasterTimeData
 {
-  @property({visible: true})
+  
   private _sequenceController: SequenceController = null!;
   public get sequenceController() {
     return this._sequenceController;
@@ -42,7 +42,6 @@ class MasterTimeData
     this._sequenceController = value;
   }
   
-  @property({type: CCFloat, visible: true})
   private _masterTimeStart: number = 0;
   public get masterTimeStart() {
     return this._masterTimeStart;
@@ -51,7 +50,6 @@ class MasterTimeData
     this._masterTimeStart = value;
   }
 
-  @property({type: CCFloat, visible: true})
   private _masterTimeEnd: number = 0;
   public get masterTimeEnd() {
     return this._masterTimeEnd;
@@ -84,7 +82,6 @@ export default class MasterSequence extends Component {
     this._sequenceControllers = value;
   }
 
-  @property({type: [MasterTimeData], visible: true})
   private _masterTimeDataList: MasterTimeData[] = [];
   public get masterTimeDataList() {
     return this._masterTimeDataList;
@@ -93,7 +90,6 @@ export default class MasterSequence extends Component {
     this._masterTimeDataList = value;
   }
 
-  @property({type: ActiveInputModuleData, visible: true})
   private _activeInputModule: ActiveInputModuleData = new ActiveInputModuleData();
   public get activeInputModule() {
     return this._activeInputModule;

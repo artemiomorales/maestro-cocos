@@ -65,13 +65,13 @@ export class AutorunController extends Component implements InputController {
 
       for(let q=0; q<masterSequence.sequenceControllers.length; q++) {
         const sequenceController = masterSequence.sequenceControllers[q];
-        const markerConfig = this.GetConfigTimes(sequenceController.animationClip.events as any);
-        this.autorunData.push(this.CreateAutorunData(sequenceController, markerConfig[0], markerConfig[1], markerConfig[2], markerConfig[3]))
+        const markerConfig = this.getConfigTimes(sequenceController.animationClip.events as any);
+        this.autorunData.push(this.createAutorunData(sequenceController, markerConfig[0], markerConfig[1], markerConfig[2], markerConfig[3]))
       }
     }
   }
 
-  GetConfigTimes(eventList: AnimationEvent[]) : [number[], number[], string[], number[]]
+  getConfigTimes(eventList: AnimationEvent[]) : [number[], number[], string[], number[]]
   {
       const autoplayStarts: number[] = [];
       const autoplayEnds: number[] = [];
@@ -113,15 +113,15 @@ export class AutorunController extends Component implements InputController {
       return [autoplayStarts, autoplayEnds, descriptions, isEndIds];
   }
 
-  CreateAutorunData(targetSequence: SequenceController, autoplayStarts: number[], autoplayEnds: number[], descriptions: string[], isEndIds: number[])
+  createAutorunData(targetSequence: SequenceController, autoplayStarts: number[], autoplayEnds: number[], descriptions: string[], isEndIds: number[])
   {
-      const autorunIntervals: AutorunExtents[] = this.CreateAutorunExtents(autoplayStarts, autoplayEnds, descriptions, isEndIds);
+      const autorunIntervals: AutorunExtents[] = this.createAutorunExtents(autoplayStarts, autoplayEnds, descriptions, isEndIds);
       
       return AutorunData.CreateInstance(targetSequence, autorunIntervals);
   }
 
   
-  CreateAutorunExtents(startTimes: number[], endTimes: number[], descriptions: string[], isEndIds: number[]) : AutorunExtents[]
+  createAutorunExtents(startTimes: number[], endTimes: number[], descriptions: string[], isEndIds: number[]) : AutorunExtents[]
   {
     let autorunExtents: AutorunExtents[] = [];
 
@@ -158,7 +158,7 @@ export class AutorunController extends Component implements InputController {
     return autorunExtents;
   }
 
-  TriggerPauseMomentum(targetSequence: SequenceController)
+  triggerPauseMomentum(targetSequence: SequenceController)
   {
       // pauseMomentum.RaiseEvent(this.gameObject, targetSequence);
   }

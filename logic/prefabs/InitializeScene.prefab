@@ -1,0 +1,141 @@
+[
+  {
+    "__type__": "cc.Prefab",
+    "_name": "",
+    "_objFlags": 0,
+    "_native": "",
+    "data": {
+      "__id__": 1
+    },
+    "optimizationPolicy": 0,
+    "asyncLoadAssets": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "InitializeScene",
+    "_objFlags": 0,
+    "_parent": null,
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 2
+      },
+      {
+        "__id__": 5
+      }
+    ],
+    "_prefab": {
+      "__id__": 8
+    },
+    "_lpos": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_lrot": {
+      "__type__": "cc.Quat",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    },
+    "_lscale": {
+      "__type__": "cc.Vec3",
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "_layer": 1073741824,
+    "_euler": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "e73a1EZEQNCf4gw7uTOR/hB",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 3
+    },
+    "_logCallersOnRaise": false,
+    "_actionTrigger": {
+      "__id__": 4
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "43zF6UR9xNlpi4mKjKmI3s"
+  },
+  {
+    "__type__": "ActionTrigger",
+    "_active": true,
+    "_triggerOnStart": false,
+    "_hasDelay": false,
+    "_delay": 0,
+    "_debug": false,
+    "_boolActionData": [],
+    "_intActionData": [],
+    "_simpleConditionResponseActionData": [],
+    "_complexConditionResponseActionData": [],
+    "_simpleEventActionData": [],
+    "_complexEventActionData": [],
+    "_genericActionData": []
+  },
+  {
+    "__type__": "946ffgNtW5OgL6hclT48h1C",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 6
+    },
+    "appSettingsNode": null,
+    "_simpleSignal": 6,
+    "_variableReference": null,
+    "_action": [
+      {
+        "__id__": 7
+      }
+    ],
+    "_active": true,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "394ZSkhlFEBJCc6vWguDAF"
+  },
+  {
+    "__type__": "cc.ClickEvent",
+    "target": {
+      "__id__": 1
+    },
+    "component": "",
+    "_componentId": "e73a1EZEQNCf4gw7uTOR/hB",
+    "handler": "callPerformActions",
+    "customEventData": "initialize scene"
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "ebpYQLmqZFVYb/zdrcFNmD"
+  }
+]

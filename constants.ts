@@ -1,8 +1,8 @@
 import { Enum } from 'cc';
 
 export var CONSTANTS = {
-  APP_SETTINGS_PATH: "System Dependencies/App Settings",
-  SCENE_DATA_PATH: "Logic/Scene Data"
+  APP_SETTINGS_PATH: "System Dependencies/AppSettings",
+  SCENE_DATA_PATH: "Logic/SceneData"
 }
 
 export var EVENT_TYPE = Enum({

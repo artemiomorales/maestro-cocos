@@ -90,7 +90,7 @@ export default class Autoplayer extends Component implements AutorunModule {
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], this.callDeactivateAutoplaySequence, this);
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.autoplayAllSequences, this);
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE], this.autoplayAllSequences, this);
-    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], this.deactivateAutoplayAllSequences, this);
+    // this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], this.deactivateAutoplayAllSequences, this);
   }
 
   onDestroy() {
@@ -98,7 +98,7 @@ export default class Autoplayer extends Component implements AutorunModule {
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], this.callDeactivateAutoplaySequence, this);
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.autoplayAllSequences, this);
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.AUTOPLAY_ACTIVATE], this.autoplayAllSequences, this);
-    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], this.deactivateAutoplayAllSequences, this);
+    // this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], this.deactivateAutoplayAllSequences, this);
   }
 
   callOnSequenceUpdated(complexPayload: ComplexPayload) {
@@ -434,6 +434,7 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// </summary>
   deactivateAutoplayAllSequences()
   {
+    console.log(this.autorunController);
     for (let q = 0; q < this.autorunController.autorunData.length; q++) {
       const sequence: SequenceController = this.autorunController.autorunData[q].sequenceController;
       this.triggerAutorunIntervalComplete(this, this.autorunController.autorunData[q]);

@@ -1,5 +1,5 @@
 
-import { _decorator, Component, Node, director, CCString, TextAsset, find } from 'cc';
+import { _decorator, Component, Node, director, CCString, TextAsset, find, Director } from 'cc';
 import ComplexPayload from '../complexPayload';
 import { COMPLEX_EVENT, CONSTANTS } from '../constants';
 import AppSettings from '../persistentData/appSettings';

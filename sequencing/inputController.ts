@@ -7,5 +7,4 @@ import { RootDataCollector } from './rootDataCollector';
 export interface InputController extends RootDataCollector {
   appSettingsNode: Node;
   appSettings: AppSettings;
-  joiner: Joiner;
 }

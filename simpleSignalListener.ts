@@ -10,6 +10,24 @@ export class SimpleSignalListener extends Component {
     public appSettingsNode: Node = null!;
     private appSettings: AppSettings = null!;
 
+    @property({visible: true})
+    private _active = true;
+    public get active() {
+      return this._active;
+    }
+    public set active(value: boolean) {
+      this._active = value;
+    }
+
+    @property({visible: true})
+    private _logOnRaise = false;
+    public get logOnRaise() {
+      return this._logOnRaise;
+    }
+    public set logOnRaise(value: boolean) {
+      this._logOnRaise = value;
+    }
+
     @property({type: SIMPLE_EVENT, visible: true})
     private _simpleSignal: number = null!;
     public get simpleSignal() {
@@ -37,15 +55,6 @@ export class SimpleSignalListener extends Component {
       this._action = value;
     }
 
-    @property({visible: true})
-    private _active = true;
-    public get active() {
-      return this._active;
-    }
-    public set active(value: boolean) {
-      this._active = value;
-    }
-
     onLoad () {
       this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
       this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
@@ -71,6 +80,14 @@ export class SimpleSignalListener extends Component {
 
     performActions() {
       if(this.active) {
+        if(this.logOnRaise) {
+          if(this.simpleSignal) {
+            console.log(this.name + " was raised by listening to " + Object.keys(SIMPLE_EVENT)[this.simpleSignal])
+          }
+          if(this.variableReference) {
+            console.log(this.name + " was raised by listening to " + this.variableReference.name)
+          }
+        }
         EventHandler.emitEvents(this.action);
       }
     }
