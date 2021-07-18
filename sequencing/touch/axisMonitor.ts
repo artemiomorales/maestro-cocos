@@ -183,6 +183,7 @@ export class AxisMonitor extends Component {
     for( let i=0; i<this.touchExtentsCollection.length; i++) {
       AxisMonitor.configureTouchExtents(this.touchExtentsCollection[i].touchExtents);
     }
+    console.log(this.touchExtentsCollection);
   }
 
   refreshAxes()
@@ -204,16 +205,11 @@ export class AxisMonitor extends Component {
 
       if (withinThreshold) {
 
-        console.log(masterTime);
-        
-
         if (currentExtents instanceof AxisExtents ) {
           AxisUtils.activateAxisExtents(masterTime, currentExtents);
         }
         
         else if (currentExtents instanceof TouchForkExtents) {
-          console.log(currentExtents.touchForkJoinerDestination.originKey);
-          console.log(currentExtents);
           TouchForkUtils.activateTouchFork(masterTime, currentExtents);
         }
           

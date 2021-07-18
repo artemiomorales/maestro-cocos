@@ -1,6 +1,6 @@
 
-import { _decorator, Component, Node, SystemEvent, macro, systemEvent, find, Vec2, CCFloat } from 'cc';
-import { CONSTANTS, SIMPLE_EVENT } from '../constants';
+import { _decorator, Component, Node, SystemEvent, macro, systemEvent, find, Vec2, CCFloat, SystemEventType, EventKeyboard } from 'cc';
+import { CONSTANTS, SIMPLE_EVENT, SWIPE_DIRECTION } from '../constants';
 import AppSettings from '../persistentData/appSettings';
 import { ClampVectorValue, InvertV2Values } from '../utils';
 const { ccclass, property } = _decorator;
@@ -48,33 +48,6 @@ export default class KeyboardMonitor extends Component {
     this._brake = value;
   }
 
-  @property({visible: true})
-  private _firstButtonPressed: boolean = false;
-  public get firstButtonPressed() {
-    return this._firstButtonPressed;
-  }
-  public set firstButtonPressed(value: boolean) {
-    this._firstButtonPressed = value;
-  }
-
-  @property({type: CCFloat, visible: true})
-  private _timeOfFirstButton: number = 0;
-  public get timeOfFirstButton() {
-    return this._timeOfFirstButton;
-  }
-  public set timeOfFirstButton(value: number) {
-    this._timeOfFirstButton = value;
-  }
-
-  @property({visible: true})
-  private _isReversing: boolean = false;
-  public get isReversing() {
-    return this._isReversing;
-  }
-  public set isReversing(value: boolean) {
-    this._isReversing = value;
-  }
-
   public get swipeForce() {
     return this.appSettings.getSwipeForce(this.node);
   }
@@ -98,98 +71,118 @@ export default class KeyboardMonitor extends Component {
     return this.appSettings.getInvertYInput(this.node);
   }
 
+  public get swipeDirection() {
+    return this.appSettings.getSwipeDirection(this.node);
+  }
+
+  public set swipeDirection(value: string) {
+    this.appSettings.setSwipeDirection(this.node, value);
+  }
+
   public swipeMinMax = 80;
 
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-    systemEvent.on(SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-    systemEvent.on(SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    systemEvent.on(SystemEventType.KEY_DOWN, this.onKeyDown, this);
+    systemEvent.on(SystemEventType.KEY_UP, this.onKeyUp, this);
   }
 
   onDisable () {
-    systemEvent.off(SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-    systemEvent.off(SystemEvent.EventType.KEY_UP, this.onKeyUp, this)
+    systemEvent.off(SystemEventType.KEY_DOWN, this.onKeyDown, this);
+    systemEvent.off(SystemEventType.KEY_UP, this.onKeyUp, this)
   }
 
   update () {
     if(this.inputActive) {
-      if(!this.isReversing) {
-        this.swipeForce = this.NormalizeVectorInfo(new Vec2(0, 1), this.swipeMinMax);
-      } else {
-        this.swipeForce = this.NormalizeVectorInfo(new Vec2(0, -1), this.swipeMinMax);
+      switch(this.swipeDirection) {
+
+        case SWIPE_DIRECTION.yPositive:
+          this.swipeForce = this.normalizeVectorInfo(new Vec2(0, 5), this.swipeMinMax);
+          break;
+
+        case SWIPE_DIRECTION.yNegative:
+          this.swipeForce = this.normalizeVectorInfo(new Vec2(0, -5), this.swipeMinMax);
+          break;
+
+        case SWIPE_DIRECTION.xPositive:
+          this.swipeForce = this.normalizeVectorInfo(new Vec2(2.5, 0), this.swipeMinMax);
+          break;
+
+        case SWIPE_DIRECTION.xNegative:
+          this.swipeForce = this.normalizeVectorInfo(new Vec2(-2.5, 0), this.swipeMinMax);
+          break;
       }
+      
       this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE])
     }
   }
 
-  onKeyDown (event: any) {
+  onKeyDown (event: EventKeyboard) {
+
+    const updateStatus = () => {
+      if(!this.inputActive) {
+        this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START])
+      }
+      this.inputActive = true;
+      
+    }
+
     switch(event.keyCode) {
+
       case macro.KEY.down:
-        this.updateDoublePressed();
-        if(!this.inputActive) {
-          this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START])
-        }
-        this.inputActive = true;
-        this.isReversing = false;
+        this.swipeDirection = SWIPE_DIRECTION.yPositive;
+        updateStatus();
         break;
 
       case macro.KEY.up:
-        this.updateDoublePressed();
-        if(!this.inputActive) {
-          this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START])
-        }
-        this.inputActive = true;
-        this.isReversing = true;
+        this.swipeDirection = SWIPE_DIRECTION.yNegative;
+        updateStatus();
+        break;
+
+      case macro.KEY.left:
+        this.swipeDirection = SWIPE_DIRECTION.xNegative;
+        updateStatus();
+        break;
+
+      case macro.KEY.right:
+        this.swipeDirection = SWIPE_DIRECTION.xPositive;
+        updateStatus();
+        break;
+
+      case macro.KEY.z:
+        this.accelerate = true;
         break;
       
-      case macro.KEY.shift:
-        this.accelerate = true;
 
-      case macro.KEY.ctrl:
+      case macro.KEY.x:
         this.brake = true;
+        break;
     }
+
+    
   }
 
-  onKeyUp (event: any) {
+  onKeyUp (event: EventKeyboard) {
     switch(event.keyCode) {
       case macro.KEY.down:
       case macro.KEY.up:
+      case macro.KEY.left:
+      case macro.KEY.right:
         this.inputActive = false;
         this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END])
         break;
       
-      case macro.KEY.shift:
+      case macro.KEY.z:
         this.accelerate = false;
 
-      case macro.KEY.ctrl:
+      case macro.KEY.x:
         this.brake = false;
     }
   }
 
-  updateDoublePressed() : void
-  {
-    let reset = false;
-    if (this.firstButtonPressed) {
-      if (new Date().getTime() - this.timeOfFirstButton < 0.5) {
-          this.doublePressed = true;
-      }
-
-      reset = true;
-    }
-
-    if (!this.firstButtonPressed) {
-      this.firstButtonPressed = true;
-      this.timeOfFirstButton = new Date().getTime();
-    }
-
-    if (reset) {
-      this.firstButtonPressed = false;
-    }
-  }
-
-  NormalizeVectorInfo (rawVector: Vec2, minMax: number)
+  normalizeVectorInfo (rawVector: Vec2, minMax: number)
   {
     // Clamp swipe values based on max/min threshold
     const clampedVector: Vec2 = ClampVectorValue(rawVector, minMax);
@@ -216,10 +209,8 @@ export default class KeyboardMonitor extends Component {
     let v2Force: Vec2;
 
     // Normalize information based on sensitivity, otherwise our values come back too high
-    if (this.doublePressed) {
-        v2Force = new Vec2(correctedV2.x * (this.xSensitivity * 5), correctedV2.y * (this.ySensitivity * 5));
-    } else if (this.accelerate) {
-        v2Force = new Vec2(correctedV2.x * (this.xSensitivity * 3), correctedV2.y * (this.ySensitivity * 3));
+    if (this.accelerate) {
+        v2Force = new Vec2(correctedV2.x * (this.xSensitivity * 2), correctedV2.y * (this.ySensitivity * 2));
     } else if (this.brake) {
         v2Force = new Vec2(correctedV2.x * (this.xSensitivity / 2), correctedV2.y * (this.ySensitivity / 2));
     } else {

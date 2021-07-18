@@ -59,12 +59,11 @@ export class SimpleSignalListener extends Component {
       this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
       this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-      if(this.simpleSignal) {
+      if(this.simpleSignal !== null) {
         this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[this.simpleSignal], this.performActions, this);
       }
 
       if(this.variableReference) {
-        console.log(this.variableReference.name);
         this.appSettingsNode.on(this.variableReference.name, this.performActions, this);
       }
     }
