@@ -259,6 +259,7 @@ export default class Joiner extends Component {
     // const previousDestinationConfig = joinConfig.previousDestination;
 
     if (previousDestination instanceof SimpleJoinerDestination) {
+      console.log(previousDestination);
       sourceSequence.active = false;
       const previousSequence: SequenceController = previousDestination.sequence;
       previousSequence.active = true;

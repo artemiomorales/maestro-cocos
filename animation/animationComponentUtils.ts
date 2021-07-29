@@ -22,12 +22,18 @@ export class AnimationComponentUtils extends Component {
     this._onFinishedEvents = value;
   }
 
-  start () {
+  start() {
     if(!this.animationComponent) {
       this.animationComponent = this.node.getComponent(AnimationComponent) as AnimationComponent;
     }
 
     this.animationComponent.on("finished", this.onFinished, this);
+  }
+
+  playDefaultClipIfStopped() {
+    if(this.animationComponent.getState(this.animationComponent.defaultClip?.name as string).isPlaying === false) {
+      this.animationComponent.play();
+    }
   }
 
   setToBeginning() {

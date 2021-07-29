@@ -1,9 +1,9 @@
 
-import { _decorator, Component, Node, CCFloat, AudioSource } from 'cc';
+import { _decorator, Component, Node, AudioSource } from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass('AudioFadePlayBehaviour')
-export class AudioFadePlayBehaviour extends Component {
+@ccclass('AudioLerpVolumeBehaviour')
+export class AudioLerpVolumeBehaviour extends Component {
 
   @property({type: AudioSource, visible: true})
   private _audioSource: AudioSource = null!;
@@ -14,13 +14,20 @@ export class AudioFadePlayBehaviour extends Component {
     this._audioSource = value;
   }
   
-  @property({type: CCFloat, visible: true})
-  private _targetVolume: number = 0;
+  private _targetVolume: number = 1;
   public get targetVolume() {
     return this._targetVolume;
   }
   public set targetVolume(value: number) {
     this._targetVolume = value;
+  }
+
+  private _isPlaying: boolean = false;
+  public get isPlaying() {
+    return this._isPlaying;
+  }
+  public set isPlaying(value: boolean) {
+    this._isPlaying = value;
   }
 
   start () {
@@ -32,15 +39,23 @@ export class AudioFadePlayBehaviour extends Component {
   update () {
     this.audioSource.volume = this.targetVolume;
     if (this.targetVolume >= 1) {
-      if(this.audioSource.playing === false) {
+      if(this.audioSource.playing == false) {
           this.audioSource.volume = 1;
-          this.audioSource.play();
       } 
     }
     // Once the playhead is before the clip's start threshold, stop the audio
-    else if (this.targetVolume <= 0 && this.audioSource.playing === true) {
+    else if (this.targetVolume <= 0) {
       this.audioSource.volume = 0;
-      this.audioSource.stop();
     }
+
+    if(this.isPlaying && this.audioSource.playing === false) {
+      this.audioSource.play();
+    }
+
+    else if(!this.isPlaying && this.audioSource.playing) {
+      this.audioSource.pause();
+    }
+
+
   }
 }

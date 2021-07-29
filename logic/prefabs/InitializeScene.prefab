@@ -104,14 +104,15 @@
       "__id__": 6
     },
     "appSettingsNode": null,
-    "_simpleSignal": 6,
+    "_active": true,
+    "_logOnRaise": false,
+    "_simpleSignal": 7,
     "_variableReference": null,
     "_action": [
       {
         "__id__": 7
       }
     ],
-    "_active": true,
     "_id": ""
   },
   {

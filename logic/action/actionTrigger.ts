@@ -76,24 +76,6 @@ export default class ActionTrigger {
     this._intActionData = value;
   }
 
-  @property({type: [SimpleConditionResponseActionData], visible: true})
-  public _simpleConditionResponseActionData: SimpleConditionResponseActionData[] = [];
-  private get simpleConditionResponseActionData() {
-    return this._simpleConditionResponseActionData;
-  }
-  private set simpleConditionResponseActionData(value: SimpleConditionResponseActionData[]) {
-    this._simpleConditionResponseActionData = value;
-  }
-
-  @property({type: [ComplexConditionResponseActionData], visible: true})
-  public _complexConditionResponseActionData: ComplexConditionResponseActionData[] = [];
-  private get complexConditionResponseActionData() {
-    return this._complexConditionResponseActionData;
-  }
-  private set complexConditionResponseActionData(value: ComplexConditionResponseActionData[]) {
-    this._complexConditionResponseActionData = value;
-  }
-
   @property({type: [SimpleEventActionData], visible: true})
   public _simpleEventActionData: SimpleEventActionData[] = [];
   private get simpleEventActionData() {
@@ -119,6 +101,24 @@ export default class ActionTrigger {
   }
   private set genericActionData(value: GenericActionData[]) {
     this._genericActionData = value;
+  }
+
+  @property({type: [SimpleConditionResponseActionData], visible: true})
+  public _simpleConditionResponseActionData: SimpleConditionResponseActionData[] = [];
+  private get simpleConditionResponseActionData() {
+    return this._simpleConditionResponseActionData;
+  }
+  private set simpleConditionResponseActionData(value: SimpleConditionResponseActionData[]) {
+    this._simpleConditionResponseActionData = value;
+  }
+
+  @property({type: [ComplexConditionResponseActionData], visible: true})
+  public _complexConditionResponseActionData: ComplexConditionResponseActionData[] = [];
+  private get complexConditionResponseActionData() {
+    return this._complexConditionResponseActionData;
+  }
+  private set complexConditionResponseActionData(value: ComplexConditionResponseActionData[]) {
+    this._complexConditionResponseActionData = value;
   }
 
   initialize () {
@@ -150,12 +150,6 @@ export default class ActionTrigger {
     for(let i=0; i<this.intActionData.length; i++) {
       this.intActionData[i].initialize();
     }
-    for(let i=0; i<this.simpleConditionResponseActionData.length; i++) {
-      this.simpleConditionResponseActionData[i].initialize();
-    }
-    for(let i=0; i<this.complexConditionResponseActionData.length; i++) {
-      this.complexConditionResponseActionData[i].initialize();
-    }
     for(let i=0; i<this.simpleEventActionData.length; i++) {
       this.simpleEventActionData[i].initialize();
     }
@@ -164,6 +158,12 @@ export default class ActionTrigger {
     }
     for(let i=0; i<this.genericActionData.length; i++) {
       this.genericActionData[i].initialize();
+    }
+    for(let i=0; i<this.simpleConditionResponseActionData.length; i++) {
+      this.simpleConditionResponseActionData[i].initialize();
+    }
+    for(let i=0; i<this.complexConditionResponseActionData.length; i++) {
+      this.complexConditionResponseActionData[i].initialize();
     }
   }
 

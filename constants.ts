@@ -23,6 +23,7 @@ export var AXIS_TYPE = Enum({
 })
 
 export var SIMPLE_EVENT = Enum({
+  BLANK: -1,
   ON_TOUCH_START: -1,
   ON_SWIPE: -1,
   ON_SWIPE_END: -1,

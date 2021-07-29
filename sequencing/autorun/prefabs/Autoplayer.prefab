@@ -92,7 +92,7 @@
     "appSettingsNode": null,
     "_active": true,
     "_logOnRaise": false,
-    "_simpleSignal": 0,
+    "_simpleSignal": 1,
     "_variableReference": null,
     "_action": [
       {

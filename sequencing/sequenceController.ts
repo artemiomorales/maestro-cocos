@@ -268,6 +268,14 @@ export default class SequenceController extends Component {
     this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], complexPayload)
   }
 
+  setActiveTrue() {
+    this.active = true;
+  }
+
+  setActiveFalse() {
+    this.active = false;
+  }  
+
   activateLoop() {
     this.animState.wrapMode = 1;
     this.animState.time = this.currentTime;
