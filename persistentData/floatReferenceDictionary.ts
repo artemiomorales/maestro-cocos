@@ -17,4 +17,8 @@ export class FloatReferenceDictionary extends VariableReferenceDictionary {
     this._floatReference = value;
   }
 
+  getValue (callingObject: Node) {
+    return this.floatReference.getValue(callingObject);
+  }
+
 }

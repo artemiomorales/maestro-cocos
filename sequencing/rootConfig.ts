@@ -22,7 +22,7 @@ export class RootConfig extends Component {
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
-    this.configure();
+    // this.configure();
   }
 
   configure() {

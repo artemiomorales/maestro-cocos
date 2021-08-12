@@ -21,5 +21,4 @@ export class StringReferenceDictionary extends VariableReferenceDictionary {
     return this.stringReference.getValue(callingObject);
   }
 
-
 }

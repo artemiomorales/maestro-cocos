@@ -22,7 +22,6 @@ export class BoolReference extends VariableReference {
       const sceneData = GetSceneData();
       return sceneData.getBoolValue(callingObject, this.variableReference);
     }
-
     return this.value;
   }
 

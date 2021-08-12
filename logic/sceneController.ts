@@ -59,9 +59,20 @@ export class SceneController extends Component {
     this._sceneLoadInProgress = value;
   }
 
+  public get loadingProgress() {
+    return this.appSettings.getSceneLoadingProgress(this.node);
+  }
+
+  public set loadingProgress(value: number) {
+    this.appSettings.setSceneLoadingProgress(this.node, value);
+  }
+
+
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
+
+    director
 
     this.appSettingsNode.on(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_SCENE_LOAD], this.triggerSceneLoad, this);
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.FADE_TO_BLACK_COMPLETED], this.fadeToBlackCompletedCallback, this)
@@ -116,17 +127,22 @@ export class SceneController extends Component {
   /// along with our complex payload parameters
   /// </summary>
   fadeToBlackCompletedCallback() {
-
-    director.loadScene(this.targetScene, () => {
-
-      this.sceneLoadInProgress = false;
-      // Now that we're faded to black, determine which event
-      // we'll send to the fader as our final callback
-      if(this.sceneLoadCompletedCallback && this.sceneLoadCompletedCallback !== "") {
-        this.appSettings.triggerSimpleEvent(this.node, this.sceneLoadCompletedCallback);
-      } else {
-        this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SCENE_LOAD_COMPLETED])
-      }
+    director.preloadScene(this.targetScene,
+      (completedCount: number, totalCount: number, item: any) => {
+        const percentComplete = completedCount / totalCount;
+        this.loadingProgress = percentComplete;
+      }, 
+      () => {
+        director.loadScene(this.targetScene, () => {
+          this.sceneLoadInProgress = false;
+          // Now that we're faded to black, determine which event
+          // we'll send to the fader as our final callback
+          if(this.sceneLoadCompletedCallback && this.sceneLoadCompletedCallback !== "") {
+            this.appSettings.triggerSimpleEvent(this.node, this.sceneLoadCompletedCallback);
+          } else {
+            this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SCENE_LOAD_COMPLETED])
+          }
+        });
     });
 
   }

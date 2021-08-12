@@ -84,17 +84,17 @@ export class ComplexEventConfigurableTrigger {
 
   raiseEvent(callingObject: Node) {
     let complexPayload = new ComplexPayload();
+    if(this.boolDictionary.length > 0) {
+      complexPayload = this.getBoolValues(callingObject, complexPayload);
+    }
     if(this.stringDictionary.length > 0) {
       complexPayload = this.getStringValues(callingObject, complexPayload);
     }
     if(this.floatDictionary.length > 0) {
-      complexPayload = this.getFloatValues(complexPayload);
-    }
-    if(this.boolDictionary.length > 0) {
-      complexPayload = this.getBoolValues(complexPayload);
+      complexPayload = this.getFloatValues(callingObject, complexPayload);
     }
     if(this.intDictionary.length > 0) {
-      complexPayload = this.getIntValues(complexPayload);
+      complexPayload = this.getIntValues(callingObject, complexPayload);
     }
     if(this.audioClipDictionary.length > 0) {
       complexPayload = this.getAudioClipValues(callingObject, complexPayload);
@@ -115,37 +115,38 @@ export class ComplexEventConfigurableTrigger {
     return complexPayload;
   }
 
-  getFloatValues(complexPayload: ComplexPayload) {
+  getFloatValues(callingObject: Node, complexPayload: ComplexPayload) {
     for(let i=0; i<this.floatDictionary.length; i++) {
-      const datum = this.floatDictionary[i]
+      const datum = this.floatDictionary[i];
       if(datum.customKey) {
-        complexPayload.set(datum.customKey.name, datum.value);
+        complexPayload.set(datum.customKey.name, datum.getValue(callingObject));
       } else {
-        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.floatType], datum.value);
+        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.floatType], datum.getValue(callingObject));
       }
     }
     return complexPayload;
   }
 
-  getBoolValues(complexPayload: ComplexPayload) {
+  getBoolValues(callingObject: Node, complexPayload: ComplexPayload) {
     for(let i=0; i<this.boolDictionary.length; i++) {
-      const datum = this.boolDictionary[i]
+      console.log(this.boolDictionary);
+      const datum = this.boolDictionary[i];
       if(datum.customKey) {
-        complexPayload.set(datum.customKey.name, datum.value);
+        complexPayload.set(datum.customKey.name, datum.getValue(callingObject));
       } else {
-        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.boolType], datum.value);
+        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.boolType], datum.getValue(callingObject));
       }
     }
     return complexPayload;
   }
 
-  getIntValues(complexPayload: ComplexPayload) {
+  getIntValues(callingObject: Node, complexPayload: ComplexPayload) {
     for(let i=0; i<this.intDictionary.length; i++) {
-      const datum = this.intDictionary[i]
+      const datum = this.intDictionary[i];
       if(datum.customKey) {
-        complexPayload.set(datum.customKey.name, datum.value);
+        complexPayload.set(datum.customKey.name, datum.getValue(callingObject));
       } else {
-        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.intType], datum.value);
+        complexPayload.set(Object.keys(DATA_TYPE)[DATA_TYPE.intType], datum.getValue(callingObject));
       }
     }
     return complexPayload;
@@ -153,7 +154,7 @@ export class ComplexEventConfigurableTrigger {
 
   getAudioClipValues(callingObject: Node, complexPayload: ComplexPayload) {
     for(let i=0; i<this.audioClipDictionary.length; i++) {
-      const datum = this.audioClipDictionary[i]
+      const datum = this.audioClipDictionary[i];
       if(datum.customKey) {
         complexPayload.set(datum.customKey.name, datum.getValue(callingObject));
       } else {

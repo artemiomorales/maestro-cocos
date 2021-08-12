@@ -79,7 +79,7 @@ export default class SwipeApplier extends Component implements TouchModule {
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.triggerInputActionComplete, this);
   }
 
-  onDisable () {
+  onDestroy () {
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE], this.updateSequenceWithSwipe, this);
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.triggerInputActionComplete);
   }

@@ -18,7 +18,7 @@ export class BoolReferenceDictionary extends VariableReferenceDictionary {
   }
 
   getValue (callingObject: Node) {
-    this.boolReference.getValue(callingObject);
+    return this.boolReference.getValue(callingObject);
   }
 
 }

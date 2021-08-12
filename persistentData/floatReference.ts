@@ -1,5 +1,6 @@
 
-import { _decorator, CCFloat } from 'cc';
+import { _decorator, CCInteger, Node, CCFloat } from 'cc';
+import { GetSceneData } from '../utils';
 import { VariableReference } from './variableReference';
 const { ccclass, property } = _decorator;
 
@@ -14,6 +15,15 @@ export class FloatReference extends VariableReference{
   }
   public set value(value: number) {
     this._value = value;
+  }
+
+  getValue(callingObject: Node) {
+    if(this.useReference) {
+      const sceneData = GetSceneData();
+      return sceneData.getFloatValue(callingObject, this.variableReference);
+    }
+
+    return this.value;
   }
 
 }

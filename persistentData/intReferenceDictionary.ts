@@ -17,4 +17,8 @@ export class IntReferenceDictionary extends VariableReferenceDictionary {
     this._intReference = value;
   }
 
+  getValue (callingObject: Node) {
+    return this.intReference.getValue(callingObject);
+  }
+
 }

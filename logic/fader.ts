@@ -22,6 +22,30 @@ export class Fader extends Component {
     this._eventCallbackKey = value;
   }
 
+  @property({type: TextAsset, visible: true})
+  private _enableSpinnerKey: TextAsset = null!;
+
+  public get enableSpinnerKey() {
+    return this._enableSpinnerKey;
+  }
+  public set enableSpinnerKey(value: TextAsset) {
+    this._enableSpinnerKey = value;
+  }
+
+  @property({type: TextAsset, visible: true})
+  private _enableProgressBarKey: TextAsset = null!;
+
+  public get enableProgressBarKey() {
+    return this._enableProgressBarKey;
+  }
+  public set enableProgressBarKey(value: TextAsset) {
+    this._enableProgressBarKey = value;
+  }
+
+  public get progressBarVisible() {
+    return this.appSettings.getProgressBarVisible(this.node);
+  }
+
   @property({type: UIOpacity, visible: true})
   public _overlay: UIOpacity = null!;
 
@@ -43,6 +67,14 @@ export class Fader extends Component {
     return this._fadeInTime;
   }
 
+  private _complexPayloadCache: ComplexPayload = null!;
+  public get complexPayloadCache() {
+    return this._complexPayloadCache;
+  }
+  public set complexPayloadCache(value: ComplexPayload) {
+    this._complexPayloadCache = value;
+  }
+
   start () {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
@@ -53,21 +85,47 @@ export class Fader extends Component {
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SCENE_LOAD_COMPLETED], () => {
       this.fadeIn();
     })
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.HIDE_PROGRESS_BAR_COMPLETED], () => {
+      this.hideProgressBarCompletedCallback();
+    })
   }
 
   fadeToBlack(complexPayload: ComplexPayload) {
-    console.log(complexPayload);
+    const enableSpinner = complexPayload.get(this.node, this.enableSpinnerKey.name);
+    const enableProgressBar = complexPayload.get(this.node, this.enableProgressBarKey.name);
+
     tween(this.overlay)
       .to(this.fadeToBlackTime, {opacity: 255}, {
         easing: 'quadInOut',
         'onComplete': () => {
+
+          if(enableProgressBar === true) {
+            this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TRIGGER_SHOW_PROGRESS_BAR]);
+          }
+
           this.appSettings.triggerSimpleEvent(this.node, complexPayload.get(this.node, this.eventCallbackKey.name))
         }
       })
       .start();
   }
 
+  executeFadeOut() {
+
+  }
+
   fadeIn() {
+    if(this.progressBarVisible === true) {
+      this.appSettings.triggerSimpleEvent(this.node, Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TRIGGER_HIDE_PROGRESS_BAR]);
+    } else {
+      this.executeFadeIn();
+    }
+  }
+
+  hideProgressBarCompletedCallback() {
+    this.executeFadeIn();
+  }
+
+  executeFadeIn() {
     tween(this.overlay)
       .to(this.fadeInTime, {opacity: 0}, {
         easing: 'quadInOut',

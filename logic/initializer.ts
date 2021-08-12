@@ -21,6 +21,13 @@ export class Initializer extends Component {
   }
 
   @property({type: TextAsset, visible: true})
+  private _enableProgressBarKey: TextAsset = null!;
+
+  public get enableProgressBarKey() {
+    return this._enableProgressBarKey;
+  }
+
+  @property({type: TextAsset, visible: true})
   private _bootstrapScene: TextAsset = null!;
 
   public get bootstrapScene() {
@@ -33,6 +40,7 @@ export class Initializer extends Component {
 
     let complexPayload = new ComplexPayload();
     complexPayload.set(this.triggerSceneLoadKey.name, this.bootstrapScene.name);
+    complexPayload.set(this.enableProgressBarKey.name, true);
 
     setTimeout(() => {
       this.appSettings.triggerComplexEvent(this.node, Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_SCENE_LOAD], complexPayload);

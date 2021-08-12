@@ -123,7 +123,7 @@ export default class MomentumApplier extends Component implements TouchModule  {
     this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.refreshLocalMomentum, this);
   }
 
-  onDisable () {
+  onDestroy () {
     // this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_MOMENTUM], this.updateSequenceWithMomentum, this);
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_TOUCH_START], this.haltMomentum, this);
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.refreshLocalMomentum, this);

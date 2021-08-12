@@ -143,7 +143,7 @@ export class AxisMonitor extends Component {
     this.touchBranchKeys.push(this.xWestKey);
   }
 
-  onDisable () {
+  onDestroy () {
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TOUCH_CONTROLLER_CONFIGURATION_COMPLETE], this.configureData, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.refreshAxes, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], this.refreshAxes, this);

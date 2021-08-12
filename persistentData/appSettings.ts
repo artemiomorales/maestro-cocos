@@ -111,6 +111,30 @@ export default class AppSettings extends Component {
     return newValue;
   }
 
+  getProgressBarVisible(callingObject: Node) {
+    return this.systemSettings.progressBarVisible.getValue();
+  }
+
+  setProgressBarVisible(callingObject: Node, targetValue: boolean) {
+    const newValue = this.systemSettings.progressBarVisible.setValue(targetValue);
+    this.triggerSimpleEvent(callingObject, this.systemSettings.progressBarVisible.variableKey.name);
+    return newValue;
+  }
+
+  getSceneLoadingProgress(callingObject: Node) {
+    return this.systemSettings.sceneLoadingProgress.getValue();
+  }
+
+  getSceneLoadingProgressVariableKey(callingObject: Node) {
+    return this.systemSettings.sceneLoadingProgress.variableKey.name;
+  }
+
+  setSceneLoadingProgress(callingObject: Node, targetValue: number) {
+    const newValue = this.systemSettings.sceneLoadingProgress.setValue(targetValue);
+    this.triggerSimpleEvent(callingObject, this.systemSettings.sceneLoadingProgress.variableKey.name);
+    return newValue;
+  }
+
   // Touch Branch Keys
 
   getYNorthBranchKey(callingObject: Node) {

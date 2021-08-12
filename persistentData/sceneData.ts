@@ -3,6 +3,7 @@ import { _decorator, Component, Node, find, TextAsset } from 'cc';
 import { CONSTANTS } from '../constants';
 import AppSettings from './appSettings';
 import { BoolVariable } from './boolVariable';
+import { FloatVariable } from './floatVariable';
 import { IntVariable } from './intVariable';
 // import FloatVariable from './floatVariable';
 // import IntVariable from './intVariable';
@@ -26,16 +27,6 @@ export class SceneData extends Component {
   //   this._stringVariable = value;
   // }
 
-  // @property({type: [FloatVariable], visible: true})
-  // private _floatVariable: FloatVariable[] = [];
-
-  // public get floatVariable() {
-  //   return this._floatVariable;
-  // }
-  // public set floatVariable(value: FloatVariable[]) {
-  //   this._floatVariable = value;
-  // }
-
   @property({type: [BoolVariable], visible: true})
   private _boolVariables: BoolVariable[] = [];
 
@@ -54,6 +45,16 @@ export class SceneData extends Component {
   }
   public set intVariables(value: IntVariable[]) {
     this._intVariables = value;
+  }
+
+  @property({type: [FloatVariable], visible: true})
+  private _floatVariables: FloatVariable[] = [];
+
+  public get floatVariables() {
+    return this._floatVariables;
+  }
+  public set floatVariables(value: FloatVariable[]) {
+    this._floatVariables = value;
   }
 
   @property({type: [TextAsset], visible: true})
@@ -153,6 +154,40 @@ export class SceneData extends Component {
     }
     return this.setAppSettingsValueToDefault(callingObject, variableKey);
   }
+
+  /// FLOAT ///
+
+  getFloatValue(callingObject: Node, variableKey: TextAsset)  {
+    for(let i=0; i<this.floatVariables.length; i++) {
+      if(this.floatVariables[i].variableKey === variableKey) {
+        return this.floatVariables[i].getValue();
+      }
+    }
+    return this.getAppSettingsValue(callingObject, variableKey);
+  }
+
+  setFloatValue(callingObject: Node, variableKey: TextAsset, targetValue: number)  {
+    for(let i=0; i<this.floatVariables.length; i++) {
+      if(this.floatVariables[i].variableKey === variableKey) {
+        const newValue = this.floatVariables[i].setValue(targetValue);
+        this.appSettings.triggerSimpleEvent(callingObject, variableKey.name);
+        return newValue;
+      }
+    }
+    return this.setAppSettingsValue(callingObject, variableKey, targetValue);
+  }
+
+  setFloatToDefault(callingObject: Node, variableKey: TextAsset)  {
+    for(let i=0; i<this.floatVariables.length; i++) {
+      if(this.floatVariables[i].variableKey === variableKey) {
+        const newValue = this.floatVariables[i].setToDefaultValue();
+        this.appSettings.triggerSimpleEvent(callingObject, variableKey.name);
+        return newValue;
+      }
+    }
+    return this.setAppSettingsValueToDefault(callingObject, variableKey);
+  }
+
 
   /// String ///
 

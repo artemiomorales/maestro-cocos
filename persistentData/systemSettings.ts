@@ -1,6 +1,7 @@
 
 import { TextAsset, _decorator } from 'cc';
 import { BoolVariable } from './boolVariable';
+import { FloatVariable } from './floatVariable';
 import { StringReference } from './stringReference';
 const { ccclass, property } = _decorator;
 
@@ -14,6 +15,24 @@ export default class SystemSettings {
   }
   public set appUtilsRequested(value: BoolVariable) {
     this._appUtilsRequested = value;
+  }
+
+  @property({visible: true})
+  private _progressBarVisible: BoolVariable = new BoolVariable();
+  public get progressBarVisible() {
+    return this._progressBarVisible;
+  }
+  public set progressBarVisible(value: BoolVariable) {
+    this._progressBarVisible = value;
+  }
+
+  @property({visible: true})
+  private _sceneLoadingProgress: FloatVariable = new FloatVariable();
+  public get sceneLoadingProgress() {
+    return this._sceneLoadingProgress;
+  }
+  public set sceneLoadingProgress(value: FloatVariable) {
+    this._sceneLoadingProgress = value;
   }
 
   @property({visible: true})
@@ -79,6 +98,7 @@ export default class SystemSettings {
   
   initialize() {
     this.variableMap[this.appUtilsRequested.variableKey.name] = this.appUtilsRequested;
+    this.variableMap[this.progressBarVisible.variableKey.name] = this.progressBarVisible;
     this.variableMap[this.menuRequested.variableKey.name] = this.menuRequested;
     this.variableMap[this.yNorthKey.variableReference.name] = this.yNorthKey;
     this.variableMap[this.ySouthKey.variableReference.name] = this.ySouthKey;
