@@ -60,6 +60,12 @@ export class ProgressBar extends Component {
     this.appSettingsNode.on(this.appSettings.getSceneLoadingProgressVariableKey(this.node), this.updateProgress, this);
   }
 
+  onDestroy() {
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TRIGGER_SHOW_PROGRESS_BAR], this.showProgressBar, this);
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.TRIGGER_HIDE_PROGRESS_BAR], this.hideProgressBar, this);
+    this.appSettingsNode.off(this.appSettings.getSceneLoadingProgressVariableKey(this.node), this.updateProgress, this);
+  }
+
   showProgressBar() {
     console.log("progress bar showing");
     this.progressBarVisible = true;
@@ -87,8 +93,6 @@ export class ProgressBar extends Component {
   }
 
   updateProgress() {
-    console.log("scene loading progress");
-    console.log(this.sceneLoadingProgress);
     this.slider.progress = this.sceneLoadingProgress;
   }
 

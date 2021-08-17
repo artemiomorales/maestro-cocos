@@ -79,15 +79,15 @@ export class Fader extends Component {
     this.appSettingsNode = find(CONSTANTS.APP_SETTINGS_PATH) as Node;
     this.appSettings = this.appSettingsNode.getComponent(AppSettings) as AppSettings;
 
-    this.appSettingsNode.on(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_FADE_TO_BLACK], (complexPayload: ComplexPayload) => {
-      this.fadeToBlack(complexPayload);
-    })
-    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SCENE_LOAD_COMPLETED], () => {
-      this.fadeIn();
-    })
-    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.HIDE_PROGRESS_BAR_COMPLETED], () => {
-      this.hideProgressBarCompletedCallback();
-    })
+    this.appSettingsNode.on(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_FADE_TO_BLACK], this.fadeToBlack, this);
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SCENE_LOAD_COMPLETED], this.fadeIn, this);
+    this.appSettingsNode.on(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.HIDE_PROGRESS_BAR_COMPLETED], this.hideProgressBarCompletedCallback, this);
+  }
+
+  onDestroy() {
+    this.appSettingsNode.off(Object.keys(COMPLEX_EVENT)[COMPLEX_EVENT.TRIGGER_FADE_TO_BLACK], this.fadeToBlack);
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.SCENE_LOAD_COMPLETED], this.fadeIn);
+    this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.HIDE_PROGRESS_BAR_COMPLETED], this.hideProgressBarCompletedCallback);
   }
 
   fadeToBlack(complexPayload: ComplexPayload) {

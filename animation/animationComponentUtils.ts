@@ -31,6 +31,9 @@ export class AnimationComponentUtils extends Component {
   }
 
   playDefaultClipIfStopped() {
+    if(this.animationComponent === null) {
+      return;
+    }
     if(this.animationComponent.getState(this.animationComponent.defaultClip?.name as string).isPlaying === false) {
       this.animationComponent.play();
     }

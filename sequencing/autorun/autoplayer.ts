@@ -94,7 +94,6 @@ export default class Autoplayer extends Component implements AutorunModule {
   }
 
   onDestroy() {
-    console.log("autoplay destroying");
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_UPDATED], this.callOnSequenceUpdated, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_DEACTIVATED], this.callDeactivateAutoplaySequence, this);
     this.appSettingsNode.off(Object.keys(SIMPLE_EVENT)[SIMPLE_EVENT.ON_SWIPE_END], this.autoplayAllSequences, this);
@@ -435,7 +434,6 @@ export default class Autoplayer extends Component implements AutorunModule {
   /// </summary>
   deactivateAutoplayAllSequences()
   {
-    console.log(this.autorunController);
     for (let q = 0; q < this.autorunController.autorunData.length; q++) {
       const sequence: SequenceController = this.autorunController.autorunData[q].sequenceController;
       this.triggerAutorunIntervalComplete(this, this.autorunController.autorunData[q]);

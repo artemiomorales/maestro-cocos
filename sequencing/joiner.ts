@@ -1,7 +1,7 @@
 
 import { _decorator, Component, Node, find } from 'cc';
 import ComplexPayload from '../complexPayload';
-import { COMPLEX_EVENT, CONSTANTS, DESTINATION_ACTIVATION_TYPE, DESTINATION_TYPE, INTERNAL_COMPLEX_EVENT, SIMPLE_EVENT } from '../constants';
+import { COMPLEX_EVENT, CONSTANTS, DATA_TYPE, DESTINATION_ACTIVATION_TYPE, DESTINATION_TYPE, INTERNAL_COMPLEX_EVENT, SIMPLE_EVENT } from '../constants';
 import SequenceController, { DestinationConfig } from './sequenceController';
 import AppSettings from '../persistentData/appSettings';
 import { RootConfig } from './rootConfig';
@@ -11,6 +11,7 @@ import { SimpleJoinerDestination } from './simpleJoinerDestination';
 import { ForkJoinerDestination } from './forkJoinerDestination';
 import { TouchForkJoinerDestination } from './touchForkJoinerDestination';
 import { IForkDestinationPayload } from './iForkDestinationPayload';
+import { ISetDestinationStatusPayload } from './iSetDestinationStatusPayload';
 const { ccclass, property } = _decorator;
 
 @ccclass('JoinerData')
@@ -102,7 +103,8 @@ export default class Joiner extends Component {
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], this.callActivateNextSequence, this);
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], this.callActivatePreviousSequence, this);
     this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_FORK_DESTINATION], this.setForkDestination, this);
-
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_NEXT_DESTINATION_STATUS], this.callSetNextDestinationStatus, this);
+    this.appSettingsNode.on(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_PREVIOUS_DESTINATION_STATUS], this.callSetPreviousDestinationStatus, this);
 
     this.configureData();
   }
@@ -111,16 +113,34 @@ export default class Joiner extends Component {
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE], this.callActivateNextSequence, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE], this.callActivatePreviousSequence, this);
     this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_FORK_DESTINATION], this.setForkDestination, this);
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_NEXT_DESTINATION_STATUS], this.callSetNextDestinationStatus, this);
+    this.appSettingsNode.off(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_PREVIOUS_DESTINATION_STATUS], this.callSetPreviousDestinationStatus, this);
   }
 
   callActivateNextSequence(complexPayload: ComplexPayload) {
     const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_NEXT_SEQUENCE]);
-      this.activateNextSequence(sourceSequence);
+    this.activateNextSequence(sourceSequence);
   }
 
   callActivatePreviousSequence(complexPayload: ComplexPayload) {
     const sourceSequence = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ACTIVATE_PREVIOUS_SEQUENCE]);
-      this.activatePreviousSequence(sourceSequence);
+    this.activatePreviousSequence(sourceSequence);
+  }
+
+  callSetNextDestinationStatus(complexPayload: ComplexPayload) {
+    console.log(complexPayload);
+    const payload: ISetDestinationStatusPayload = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_NEXT_DESTINATION_STATUS]);
+    const sourceSequence = payload.sequence;
+    const targetStatus = payload.targetStatus;
+    this.setNextDestinationStatus(sourceSequence, targetStatus);
+  }
+
+  callSetPreviousDestinationStatus(complexPayload: ComplexPayload) {
+    console.log(complexPayload);
+    const payload: ISetDestinationStatusPayload = complexPayload.get(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_NEXT_DESTINATION_STATUS]);
+    const sourceSequence = payload.sequence;
+    const targetStatus = payload.targetStatus;
+    this.setPreviousDestinationStatus(sourceSequence, targetStatus);
   }
 
   setForkDestination(complexPayload: ComplexPayload) {
@@ -253,6 +273,7 @@ export default class Joiner extends Component {
     const previousDestination: IJoinerDestination = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData.previousDestination as IJoinerDestination;
 
     if(!previousDestination || !previousDestination.active) {
+      this.callTriggerSequenceBoundaryReached(sourceSequence);
       return;
     }
     // const joinConfig = sourceSequence.joinConfig;
@@ -343,6 +364,7 @@ export default class Joiner extends Component {
     const nextDestination: IJoinerDestination = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData.nextDestination as IJoinerDestination;
 
     if(!nextDestination || !nextDestination.active) {
+      this.callTriggerSequenceBoundaryReached(sourceSequence);
       return;
     }
 
@@ -425,6 +447,7 @@ export default class Joiner extends Component {
   }
 
   callTriggerSequenceBoundaryReached(sequence: SequenceController) {
+    console.log("boundary reached");
     const sequenceBoundaryReachedPayload = new ComplexPayload();
     sequenceBoundaryReachedPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], sequence);
     this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.ON_SEQUENCE_BOUNDARY_REACHED], sequenceBoundaryReachedPayload);
@@ -448,5 +471,29 @@ export default class Joiner extends Component {
   //   }
 
   // }
+
+  setNextDestinationStatus(sourceSequence: SequenceController, targetStatus: boolean) {
+    const nextDestination: IJoinerDestination = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData.nextDestination as IJoinerDestination;
+
+    console.log(this.joinerDataCollection);
+
+    if(!nextDestination) {
+      console.log("Destination data not found. Did you configure your Sequence Controllers correctly?")
+      return;
+    }
+
+    nextDestination.active = targetStatus;
+  }
+
+  setPreviousDestinationStatus(sourceSequence: SequenceController, targetStatus: boolean) {
+    const previousDestination: IJoinerDestination = this.joinerDataCollection.find(x => x.sequence === sourceSequence)?.joinerData.nextDestination as IJoinerDestination;
+
+    if(!previousDestination) {
+      console.log("Destination data not found. Did you configure your Sequence Controllers correctly?")
+      return;
+    }
+
+    previousDestination.active = targetStatus;
+  }
 
 }

@@ -41,8 +41,13 @@ export class RichTextExtensions extends Component {
     if(this.variableReference) {
       const sceneData = GetSceneData();
       const value = sceneData.getValue(this.node, this.variableReference);
-      this.richTextComponent.string = `<color=#${this.targetColor}>${value.toString()}</color>`
+      this.richTextComponent.string = `<color=#${this.targetColor.toHEX("#rrggbb")}>${value.toString()}</color>`;
     }
+  }
+
+  setText(targetValue: string) {
+    console.log(this.targetColor.toHEX("#rrggbb"));
+    this.richTextComponent.string = `<color=#${this.targetColor.toHEX("#rrggbb")}>${targetValue.toString()}</color>`;
   }
 
 }

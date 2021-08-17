@@ -5,6 +5,7 @@ import AppSettings from '../persistentData/appSettings';
 import { COMPLEX_EVENT, CONSTANTS, DESTINATION_ACTIVATION_TYPE, DESTINATION_TYPE, INTERNAL_COMPLEX_EVENT } from '../constants';
 import ComplexPayload from '../complexPayload';
 import { IForkDestinationPayload } from './iForkDestinationPayload';
+import { ISetDestinationStatusPayload } from './iSetDestinationStatusPayload';
 
 const { ccclass, property } = _decorator;
 
@@ -489,6 +490,42 @@ export default class SequenceController extends Component {
     //   throw 'Destination key not found in node list in ' + this.name + '. Did you populate branch keys on your target sequence contollers?'
     // }
 
+  }
+
+  activateNextDestination(){
+    this.triggerSetNextDestinationStatus(true);
+  }
+
+  deactivateNextDestination(){
+    this.triggerSetNextDestinationStatus(false);
+  }
+
+  private triggerSetNextDestinationStatus(targetStatus: boolean) {
+    const complexPayload = new ComplexPayload();
+    const payload: ISetDestinationStatusPayload = {
+      sequence: this,
+      targetStatus: targetStatus,
+    };
+    complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_NEXT_DESTINATION_STATUS], payload);
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_NEXT_DESTINATION_STATUS], complexPayload)
+  }
+
+  activatePreviousDestination(){
+    this.triggerSetPreviousDestinationStatus(true);
+  }
+
+  deactivatePreviousDestination(){
+    this.triggerSetPreviousDestinationStatus(false);
+  }
+
+  private triggerSetPreviousDestinationStatus(targetStatus: boolean) {
+    const complexPayload = new ComplexPayload();
+    const payload: ISetDestinationStatusPayload = {
+      sequence: this,
+      targetStatus: targetStatus,
+    };
+    complexPayload.set(Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_PREVIOUS_DESTINATION_STATUS], payload);
+    this.appSettings.triggerComplexEvent(this.node, Object.keys(INTERNAL_COMPLEX_EVENT)[INTERNAL_COMPLEX_EVENT.SET_PREVIOUS_DESTINATION_STATUS], complexPayload)
   }
 
   static getDestinationViaKey(destinationKey: string, destinationConfig: DestinationConfig) {
