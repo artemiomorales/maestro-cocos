@@ -1,12 +1,11 @@
 {
-  "ver": "4.0.22",
+  "ver": "4.0.23",
   "importer": "typescript",
   "imported": true,
   "uuid": "f636cf39-cce8-4f72-8f48-b19d35504abf",
   "files": [],
   "subMetas": {},
   "userData": {
-    "importAsPlugin": false,
     "moduleId": "project:///assets/scripts/utils.js",
     "importerSettings": 4,
     "simulateGlobals": []

@@ -1,12 +1,11 @@
 {
-  "ver": "4.0.22",
+  "ver": "4.0.23",
   "importer": "typescript",
   "imported": true,
   "uuid": "547f6d78-2466-4915-8b46-aa1ad0779088",
   "files": [],
   "subMetas": {},
   "userData": {
-    "importAsPlugin": false,
     "moduleId": "project:///assets/scripts/touchMonitor.js",
     "importerSettings": 4,
     "simulateGlobals": []

@@ -64,4 +64,12 @@ export class ActionTriggerBehaviour extends Component {
     }
   }
 
+  activate () {
+    this.actionTrigger.active = true;
+  }
+
+  deactivate () {
+    this.actionTrigger.active = false;
+  }
+
 }

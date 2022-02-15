@@ -1,12 +1,11 @@
 {
-  "ver": "4.0.22",
+  "ver": "4.0.23",
   "importer": "typescript",
   "imported": true,
   "uuid": "6cd8deee-4d67-4963-bd1d-181590573d03",
   "files": [],
   "subMetas": {},
   "userData": {
-    "importAsPlugin": false,
     "moduleId": "project:///assets/scripts/sequenceController.js",
     "importerSettings": 4,
     "simulateGlobals": []
