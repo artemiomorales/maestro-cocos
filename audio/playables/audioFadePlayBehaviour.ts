@@ -40,19 +40,19 @@ export class AudioFadePlayBehaviour extends Component {
 
   update () {
     // console.log(this.targetVolume);
-    if (this.targetVolumeVec.y >= 1) {
+    if (this.targetVolume >= 1) {
       if(this.audioSource.playing === false) {
           this.audioSource.volume = 1;
           this.audioSource.play();
       } 
     }
     // Once the playhead is before the clip's start threshold, stop the audio
-    else if (this.targetVolumeVec.y <= 0 && this.audioSource.playing === true) {
+    else if (this.targetVolume <= 0 && this.audioSource.playing === true) {
       this.audioSource.volume = 0;
       this.audioSource.stop();
     }
     else {
-      this.audioSource.volume = this.targetVolumeVec.y;
+      this.audioSource.volume = this.targetVolume;
     }
   }
 }
