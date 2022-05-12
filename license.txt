@@ -1,9 +1,116 @@
 /***********************************************
 
-Copyright © 2022 Artemio Morales
+Maestro Story Engine for Cocos
+End User License Agreement
 
-All rights reserved.
+Licensor: Artemio Morales / ra.morales244@gmail.com
 
-http://www.artemiomorales.com / ra.morales244@gmail.com
-        
 **********************************************/
+
+
+Overview
+
+  The Maestro Story Engine for Cocos (“Maestro”) is a software extension for the Cocos Creator game engine created by Artemio Morales (“Licensor”) in connection with Artmayu Studios. By downloading, installing or using Maestro in any way, you (“End User”) represent and affirm that you have read, understand and agree to be legally bound by and comply with this End User License Agreement (“Agreement”). If you do not agree with this End User License Agreement, you are not authorized to use Maestro in any manner.
+
+
+ELIGIBILITY
+
+  Maestro is distributed under two tiers: Maestro Personal and Maestro Commercial. Each tier has a Financial Threshold. To use Maestro, you and everyone using the software on your behalf must be eligible for the tier you are using — this means that your Total Finances cannot exceed that tier’s Financial Threshold.
+
+  Eligibility is determined using the most recent twelve (12) month period. If you are in the middle of a project, and your Total Finances grow beyond the Financial Threshold of your current tier, you can upgrade your license by contacting the Licensor. The manner of measuring your Total Finances varies based on your use case and who you are. Financial Thresholds are shown in US currency and your Total Finances shall be converted to US currency to determine eligibility.
+
+  Total Finances shall be measured as follows:
+
+    If you are a legal entity using Maestro (other than using it to service someone else), your Total Finances are your gross revenues and/or funding
+
+    If you are an individual or a legal entity providing services to a third party, your Total Finances are comprised of your customer or client’s Total Finances
+
+    If you are an individual using Maestro, but not providing services to a third party, your Total Finances are the amount generated in connection with your use of Maestro. In this scenario, your Total Finances would not include amounts you generate from other work (for example, if your day job is as a horticulturalist).
+
+    By using Maestro, you represent and warrant that you are eligible for the tier of Maestro you are using and tiers being used on your behalf. You understand that it is your responsibility to maintain full records establishing your eligibility and you bear the burden of proving your eligibility if we ask.
+
+  Financial Thresholds:
+
+    The Financial Threshold for Maestro Personal is US $100,000 for the most recent twelve (12) month period. To be eligible to use Maestro Personal, your Total Finances may not exceed US $100,000. If your Total Finances exceed US $100,000 you may not use Maestro Personal at all, even for internal projects or prototyping. 
+
+    There is no Financial Threshold for Maestro Commercial. You do not need to qualify to use Maestro Commercial; Maestro Commercial may be used by anyone who purchases the applicable software package.
+
+  No Mixing
+  
+    Maestro tiers with different Financial Thresholds may not be used at the same time by one entity or individual or for or on behalf of one entity or individual. You must upgrade all licenses if your Total Finances exceed a Financial Threshold.
+
+    If you are using Maestro Commercial and want to provide services to a customer or client who is eligible to use Maestro Personal, you may do so.
+
+
+1. End User's Rights and Obligations.
+
+  a. Licensor hereby grants to the End User a non-exclusive, non-transferable, worldwide, and perpetual license to Maestro solely:
+
+    (i) to incorporate Maestro, together with substantial, original content, into an electronic application or digital media that has a purpose, features, and functions beyond the display, performance, distribution, or use of Maestro (“Licensed Work”) as an embedded component of that Licensed Work; 
+
+    (ii) to reproduce, publicly display, publicly perform, transmit, and distribute Maestro as incorporated and embedded in that Licensed Work; 
+
+    (iii) to incorporate Maestro into physical advertising materials and reproduce, publicly display, publicly perform, transmit and distribute Maestro as incorporated into those materials solely for marketing purposes with respect to the Licensed Work; 
+
+    (iv) monetize Maestro within and for use within a Licensed Work, including via in-app purchases; and
+
+    (v) except as set forth in (b) below, modify Maestro in connection with (i), (ii), (iii), and (iv).
+
+
+  b. Limitations on License. Without limiting the foregoing, End User may not, and has no right to, 
+
+    (i) share the costs related to purchasing Maestro and then let any third party that has contributed to such purchase use Maestro,
+    
+    (ii) enable a customer or user of a Licensed Work to sell, transfer, distribute, lease, or lend Maestro for commercial gain within a Licensed Work,
+
+    (iii) without express authorization, monetize Maestro in a Licensed Work where the Licensed Work’s primary purpose is to create user-generated content,
+
+    (iv) use, reproduce, duplicate, publicly display, publicly perform, copy, modify, adapt, translate, prepare derivative works of, distribute, transfer, license, sublicense, rent, lease, lend, sell, trade, resell, or otherwise commercialize or monetize Maestro except as expressly permitted in this agreement,without express authorization, use Maestro in any digital representation of value, ownership, or contractual rights.
+
+
+  c. End User is granted a single seat license to install and use Maestro only on a maximum of 2 computers. Maestro is licensed on a per seat basis and may not be shared or used concurrently on more than 2 different computers. As an exception, build farm servers and virtual machine instances used only for running, testing, or building projects with Maestro do not require separate seat license(s) or constitute use on more than 2 different computers. 
+  
+  d. An End User may use Maestro under SECTIONS (1a) and (1c), and may have a third party, including any “work-made-for-hire” contractor or “freelancer” (“Contractor”), work using Maestro on its behalf. However, any Contractor working on a project for an End User must have license(s) to its own license to use Maestro, and, conversely, to use an Asset under SECTIONS (1a) and (1c), a person must have its own license to the Asset, regardless of whether a Contractor working on a project for that person had its own license to that Asset. For example, a person who is a Contractor must have a seat license for Maestro, and the person who is hired by the Contractor must have a seat license for Maestro.
+
+  e. Some components of the Software (whether developed by Licensor or third parties) may also be governed by applicable open source software licenses. In the event of a conflict between the Agreement and any such open source licenses, the open source software licenses shall prevail with respect to those components.
+
+  d. You agree that no modification or use of the Software shall (a) infringe, misappropriate, or violate a third party’s patent, copyright, trademark, trade secret, moral rights, or other intellectual property rights, or rights of publicity or privacy; (b) violate, or encourage any conduct that would violate, any applicable law or regulation or would give rise to liability of any kind; (c) be fraudulent, false, misleading, or deceptive; (d) promote discrimination, bigotry, racism, hatred, harassment, or harm against any individual or group; or (e) promote violence or actions that are threatening to any other person.
+
+
+2. Licensor’s Rights and Obligations. Licensor shall render support services to End User only in the event a special agreement to this effect has been entered into.
+
+
+3. Termination.
+
+  a. Without prejudice to any other rights, Licensor may terminate this Agreement if End User fails to comply with the terms and conditions of this Agreement and the Terms.
+
+  b. End User may terminate End User’s license at any time.
+
+  c. In the event that Licensor at its discretion or as a result of a decision made by any competent court or authority makes a refund to End User of the fees paid for any Asset, then this Agreement shall terminate for such Asset.
+
+  d. In the event of termination of this Agreement, all license rights granted herein terminate and End User shall immediately destroy any and all copies of the Maestro contained on any type of media under the control of End User.
+
+
+4. Modifications. End User may modify Maestro.
+
+5. Trademarks. This Agreement does not grant End User any rights in connection with any trademarks or service marks of Licensor, Provider or Licensor's other suppliers.
+
+6. Intellectual Property.
+
+  a. Maestro is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties.
+
+  b. All title and intellectual property rights in and to Maestro (including but not limited to any software, images, photographs, animations, graphics, video, audio, music, text, and tutorials into Maestro), the accompanying print materials, and any copies of Maestro are owned by Licensor. All rights not expressly granted are reserved by the Licensor. For greater certainty and without limitation of the foregoing, use of Maestro, whether modified as permitted hereunder or unmodified, is limited to use as expressly provided in this Agreement.
+
+7. Disclaimer of Warranties
+
+  END USER UNDERSTANDS THAT ITS USE OF THE SOFTWARE IS AT END USER’S SOLE RISK AND THAT THE SOFTWARE IS PROVIDED “AS-IS,” WITH NO REPRESENTATION OR WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OR ANY IMPLIED WARRANTY ARISING FROM STATUTE, COURSE OF DEALING, COURSE OF PERFORMANCE, OR USAGE OF TRADE. NO WRITTEN OR ORAL INFORMATION GIVEN BY LICENSOR OR ITS REPRESENTATIVES CREATES A WARRANTY. WE SHALL NOT BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES THAT RESULT FROM THE ACCESS, POSSESSION, USAGE, MISUSE, INABILITY TO USE, OR MALFUNCTION OF THE SOFTWARE, INCLUDING, BUT NOT LIMITED TO, DAMAGES TO PROPERTY, DEVICE MALFUNCTION OR FAILURE, COMPUTER MALFUNCTION OR FAILURE AND, TO THE EXTENT ALLOWABLE BY LAW, DAMAGES FOR PERSONAL INJURIES, EVEN IF WE HAVE BEEN NOTIFIED OF THE POSSIBILITY OF THESE DAMAGES. UNDER NO CIRCUMSTANCES SHALL OUR LIABILITY EXCEED THE AMOUNT YOU ACTUALLY PAID (IF ANY) FOR THE LICENSE TO USE THE SOFTWARE. IN ADDITION, LICENSOR, ITS SUBSIDIARIES, HOLDING COMPANIES AND AFFILIATES, AND ITS LICENSORS DO NOT REPRESENT OR WARRANT TO END USER THAT (A) THE SOFTWARE WILL MEET END USER’S REQUIREMENTS, (B) THAT DEFECTS IN THE OPERATION OR FUNCTIONALITY OF ANY COMPONENTS PROVIDED TO END USER AS PART OF THE SOFTWARE WILL BE CORRECTED. THE SOFTWARE IS NOT INTENDED FOR USE IN THE OPERATION OF NUCLEAR FACILITIES, LIFE SUPPORT SYSTEMS, EMERGENCY COMMUNICATIONS, AIRCRAFT NAVIGATION OR COMMUNICATION SYSTEMS, AIR TRAFFIC CONTROL SYSTEMS, OR ANY OTHER SUCH ACTIVITIES IN WHICH CASE THE FAILURE OF THE SOFTWARE COULD LEAD TO DEATH, PERSONAL INJURY, OR SEVERE PHYSICAL OR ENVIRONMENTAL DAMAGE. SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON THE DURATION OF AN IMPLIED WARRANTY AND/OR THE EXCLUSION OF LIMITATION OF DAMAGES, SO THESE STATED LIMITATIONS AND/OR EXCLUSIONS MAY NOT APPLY TO YOU. IN SUCH CASES, WE LIMIT OUR LIABILITY TO THE GREATEST EXTENT PERMITTED BY LAW.
+
+8. Export Restrictions. The Software may be subject to laws, administrative regulations and executive orders of those authorities responsible according to any applicable laws relating to the control of imports and exports of the Software (“Export Laws”). You agree to comply with all applicable Export Laws and you shall not export or re-export directly or indirectly (including via remote access) any part of the Software to any country to which a license is required under the Export Laws without first obtaining a license.
+
+9. Indemnity. You agree to indemnify and hold harmless Licensor from any claims, costs, damages, losses, or other liabilities as well as related costs, such as attorneys’ fees (collectively, “Losses”) resulting from your use of the Software. In addition, you agree to indemnify the Licensor for any Losses resulting from (a) your violation of these Terms; and (b) your violation of any others’ rights. Your jurisdiction may limit consumer indemnities, so some (or all) of these provisions related to indemnity may not apply in your circumstance. If you are obligated to indemnify the Licensor, Licensor shall have the right, at its sole discretion, to control any proceeding and determine if they desire to settle it, and if so, under what conditions.
+
+10. Miscellaneous. If any part or parts of these Agreement shall be held unenforceable for any reason, the remainder of this Agreement shall continue in full force and effect. If any provision of this Agreement is deemed invalid or unenforceable by any court of competent jurisdiction, and if limiting such provision would make the provision valid, then such provision shall be deemed to be construed as so limited. If we do not enforce any provision within this Agreement, that shall not be considered a waiver of our rights.
+
+11. Governing Law. This Agreement and End User's relationship with Licensor under this Agreement, shall be governed by the laws of the state of New York without regard to its conflict of laws provisions.
+
+12. Headings. The headings for section herein are for convenience only and shall not affect the meaning of the provisions of these Terms.

@@ -9,4 +9,6 @@ Maestro extends the functionality of Cocos Creator by allowing one to create swi
 License
 =======
 
-All rights are currently reserved. Code is provided here for demonstrative purposes.
+All rights are currently reserved. Code is provided on Github for demonstrative purposes.
+
+To obtain a license, as well as project templates, please visit https://artemiosans.itch.io/maestro-story-engine.
