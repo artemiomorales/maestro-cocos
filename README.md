@@ -11,4 +11,4 @@ License
 
 All rights are currently reserved. Code is provided on Github for demonstrative purposes.
 
-To obtain a license, as well as project templates, please visit https://artemiosans.itch.io/maestro-story-engine.
+To obtain a license, as well as project templates, please visit https://artemiosans.itch.io/maestro-story-engine. You can view license details in _license.txt_.
