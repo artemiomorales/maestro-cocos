@@ -1,116 +1,373 @@
-/***********************************************
+Mozilla Public License Version 2.0
+==================================
 
-Maestro Story Engine for Cocos
-End User License Agreement
+1. Definitions
+--------------
 
-Licensor: Artemio Morales / ra.morales244@gmail.com
+1.1. "Contributor"
+    means each individual or legal entity that creates, contributes to
+    the creation of, or owns Covered Software.
 
-**********************************************/
+1.2. "Contributor Version"
+    means the combination of the Contributions of others (if any) used
+    by a Contributor and that particular Contributor's Contribution.
 
+1.3. "Contribution"
+    means Covered Software of a particular Contributor.
 
-Overview
+1.4. "Covered Software"
+    means Source Code Form to which the initial Contributor has attached
+    the notice in Exhibit A, the Executable Form of such Source Code
+    Form, and Modifications of such Source Code Form, in each case
+    including portions thereof.
 
-  The Maestro Story Engine for Cocos (“Maestro”) is a software extension for the Cocos Creator game engine created by Artemio Morales (“Licensor”) in connection with Artmayu Studios. By downloading, installing or using Maestro in any way, you (“End User”) represent and affirm that you have read, understand and agree to be legally bound by and comply with this End User License Agreement (“Agreement”). If you do not agree with this End User License Agreement, you are not authorized to use Maestro in any manner.
+1.5. "Incompatible With Secondary Licenses"
+    means
 
+    (a) that the initial Contributor has attached the notice described
+        in Exhibit B to the Covered Software; or
 
-ELIGIBILITY
+    (b) that the Covered Software was made available under the terms of
+        version 1.1 or earlier of the License, but not also under the
+        terms of a Secondary License.
 
-  Maestro is distributed under two tiers: Maestro Personal and Maestro Commercial. Each tier has a Financial Threshold. To use Maestro, you and everyone using the software on your behalf must be eligible for the tier you are using — this means that your Total Finances cannot exceed that tier’s Financial Threshold.
+1.6. "Executable Form"
+    means any form of the work other than Source Code Form.
 
-  Eligibility is determined using the most recent twelve (12) month period. If you are in the middle of a project, and your Total Finances grow beyond the Financial Threshold of your current tier, you can upgrade your license by contacting the Licensor. The manner of measuring your Total Finances varies based on your use case and who you are. Financial Thresholds are shown in US currency and your Total Finances shall be converted to US currency to determine eligibility.
+1.7. "Larger Work"
+    means a work that combines Covered Software with other material, in 
+    a separate file or files, that is not Covered Software.
 
-  Total Finances shall be measured as follows:
+1.8. "License"
+    means this document.
 
-    If you are a legal entity using Maestro (other than using it to service someone else), your Total Finances are your gross revenues and/or funding
+1.9. "Licensable"
+    means having the right to grant, to the maximum extent possible,
+    whether at the time of the initial grant or subsequently, any and
+    all of the rights conveyed by this License.
 
-    If you are an individual or a legal entity providing services to a third party, your Total Finances are comprised of your customer or client’s Total Finances
+1.10. "Modifications"
+    means any of the following:
 
-    If you are an individual using Maestro, but not providing services to a third party, your Total Finances are the amount generated in connection with your use of Maestro. In this scenario, your Total Finances would not include amounts you generate from other work (for example, if your day job is as a horticulturalist).
+    (a) any file in Source Code Form that results from an addition to,
+        deletion from, or modification of the contents of Covered
+        Software; or
 
-    By using Maestro, you represent and warrant that you are eligible for the tier of Maestro you are using and tiers being used on your behalf. You understand that it is your responsibility to maintain full records establishing your eligibility and you bear the burden of proving your eligibility if we ask.
+    (b) any new file in Source Code Form that contains any Covered
+        Software.
 
-  Financial Thresholds:
+1.11. "Patent Claims" of a Contributor
+    means any patent claim(s), including without limitation, method,
+    process, and apparatus claims, in any patent Licensable by such
+    Contributor that would be infringed, but for the grant of the
+    License, by the making, using, selling, offering for sale, having
+    made, import, or transfer of either its Contributions or its
+    Contributor Version.
 
-    The Financial Threshold for Maestro Personal is US $100,000 for the most recent twelve (12) month period. To be eligible to use Maestro Personal, your Total Finances may not exceed US $100,000. If your Total Finances exceed US $100,000 you may not use Maestro Personal at all, even for internal projects or prototyping. 
+1.12. "Secondary License"
+    means either the GNU General Public License, Version 2.0, the GNU
+    Lesser General Public License, Version 2.1, the GNU Affero General
+    Public License, Version 3.0, or any later versions of those
+    licenses.
 
-    There is no Financial Threshold for Maestro Commercial. You do not need to qualify to use Maestro Commercial; Maestro Commercial may be used by anyone who purchases the applicable software package.
+1.13. "Source Code Form"
+    means the form of the work preferred for making modifications.
 
-  No Mixing
-  
-    Maestro tiers with different Financial Thresholds may not be used at the same time by one entity or individual or for or on behalf of one entity or individual. You must upgrade all licenses if your Total Finances exceed a Financial Threshold.
+1.14. "You" (or "Your")
+    means an individual or a legal entity exercising rights under this
+    License. For legal entities, "You" includes any entity that
+    controls, is controlled by, or is under common control with You. For
+    purposes of this definition, "control" means (a) the power, direct
+    or indirect, to cause the direction or management of such entity,
+    whether by contract or otherwise, or (b) ownership of more than
+    fifty percent (50%) of the outstanding shares or beneficial
+    ownership of such entity.
 
-    If you are using Maestro Commercial and want to provide services to a customer or client who is eligible to use Maestro Personal, you may do so.
+2. License Grants and Conditions
+--------------------------------
 
+2.1. Grants
 
-1. End User's Rights and Obligations.
+Each Contributor hereby grants You a world-wide, royalty-free,
+non-exclusive license:
 
-  a. Licensor hereby grants to the End User a non-exclusive, non-transferable, worldwide, and perpetual license to Maestro solely:
+(a) under intellectual property rights (other than patent or trademark)
+    Licensable by such Contributor to use, reproduce, make available,
+    modify, display, perform, distribute, and otherwise exploit its
+    Contributions, either on an unmodified basis, with Modifications, or
+    as part of a Larger Work; and
 
-    (i) to incorporate Maestro, together with substantial, original content, into an electronic application or digital media that has a purpose, features, and functions beyond the display, performance, distribution, or use of Maestro (“Licensed Work”) as an embedded component of that Licensed Work; 
+(b) under Patent Claims of such Contributor to make, use, sell, offer
+    for sale, have made, import, and otherwise transfer either its
+    Contributions or its Contributor Version.
 
-    (ii) to reproduce, publicly display, publicly perform, transmit, and distribute Maestro as incorporated and embedded in that Licensed Work; 
+2.2. Effective Date
 
-    (iii) to incorporate Maestro into physical advertising materials and reproduce, publicly display, publicly perform, transmit and distribute Maestro as incorporated into those materials solely for marketing purposes with respect to the Licensed Work; 
+The licenses granted in Section 2.1 with respect to any Contribution
+become effective for each Contribution on the date the Contributor first
+distributes such Contribution.
 
-    (iv) monetize Maestro within and for use within a Licensed Work, including via in-app purchases; and
+2.3. Limitations on Grant Scope
 
-    (v) except as set forth in (b) below, modify Maestro in connection with (i), (ii), (iii), and (iv).
+The licenses granted in this Section 2 are the only rights granted under
+this License. No additional rights or licenses will be implied from the
+distribution or licensing of Covered Software under this License.
+Notwithstanding Section 2.1(b) above, no patent license is granted by a
+Contributor:
 
+(a) for any code that a Contributor has removed from Covered Software;
+    or
 
-  b. Limitations on License. Without limiting the foregoing, End User may not, and has no right to, 
+(b) for infringements caused by: (i) Your and any other third party's
+    modifications of Covered Software, or (ii) the combination of its
+    Contributions with other software (except as part of its Contributor
+    Version); or
 
-    (i) share the costs related to purchasing Maestro and then let any third party that has contributed to such purchase use Maestro,
-    
-    (ii) enable a customer or user of a Licensed Work to sell, transfer, distribute, lease, or lend Maestro for commercial gain within a Licensed Work,
+(c) under Patent Claims infringed by Covered Software in the absence of
+    its Contributions.
 
-    (iii) without express authorization, monetize Maestro in a Licensed Work where the Licensed Work’s primary purpose is to create user-generated content,
+This License does not grant any rights in the trademarks, service marks,
+or logos of any Contributor (except as may be necessary to comply with
+the notice requirements in Section 3.4).
 
-    (iv) use, reproduce, duplicate, publicly display, publicly perform, copy, modify, adapt, translate, prepare derivative works of, distribute, transfer, license, sublicense, rent, lease, lend, sell, trade, resell, or otherwise commercialize or monetize Maestro except as expressly permitted in this agreement,without express authorization, use Maestro in any digital representation of value, ownership, or contractual rights.
+2.4. Subsequent Licenses
 
+No Contributor makes additional grants as a result of Your choice to
+distribute the Covered Software under a subsequent version of this
+License (see Section 10.2) or under the terms of a Secondary License (if
+permitted under the terms of Section 3.3).
 
-  c. End User is granted a single seat license to install and use Maestro only on a maximum of 2 computers. Maestro is licensed on a per seat basis and may not be shared or used concurrently on more than 2 different computers. As an exception, build farm servers and virtual machine instances used only for running, testing, or building projects with Maestro do not require separate seat license(s) or constitute use on more than 2 different computers. 
-  
-  d. An End User may use Maestro under SECTIONS (1a) and (1c), and may have a third party, including any “work-made-for-hire” contractor or “freelancer” (“Contractor”), work using Maestro on its behalf. However, any Contractor working on a project for an End User must have license(s) to its own license to use Maestro, and, conversely, to use an Asset under SECTIONS (1a) and (1c), a person must have its own license to the Asset, regardless of whether a Contractor working on a project for that person had its own license to that Asset. For example, a person who is a Contractor must have a seat license for Maestro, and the person who is hired by the Contractor must have a seat license for Maestro.
+2.5. Representation
 
-  e. Some components of the Software (whether developed by Licensor or third parties) may also be governed by applicable open source software licenses. In the event of a conflict between the Agreement and any such open source licenses, the open source software licenses shall prevail with respect to those components.
+Each Contributor represents that the Contributor believes its
+Contributions are its original creation(s) or it has sufficient rights
+to grant the rights to its Contributions conveyed by this License.
 
-  d. You agree that no modification or use of the Software shall (a) infringe, misappropriate, or violate a third party’s patent, copyright, trademark, trade secret, moral rights, or other intellectual property rights, or rights of publicity or privacy; (b) violate, or encourage any conduct that would violate, any applicable law or regulation or would give rise to liability of any kind; (c) be fraudulent, false, misleading, or deceptive; (d) promote discrimination, bigotry, racism, hatred, harassment, or harm against any individual or group; or (e) promote violence or actions that are threatening to any other person.
+2.6. Fair Use
 
+This License is not intended to limit any rights You have under
+applicable copyright doctrines of fair use, fair dealing, or other
+equivalents.
 
-2. Licensor’s Rights and Obligations. Licensor shall render support services to End User only in the event a special agreement to this effect has been entered into.
+2.7. Conditions
 
+Sections 3.1, 3.2, 3.3, and 3.4 are conditions of the licenses granted
+in Section 2.1.
 
-3. Termination.
+3. Responsibilities
+-------------------
 
-  a. Without prejudice to any other rights, Licensor may terminate this Agreement if End User fails to comply with the terms and conditions of this Agreement and the Terms.
+3.1. Distribution of Source Form
 
-  b. End User may terminate End User’s license at any time.
+All distribution of Covered Software in Source Code Form, including any
+Modifications that You create or to which You contribute, must be under
+the terms of this License. You must inform recipients that the Source
+Code Form of the Covered Software is governed by the terms of this
+License, and how they can obtain a copy of this License. You may not
+attempt to alter or restrict the recipients' rights in the Source Code
+Form.
 
-  c. In the event that Licensor at its discretion or as a result of a decision made by any competent court or authority makes a refund to End User of the fees paid for any Asset, then this Agreement shall terminate for such Asset.
+3.2. Distribution of Executable Form
 
-  d. In the event of termination of this Agreement, all license rights granted herein terminate and End User shall immediately destroy any and all copies of the Maestro contained on any type of media under the control of End User.
+If You distribute Covered Software in Executable Form then:
 
+(a) such Covered Software must also be made available in Source Code
+    Form, as described in Section 3.1, and You must inform recipients of
+    the Executable Form how they can obtain a copy of such Source Code
+    Form by reasonable means in a timely manner, at a charge no more
+    than the cost of distribution to the recipient; and
 
-4. Modifications. End User may modify Maestro.
+(b) You may distribute such Executable Form under the terms of this
+    License, or sublicense it under different terms, provided that the
+    license for the Executable Form does not attempt to limit or alter
+    the recipients' rights in the Source Code Form under this License.
 
-5. Trademarks. This Agreement does not grant End User any rights in connection with any trademarks or service marks of Licensor, Provider or Licensor's other suppliers.
+3.3. Distribution of a Larger Work
 
-6. Intellectual Property.
+You may create and distribute a Larger Work under terms of Your choice,
+provided that You also comply with the requirements of this License for
+the Covered Software. If the Larger Work is a combination of Covered
+Software with a work governed by one or more Secondary Licenses, and the
+Covered Software is not Incompatible With Secondary Licenses, this
+License permits You to additionally distribute such Covered Software
+under the terms of such Secondary License(s), so that the recipient of
+the Larger Work may, at their option, further distribute the Covered
+Software under the terms of either this License or such Secondary
+License(s).
 
-  a. Maestro is protected by copyright laws and international copyright treaties, as well as other intellectual property laws and treaties.
+3.4. Notices
 
-  b. All title and intellectual property rights in and to Maestro (including but not limited to any software, images, photographs, animations, graphics, video, audio, music, text, and tutorials into Maestro), the accompanying print materials, and any copies of Maestro are owned by Licensor. All rights not expressly granted are reserved by the Licensor. For greater certainty and without limitation of the foregoing, use of Maestro, whether modified as permitted hereunder or unmodified, is limited to use as expressly provided in this Agreement.
+You may not remove or alter the substance of any license notices
+(including copyright notices, patent notices, disclaimers of warranty,
+or limitations of liability) contained within the Source Code Form of
+the Covered Software, except that You may alter any license notices to
+the extent required to remedy known factual inaccuracies.
 
-7. Disclaimer of Warranties
+3.5. Application of Additional Terms
 
-  END USER UNDERSTANDS THAT ITS USE OF THE SOFTWARE IS AT END USER’S SOLE RISK AND THAT THE SOFTWARE IS PROVIDED “AS-IS,” WITH NO REPRESENTATION OR WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OR ANY IMPLIED WARRANTY ARISING FROM STATUTE, COURSE OF DEALING, COURSE OF PERFORMANCE, OR USAGE OF TRADE. NO WRITTEN OR ORAL INFORMATION GIVEN BY LICENSOR OR ITS REPRESENTATIVES CREATES A WARRANTY. WE SHALL NOT BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES THAT RESULT FROM THE ACCESS, POSSESSION, USAGE, MISUSE, INABILITY TO USE, OR MALFUNCTION OF THE SOFTWARE, INCLUDING, BUT NOT LIMITED TO, DAMAGES TO PROPERTY, DEVICE MALFUNCTION OR FAILURE, COMPUTER MALFUNCTION OR FAILURE AND, TO THE EXTENT ALLOWABLE BY LAW, DAMAGES FOR PERSONAL INJURIES, EVEN IF WE HAVE BEEN NOTIFIED OF THE POSSIBILITY OF THESE DAMAGES. UNDER NO CIRCUMSTANCES SHALL OUR LIABILITY EXCEED THE AMOUNT YOU ACTUALLY PAID (IF ANY) FOR THE LICENSE TO USE THE SOFTWARE. IN ADDITION, LICENSOR, ITS SUBSIDIARIES, HOLDING COMPANIES AND AFFILIATES, AND ITS LICENSORS DO NOT REPRESENT OR WARRANT TO END USER THAT (A) THE SOFTWARE WILL MEET END USER’S REQUIREMENTS, (B) THAT DEFECTS IN THE OPERATION OR FUNCTIONALITY OF ANY COMPONENTS PROVIDED TO END USER AS PART OF THE SOFTWARE WILL BE CORRECTED. THE SOFTWARE IS NOT INTENDED FOR USE IN THE OPERATION OF NUCLEAR FACILITIES, LIFE SUPPORT SYSTEMS, EMERGENCY COMMUNICATIONS, AIRCRAFT NAVIGATION OR COMMUNICATION SYSTEMS, AIR TRAFFIC CONTROL SYSTEMS, OR ANY OTHER SUCH ACTIVITIES IN WHICH CASE THE FAILURE OF THE SOFTWARE COULD LEAD TO DEATH, PERSONAL INJURY, OR SEVERE PHYSICAL OR ENVIRONMENTAL DAMAGE. SOME JURISDICTIONS DO NOT ALLOW LIMITATIONS ON THE DURATION OF AN IMPLIED WARRANTY AND/OR THE EXCLUSION OF LIMITATION OF DAMAGES, SO THESE STATED LIMITATIONS AND/OR EXCLUSIONS MAY NOT APPLY TO YOU. IN SUCH CASES, WE LIMIT OUR LIABILITY TO THE GREATEST EXTENT PERMITTED BY LAW.
+You may choose to offer, and to charge a fee for, warranty, support,
+indemnity or liability obligations to one or more recipients of Covered
+Software. However, You may do so only on Your own behalf, and not on
+behalf of any Contributor. You must make it absolutely clear that any
+such warranty, support, indemnity, or liability obligation is offered by
+You alone, and You hereby agree to indemnify every Contributor for any
+liability incurred by such Contributor as a result of warranty, support,
+indemnity or liability terms You offer. You may include additional
+disclaimers of warranty and limitations of liability specific to any
+jurisdiction.
 
-8. Export Restrictions. The Software may be subject to laws, administrative regulations and executive orders of those authorities responsible according to any applicable laws relating to the control of imports and exports of the Software (“Export Laws”). You agree to comply with all applicable Export Laws and you shall not export or re-export directly or indirectly (including via remote access) any part of the Software to any country to which a license is required under the Export Laws without first obtaining a license.
+4. Inability to Comply Due to Statute or Regulation
+---------------------------------------------------
 
-9. Indemnity. You agree to indemnify and hold harmless Licensor from any claims, costs, damages, losses, or other liabilities as well as related costs, such as attorneys’ fees (collectively, “Losses”) resulting from your use of the Software. In addition, you agree to indemnify the Licensor for any Losses resulting from (a) your violation of these Terms; and (b) your violation of any others’ rights. Your jurisdiction may limit consumer indemnities, so some (or all) of these provisions related to indemnity may not apply in your circumstance. If you are obligated to indemnify the Licensor, Licensor shall have the right, at its sole discretion, to control any proceeding and determine if they desire to settle it, and if so, under what conditions.
+If it is impossible for You to comply with any of the terms of this
+License with respect to some or all of the Covered Software due to
+statute, judicial order, or regulation then You must: (a) comply with
+the terms of this License to the maximum extent possible; and (b)
+describe the limitations and the code they affect. Such description must
+be placed in a text file included with all distributions of the Covered
+Software under this License. Except to the extent prohibited by statute
+or regulation, such description must be sufficiently detailed for a
+recipient of ordinary skill to be able to understand it.
 
-10. Miscellaneous. If any part or parts of these Agreement shall be held unenforceable for any reason, the remainder of this Agreement shall continue in full force and effect. If any provision of this Agreement is deemed invalid or unenforceable by any court of competent jurisdiction, and if limiting such provision would make the provision valid, then such provision shall be deemed to be construed as so limited. If we do not enforce any provision within this Agreement, that shall not be considered a waiver of our rights.
+5. Termination
+--------------
 
-11. Governing Law. This Agreement and End User's relationship with Licensor under this Agreement, shall be governed by the laws of the state of New York without regard to its conflict of laws provisions.
+5.1. The rights granted under this License will terminate automatically
+if You fail to comply with any of its terms. However, if You become
+compliant, then the rights granted under this License from a particular
+Contributor are reinstated (a) provisionally, unless and until such
+Contributor explicitly and finally terminates Your grants, and (b) on an
+ongoing basis, if such Contributor fails to notify You of the
+non-compliance by some reasonable means prior to 60 days after You have
+come back into compliance. Moreover, Your grants from a particular
+Contributor are reinstated on an ongoing basis if such Contributor
+notifies You of the non-compliance by some reasonable means, this is the
+first time You have received notice of non-compliance with this License
+from such Contributor, and You become compliant prior to 30 days after
+Your receipt of the notice.
 
-12. Headings. The headings for section herein are for convenience only and shall not affect the meaning of the provisions of these Terms.
+5.2. If You initiate litigation against any entity by asserting a patent
+infringement claim (excluding declaratory judgment actions,
+counter-claims, and cross-claims) alleging that a Contributor Version
+directly or indirectly infringes any patent, then the rights granted to
+You by any and all Contributors for the Covered Software under Section
+2.1 of this License shall terminate.
+
+5.3. In the event of termination under Sections 5.1 or 5.2 above, all
+end user license agreements (excluding distributors and resellers) which
+have been validly granted by You or Your distributors under this License
+prior to termination shall survive termination.
+
+************************************************************************
+*                                                                      *
+*  6. Disclaimer of Warranty                                           *
+*  -------------------------                                           *
+*                                                                      *
+*  Covered Software is provided under this License on an "as is"       *
+*  basis, without warranty of any kind, either expressed, implied, or  *
+*  statutory, including, without limitation, warranties that the       *
+*  Covered Software is free of defects, merchantable, fit for a        *
+*  particular purpose or non-infringing. The entire risk as to the     *
+*  quality and performance of the Covered Software is with You.        *
+*  Should any Covered Software prove defective in any respect, You     *
+*  (not any Contributor) assume the cost of any necessary servicing,   *
+*  repair, or correction. This disclaimer of warranty constitutes an   *
+*  essential part of this License. No use of any Covered Software is   *
+*  authorized under this License except under this disclaimer.         *
+*                                                                      *
+************************************************************************
+
+************************************************************************
+*                                                                      *
+*  7. Limitation of Liability                                          *
+*  --------------------------                                          *
+*                                                                      *
+*  Under no circumstances and under no legal theory, whether tort      *
+*  (including negligence), contract, or otherwise, shall any           *
+*  Contributor, or anyone who distributes Covered Software as          *
+*  permitted above, be liable to You for any direct, indirect,         *
+*  special, incidental, or consequential damages of any character      *
+*  including, without limitation, damages for lost profits, loss of    *
+*  goodwill, work stoppage, computer failure or malfunction, or any    *
+*  and all other commercial damages or losses, even if such party      *
+*  shall have been informed of the possibility of such damages. This   *
+*  limitation of liability shall not apply to liability for death or   *
+*  personal injury resulting from such party's negligence to the       *
+*  extent applicable law prohibits such limitation. Some               *
+*  jurisdictions do not allow the exclusion or limitation of           *
+*  incidental or consequential damages, so this exclusion and          *
+*  limitation may not apply to You.                                    *
+*                                                                      *
+************************************************************************
+
+8. Litigation
+-------------
+
+Any litigation relating to this License may be brought only in the
+courts of a jurisdiction where the defendant maintains its principal
+place of business and such litigation shall be governed by laws of that
+jurisdiction, without reference to its conflict-of-law provisions.
+Nothing in this Section shall prevent a party's ability to bring
+cross-claims or counter-claims.
+
+9. Miscellaneous
+----------------
+
+This License represents the complete agreement concerning the subject
+matter hereof. If any provision of this License is held to be
+unenforceable, such provision shall be reformed only to the extent
+necessary to make it enforceable. Any law or regulation which provides
+that the language of a contract shall be construed against the drafter
+shall not be used to construe this License against a Contributor.
+
+10. Versions of the License
+---------------------------
+
+10.1. New Versions
+
+Mozilla Foundation is the license steward. Except as provided in Section
+10.3, no one other than the license steward has the right to modify or
+publish new versions of this License. Each version will be given a
+distinguishing version number.
+
+10.2. Effect of New Versions
+
+You may distribute the Covered Software under the terms of the version
+of the License under which You originally received the Covered Software,
+or under the terms of any subsequent version published by the license
+steward.
+
+10.3. Modified Versions
+
+If you create software not governed by this License, and you want to
+create a new license for such software, you may create and use a
+modified version of this License if you rename the license and remove
+any references to the name of the license steward (except to note that
+such modified license differs from this License).
+
+10.4. Distributing Source Code Form that is Incompatible With Secondary
+Licenses
+
+If You choose to distribute Source Code Form that is Incompatible With
+Secondary Licenses under the terms of this version of the License, the
+notice described in Exhibit B of this License must be attached.
+
+Exhibit A - Source Code Form License Notice
+-------------------------------------------
+
+  This Source Code Form is subject to the terms of the Mozilla Public
+  License, v. 2.0. If a copy of the MPL was not distributed with this
+  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+If it is not possible or desirable to put the notice in a particular
+file, then You may include the notice in a location (such as a LICENSE
+file in a relevant directory) where a recipient would be likely to look
+for such a notice.
+
+You may add additional accurate notices of copyright ownership.
+
+Exhibit B - "Incompatible With Secondary Licenses" Notice
+---------------------------------------------------------
+
+  This Source Code Form is "Incompatible With Secondary Licenses", as
+  defined by the Mozilla Public License, v. 2.0.
