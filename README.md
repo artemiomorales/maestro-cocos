@@ -1,11 +1,11 @@
-Maestro Story Engine
+Maestro Story Engine for Cocos
 ====================
 
 Maestro for Cocos is tool for creating highly visual electronic literature. It is best used for webcomics, motion comics, animated zines, and other multimedia literature.
 
 Maestro extends the functionality of Cocos Creator by allowing one to create swipeable digital stories for the Web via a manual override of the engine’s animation system. In addition, it contains commonly used boilerplate functionality, as well as the ability to create simple gameplay logic without needing to code.
 
-Maestro Versions
+Other Maestro Versions
 ====================
 
 Versions of Maestro currently exist for the game engines Unity and Cocos Creator, each less than ideal.
