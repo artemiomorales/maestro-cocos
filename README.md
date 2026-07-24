@@ -1,24 +1,49 @@
-Maestro Story Engine for Cocos
-====================
+# Maestro for Cocos Creator
 
-Maestro for Cocos is tool for creating highly visual electronic literature. It is best used for webcomics, motion comics, animated zines, and other multimedia literature.
+A story engine for building swipeable, scroll-driven interactive stories for the web — webcomics, motion comics, animated zines. Implemented as a plugin for Cocos Creator in TypeScript.
 
-Maestro extends the functionality of Cocos Creator by allowing one to create swipeable digital stories for the Web via a manual override of the engine’s animation system. In addition, it contains commonly used boilerplate functionality, as well as the ability to create simple gameplay logic without needing to code.
+An early implementation in the lineage that became **Scroll Cinema**, my current engine for scroll-driven interactive narrative.
 
-Other Maestro Versions
-====================
+## What it does
 
-Versions of Maestro currently exist for the game engines Unity and Cocos Creator, each less than ideal.
+Maestro overrides Cocos Creator's animation system to drive playback from user input — swipe and scroll position — rather than from a timeline clock. That inversion is the core of the engine: animation state becomes a pure function of scroll offset, which is what makes stories scrubbable in both directions and resumable at any point.
 
-The Unity version relies on expensive, closed source packages; in addition, Unity is a difficult system to learn for newcomers and nontechnical users.
+It also provides a visual logic layer, so non-programmers can build conditional story behavior without writing code.
 
-The Cocos Creator version's authoring experience is likewise limited by a closed source editor.
+## Architecture
 
-Neither of these platforms performs optimally when expoorting electronic literature for the web.
+| Module | Responsibility |
+|---|---|
+| `sequencing/` | Timeline construction and scroll-position-driven playback |
+| `animation/` | Manual override of the Cocos animation system |
+| `logic/` | Node-based conditional behavior, authored without code |
+| `sensors/` | Input capture — swipe, scroll, and gesture handling |
+| `layout/` | Responsive positioning across viewport sizes |
+| `audio/` | Sound sequencing tied to timeline position |
+| `persistentData/` | Reader state across sessions |
 
-For these reasons, a [third version of Maestro](https://github.com/artemiomorales/maestro-web) is currently being developed completely within the open source ecosystem using web technologies. The aim is to use this codebase as reference while developing that new version, which aspires to finally optimize Maestro's authoring experience for the open web.
+## The Maestro lineage
 
-License
-=======
+Three implementations exist, each targeting a different runtime:
 
-Maestro is licensed under the Mozilla Public License Version 2.0.
+| Version | Runtime | Status |
+|---|---|---|
+| [`maestro-unity`](https://github.com/artemiomorales/maestro-unity) | Unity (C#) | Prototype — superseded |
+| **`maestro-cocos`** (this repo) | Cocos Creator (TypeScript) | Prototype — superseded |
+| **Scroll Cinema** | Web — React, TypeScript, PixiJS | Active development (private) |
+
+Both engine-based versions ran into the same wall: a closed-source editor constrains the authoring experience, and neither runtime exports efficiently for the open web. The Unity version additionally depends on paid, closed-source packages, and Unity itself is a steep climb for the non-technical authors this tool is meant to serve.
+
+Scroll Cinema is the response — a rebuild on open web technologies, using this codebase as the architectural reference. The module boundaries above carried over largely intact. That work is in a private repository; published output is linked from [artemiomorales.com](https://artemiomorales.com).
+
+## Status
+
+Archived prototype. Retained as the architectural reference for Scroll Cinema. Not under active development.
+
+## License
+
+[Mozilla Public License 2.0](license.txt).
+
+## Author
+
+[Artemio Morales](https://github.com/artemiomorales)
