@@ -34,7 +34,7 @@ Three implementations exist, each targeting a different runtime:
 
 Both engine-based versions ran into the same wall: a closed-source editor constrains the authoring experience. The Unity version additionally didn't export efficiently for the open web and depended on paid, closed-source packages; it was also a steep climb for the non-technical authors this tool is meant to serve.
 
-Scroll Cinema is the response — a rebuild on open web technologies, using this codebase as the architectural reference. The module boundaries above carried over largely intact. That work is in a private repository; published output is linked from [artemiomorales.com](https://artemiomorales.com).
+Scroll Cinema is the response — a rebuild on open web technologies, using this codebase as the architectural reference. The module boundaries above carried over largely intact. That work is in a private repository.
 
 ## Status
 
